@@ -9,6 +9,9 @@ using namespace std;
 const int Red_Player = 0;
 const int Blue_Player = 1;
 
+const int DEAD = 0;
+const int LIFE = 1;
+
 class Player {
 public:
 	int CreatePlayer(class Main_Window* main_window,
@@ -23,9 +26,11 @@ private:
 	//转化为地图中心矩形坐标
 	Point* ToMapPoint(Point* point_);
 	//判断玩家行走点位是否正确
-	int MoveIsRight();
+	int MoveIsRight(bool flag_ = false, Point point_ = { 0,0 });
 	//玩家行动
 	int Movetion();
+	//判断玩家是否死亡
+	int IsLife();
 	//存放玩家现在的技能总数及其手牌
 	vector<int> skill_num;//手牌
 	vector<int> skill_sum;//总数
@@ -39,9 +44,9 @@ private:
 	int flag;
 	//提示标志
 	int flag_window;
-	//玩家预选位置
+	//玩家预选位置 -1为索引
 	struct Point yuxuan_point;
-	//玩家上一步
+	//玩家上一步 -1才是索引
 	struct Point before_point;
 	//Input
 	class Input* input;

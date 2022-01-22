@@ -27,8 +27,10 @@ public:
 
 	//获取回合数
 	int Gethuihe();
-	//获取地图点位
+	//获取地图点位 函数自动转化为索引（-1）
 	Map_Point GetMapState(Point* point_);
+	//获取地图点位 函数自动转化为索引（-1）
+	Map_Point GetMapStatexy(int x, int y);
 	//判断是否穿线
 	bool IsThoughLine(int x1, int y1,int x2,int y2);
 private:

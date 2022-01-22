@@ -28,6 +28,14 @@ Map_Point Map::GetMapState(Point* point_)
     return map[point_->x - 1][point_->y - 1];
 }
 
+Map_Point Map::GetMapStatexy(int x, int y)
+{
+    x -= 1;
+    y -= 1;
+    if (x < 0 || x > 6 || y < 0 || y > 6) { return{ ZHAN,0,0 }; }
+    return map[x][y];
+}
+
 bool Map::IsThoughLine(int x1, int y1,int x2,int y2)
 {
     Map_Point point1 = map[x1][y1];

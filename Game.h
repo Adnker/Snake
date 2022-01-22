@@ -13,6 +13,9 @@ public:
 	int Updata();
 	int Shutdown();
 
+	//游戏是否结束
+	bool gameIsRun;
+
 	//为玩家分配内存
 	int CreatePlay();
 	int DestroyPlay();

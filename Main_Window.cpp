@@ -7,8 +7,22 @@ static SDL_Color RED = { 255,0,0,255 };//红色
 static SDL_Color BLUE = { 0,0,255,255 };//蓝色
 static SDL_Color LITTLE_BLACK = { 150,150,150,255 };//灰色
 
+
+int Main_Window::GameIsEnd(int flag_Player_)
+{
+	game->gameIsRun = false;
+	flag_Player = flag_Player_;
+	flagWindow = GameoverWindow;
+	SDL_DestroyWindow(window);
+	CreatNewWindow("Snake", 300, 300, 200, 200);
+	return 0;
+}
+
 int Main_Window::CreatNewWindow(const char* title, int x, int y, int w, int h)
 {
+	if (window) {
+		SDL_DestroyWindow(window);
+	}
 	//创建窗口
 	window = SDL_CreateWindow(title, x, y, w, h, SDL_WINDOW_SHOWN);
 	//检查
@@ -31,7 +45,7 @@ int Main_Window::CreatNewWindow(const char* title, int x, int y, int w, int h)
 	return All_true;
 }
 
-int Main_Window::CreatWindow(Game* game_,class Player* red_player_,
+int Main_Window::CreatWindow(Game* game_, class Player* red_player_,
 	Player* blue_player_)
 {
 	game = game_;
@@ -95,6 +109,9 @@ int Main_Window::Updata()
 	case FrightWindow:
 		Draw_FrightWindow();
 		break;
+	case GameoverWindow:
+		Draw_GameOverWindow();
+		break;
 	}
 
 	//绘制缓冲区
@@ -105,19 +122,8 @@ int Main_Window::Updata()
 int Main_Window::Draw_FrightWindow()
 {
 	flagWindow = FrightWindow;
-	if (input->GetKeyState(SDL_SCANCODE_ESCAPE) == Key_Down) {
-		//输入ESC则退回到主界面
-		flagWindow = MainWindow;//修改窗口标志
-		//重新创建窗口
-		SDL_DestroyWindow(window);
-		CreatNewWindow("Snake", 100, 100, 500, 500);
-		//回收为玩家分配的内存
-		game->DestroyPlay();
-		return 0;
-	}
 	//黑色
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-
 	//绘制战斗窗口
 	int i = 0;
 	while (i <= 700) {
@@ -152,7 +158,7 @@ int Main_Window::Draw_FrightWindow()
 
 	//绘制玩家基地
 	temp = red_player->Getjidi_point();
-	if(temp.x > 0){ FillRect(temp.x, temp.y, 50, 50, &RED); }
+	if (temp.x > 0) { FillRect(temp.x, temp.y, 50, 50, &RED); }
 	temp = blue_player->Getjidi_point();
 	if (temp.x > 0) { FillRect(temp.x, temp.y, 50, 50, &BLUE); }
 
@@ -161,7 +167,7 @@ int Main_Window::Draw_FrightWindow()
 	FillRect(temp.x, temp.y, 20, 20, &RED);
 	temp = blue_player->Getyuxuan_point();
 	FillRect(temp.x, temp.y, 20, 20, &BLUE);
-	
+
 	//绘制玩家提示窗口
 	int size = window_msg.size();
 	if (size > 0)
@@ -187,7 +193,7 @@ int Main_Window::Draw_MainWindow()
 {
 	flagWindow = MainWindow;
 	//DrawRect(200, 100, 100, 50, &BLACK);
-	DrawTTF(L"开始游戏", BLACK, {200,100,100,50});
+	DrawTTF(L"开始游戏", BLACK, { 200,100,100,50 });
 	DrawLine(180, 150, 320, 150);
 	//DrawRect(200, 200, 100, 50, &BLACK);
 	DrawTTF(L"技能介绍", BLACK, { 200,200,100,50 });
@@ -196,20 +202,19 @@ int Main_Window::Draw_MainWindow()
 	Point* nowPoint = input->GetNowPoint();
 	//判断鼠标是否进入“开始游戏”按钮区
 	if (nowPoint->x < 300 && nowPoint->x > 200
-		&& nowPoint->y > 100 && nowPoint->y < 150) 
+		&& nowPoint->y > 100 && nowPoint->y < 150)
 	{
 		//移动到键上
-		FillRect(100, 100, 50, 50,&RED);
+		FillRect(100, 100, 50, 50, &RED);
 		//按下键
-		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down) 
+		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
 			flagWindow = FrightWindow;
-			SDL_DestroyWindow(window);
-			CreatNewWindow("Snake", 100, 50, 700, 800);
+			CreatNewWindow("Snake", 100,100,700,800);
 			game->CreatePlay();
 		}
 	}
-	else if(nowPoint->x < 300 && nowPoint->x > 200
+	else if (nowPoint->x < 300 && nowPoint->x > 200
 		&& nowPoint->y > 200 && nowPoint->y < 250)
 	{
 		//移动到键上
@@ -218,12 +223,30 @@ int Main_Window::Draw_MainWindow()
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
 			flagWindow = FrightWindow;
-			SDL_DestroyWindow(window);
-			CreatNewWindow("Snake", 100, 50, 700, 800);
+			CreatNewWindow("Snake", 100, 100, 700, 800);
 			game->CreatePlay();
 		}
 	}
-	
+
+	return 0;
+}
+
+int Main_Window::Draw_GameOverWindow()
+{
+	SDL_Rect rect = { 50,30,100,50 };
+	flagWindow = GameoverWindow;
+	game->DestroyPlay();
+	if (flag_Player == Red_Player) {
+		DrawTTF(L"蓝方胜利", BLUE, rect);
+	}
+	else {
+		DrawTTF(L"红方胜利", RED, rect);
+	}
+	DrawTTF(L"左键回到主页", BLACK, { 20,100,160,50 });
+	if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down) {
+		CreatNewWindow("Snake", 100, 100, 500, 500);
+		flagWindow = MainWindow;
+	}
 	return 0;
 }
 
@@ -246,7 +269,7 @@ void Main_Window::DrawRect(int x, int y, int w, int h, SDL_Color* color)
 	SDL_RenderDrawRect(renderer, &rect);
 }
 
-void Main_Window::FillRect(int x, int y, int w, int h,SDL_Color* color)
+void Main_Window::FillRect(int x, int y, int w, int h, SDL_Color* color)
 {
 	//设置矩形信息
 	rect.x = x;
@@ -259,7 +282,7 @@ void Main_Window::FillRect(int x, int y, int w, int h,SDL_Color* color)
 	SDL_RenderFillRect(renderer, &rect);
 }
 
-void Main_Window::DrawTTF(const wchar_t * text, SDL_Color color,SDL_Rect rect)
+void Main_Window::DrawTTF(const wchar_t* text, SDL_Color color, SDL_Rect rect)
 {
 	//将wchar_t转化为Uint16
 	Uint16* inText = (Uint16*)text;

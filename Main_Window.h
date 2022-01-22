@@ -19,6 +19,7 @@ const int TTF_Open_error = 5;
 //用于确定现在窗口状态
 const int MainWindow = 0;
 const int FrightWindow = 1;
+const int GameoverWindow = 2;
 
 //
 
@@ -46,6 +47,8 @@ public:
 	int Player_Window(const wchar_t* text_,SDL_Rect rect_);
 	//获取窗口标志
 	int GetFlag() { return flagWindow; };
+	//游戏结束
+	int GameIsEnd(int flag_Player);
 private:
 	//创建新的窗口
 	int CreatNewWindow(const char* title, int x, int y, int w, int h);
@@ -53,6 +56,8 @@ private:
 	int Draw_FrightWindow();
 	//绘制主界面
 	int Draw_MainWindow();
+	//绘制游戏结束的界面
+	int Draw_GameOverWindow();
 	//绘制线
 	void DrawLine(int x1, int y1, int x2, int y2);
 	//绘制矩形
@@ -80,5 +85,7 @@ private:
 	SDL_Surface* windowSurface;
 	//窗口标志
 	int flagWindow;
+	//用于显示谁获得胜利
+	int flag_Player;
 };
 #endif // !Main_Window_H
