@@ -23,7 +23,9 @@ private:
 	//转化为地图中心矩形坐标
 	Point* ToMapPoint(Point* point_);
 	//判断玩家行走点位是否正确
-	bool MoveIsRight();
+	int MoveIsRight();
+	//玩家行动
+	int Movetion();
 	//存放玩家现在的技能总数及其手牌
 	vector<int> skill_num;//手牌
 	vector<int> skill_sum;//总数
@@ -39,6 +41,8 @@ private:
 	int flag_window;
 	//玩家预选位置
 	struct Point yuxuan_point;
+	//玩家上一步
+	struct Point before_point;
 	//Input
 	class Input* input;
 	//Main_Window

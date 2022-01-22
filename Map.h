@@ -5,23 +5,32 @@
 
 struct Map_Point
 {
-	bool quyu_Point;
+	//地图点位是否被占用
 	bool zhan_Point;
+	//玩家标识
+	int flag_player;
+	//第几步
+	int huihe;
 };
 
-static struct Map_Point Map_None = { 0,0 };
+const int NOONE = 3;
+const int QUYU = 2;
 const int ZHAN = 1;
 const int NONE = 0;
+
+static struct Map_Point Map_None = { NONE, NOONE , 49};
 
 class Map {
 public:
 	int CreateMap();
-	int Update(Point* point_);
+	int Update(Point* point_,int flag_);
 
 	//获取回合数
 	int Gethuihe();
 	//获取地图点位
 	Map_Point GetMapState(Point* point_);
+	//判断是否穿线
+	bool IsThoughLine(int x1, int y1,int x2,int y2);
 private:
 	//回合数
 	int huihe;
