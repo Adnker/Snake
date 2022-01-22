@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="围追堵截.cpp" />
+    <ClCompile Include="Game.cpp">
+      <Filter>Class\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Main_Window.cpp">
+      <Filter>Class\Main_Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Class\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Class\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Class\Player</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Class">
+      <UniqueIdentifier>{f83e8eb8-430b-4214-91dc-9aa9657e4ee7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Class\Game">
+      <UniqueIdentifier>{5d1de6d3-838e-43a1-b998-6c24dd8f67bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Class\Main_Window">
+      <UniqueIdentifier>{89f40206-1ddc-4e83-9f8b-34e277bc601e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Class\Input">
+      <UniqueIdentifier>{decfdd93-8e8a-4fbc-9af6-c9781bcf74cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Class\Map">
+      <UniqueIdentifier>{be7956e6-d7cc-4ddb-a4bf-17b43601092d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Class\Player">
+      <UniqueIdentifier>{8bfd679c-ab1b-415d-b8a3-c637f5088840}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h">
+      <Filter>Class\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Main_Window.h">
+      <Filter>Class\Main_Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Class\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Class\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Class\Player</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\函数文档.docx" />
+  </ItemGroup>
+</Project>
