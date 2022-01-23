@@ -10,7 +10,6 @@ int Map::CreateMap()
 int Map::Update(Point *point_,int flag_)
 {
     huihe++;
-    std::cout << huihe << std::endl;
     auto point = &map[point_->x - 1][point_->y - 1];
     point->zhan_Point = ZHAN;
     point->flag_player = flag_;

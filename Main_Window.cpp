@@ -5,7 +5,7 @@ static SDL_Color WHITE = { 255,255,255,255 };//白色
 static SDL_Color BLACK = { 0,0,0,255 };//黑色
 static SDL_Color RED = { 255,0,0,255 };//红色
 static SDL_Color BLUE = { 0,0,255,255 };//蓝色
-static SDL_Color LITTLE_BLACK = { 150,150,150,255 };//灰色
+static SDL_Color LITTLE_BLACK = { 200,200,200,255 };//灰色
 
 
 int Main_Window::GameIsEnd(int flag_Player_)
@@ -92,24 +92,20 @@ int Main_Window::Updata()
 		flagWindow = MainWindow;
 	}
 	//循环背景色
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	//黑色
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-	DrawLine(0, 0, 900, 0);
+	DrawLineColor(0, 0, 700, 0,BLACK);
 
 	switch (flagWindow)
 	{
-		//首界面
-	case MainWindow:
+	case MainWindow://首界面
 		Draw_MainWindow();
 		break;
-		//战斗界面
-	case FrightWindow:
+	case FrightWindow://战斗界面
 		Draw_FrightWindow();
 		break;
-	case GameoverWindow:
+	case GameoverWindow://游戏结束界面
 		Draw_GameOverWindow();
 		break;
 	}
@@ -139,17 +135,19 @@ int Main_Window::Draw_FrightWindow()
 	vector<Point*> move_point;
 
 	//绘制玩家路线
-	move_point = red_player->Getmove_point();
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	move_point = red_player->Getmove_point();//获取红方移动数组
+	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//设置着色器颜色为红色
 	int now = 1;
+	//遍历移动数组并绘制
 	for (int before = 0; now < move_point.size(); now++) {
 		DrawLine(move_point[before]->x, move_point[before]->y,
 			move_point[now]->x, move_point[now]->y);
 		before++;
 	}
-	move_point = blue_player->Getmove_point();
-	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+	move_point = blue_player->Getmove_point();//获取蓝方移动数组
+	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);//设置着色器颜色为蓝色
 	now = 1;
+	//遍历移动数组并绘制
 	for (int before = 0; now < move_point.size(); now++) {
 		DrawLine(move_point[before]->x, move_point[before]->y,
 			move_point[now]->x, move_point[now]->y);
@@ -157,15 +155,16 @@ int Main_Window::Draw_FrightWindow()
 	}
 
 	//绘制玩家基地
-	temp = red_player->Getjidi_point();
+	//temp.x被初始为0，当x>0时玩家基地被选定
+	temp = red_player->Getjidi_point();//获取红方基地坐标
 	if (temp.x > 0) { FillRect(temp.x, temp.y, 50, 50, &RED); }
-	temp = blue_player->Getjidi_point();
+	temp = blue_player->Getjidi_point();//获取蓝方基地坐标
 	if (temp.x > 0) { FillRect(temp.x, temp.y, 50, 50, &BLUE); }
 
 	//绘制玩家预选框
-	temp = red_player->Getyuxuan_point();
+	temp = red_player->Getyuxuan_point();//获取红方预选框坐标
 	FillRect(temp.x, temp.y, 20, 20, &RED);
-	temp = blue_player->Getyuxuan_point();
+	temp = blue_player->Getyuxuan_point();//获取蓝方预选框坐标
 	FillRect(temp.x, temp.y, 20, 20, &BLUE);
 
 	//绘制玩家提示窗口
@@ -175,12 +174,15 @@ int Main_Window::Draw_FrightWindow()
 		for (int i = 0; i < size; i++)
 		{
 			if (window_msg[i]->liveTime > 100) {
+				//每个提示框循环绘制99次 绘制完成后将其删除
 				window_msg.erase(
 					window_msg.begin() + i, window_msg.begin() + i + 1);
 				break;//跳出循环
 			}
 			FillRect(window_msg[i]->rect.x, window_msg[i]->rect.y,
 				window_msg[i]->rect.w, window_msg[i]->rect.h, &LITTLE_BLACK);
+			DrawRect(window_msg[i]->rect.x, window_msg[i]->rect.y,
+				window_msg[i]->rect.w, window_msg[i]->rect.h, &BLACK);
 			DrawTTF(window_msg[i]->text, BLACK, window_msg[i]->rect);
 			window_msg[i]->liveTime++;
 		}
@@ -254,6 +256,12 @@ void Main_Window::DrawLine(int x1, int y1, int x2, int y2)
 {
 	//绘制线
 	SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+}
+
+void Main_Window::DrawLineColor(int x1, int y1, int x2, int y2, SDL_Color color)
+{
+	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+	DrawLine(x1, y1, x2, y2);
 }
 
 void Main_Window::DrawRect(int x, int y, int w, int h, SDL_Color* color)

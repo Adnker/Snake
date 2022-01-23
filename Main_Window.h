@@ -21,8 +21,6 @@ const int MainWindow = 0;
 const int FrightWindow = 1;
 const int GameoverWindow = 2;
 
-//
-
 //加载的字体
 static const char* fontText = "simkai.TTF";
 const int fontSize = 25;
@@ -60,6 +58,7 @@ private:
 	int Draw_GameOverWindow();
 	//绘制线
 	void DrawLine(int x1, int y1, int x2, int y2);
+	void DrawLineColor(int x1, int y1, int x2, int y2, SDL_Color color);
 	//绘制矩形
 	void DrawRect(int x, int y, int w, int h,SDL_Color* color);
 	//绘制填充矩形
@@ -84,6 +83,7 @@ private:
 	//窗口核心贴图器
 	SDL_Surface* windowSurface;
 	//窗口标志
+	//MainWindow = 0 FrightWindow = 1 GameoverWindow = 2
 	int flagWindow;
 	//用于显示谁获得胜利
 	int flag_Player;

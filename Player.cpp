@@ -206,7 +206,7 @@ int Player::Movetion()
 			//点位被占用
 			if (flag_window == 0) {
 				flag_window++;
-				main_window->Player_Window(L"点位被使用",
+				main_window->Player_Window(L"点位被占",
 					{ Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 });
 			}
 		}
@@ -215,13 +215,12 @@ int Player::Movetion()
 		if (flag_window == 0) {
 			flag_window++;
 			//轮到敌人
-			main_window->Player_Window(L"轮到敌人",
+			main_window->Player_Window(L"敌人回合",
 				{ Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 });
 		}
 	}
 	return 0;
 }
-
 
 /*
 * (x-1,y-1)(x,y-1)(x+1,y-1)
