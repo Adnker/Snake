@@ -26,6 +26,7 @@ const int GameoverWindow = 2;
 static const char* fontText = "simkai.TTF";
 const int fontSize = 25;
 
+//用于保存窗口提示的信息
 struct Window_Msg {
 	const wchar_t* text;
 	SDL_Rect rect;
