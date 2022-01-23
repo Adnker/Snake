@@ -193,12 +193,22 @@ int Main_Window::Draw_FrightWindow()
 
 int Main_Window::Draw_MainWindow()
 {
+	if (!mouse_window) {
+		mouse_window = new Mouse_Window(input);
+	}
 	flagWindow = MainWindow;
+	mouse_window->Updata();//更新鼠标移动
+	//绘制鼠标移动线路
+	auto point_sum = mouse_window->Getpoint();
+	for (int i = 1; i < point_sum.size(); i++) {
+		DrawLine(point_sum[i - 1]->x, point_sum[i - 1]->y, point_sum[i]->x, point_sum[i]->y);
+	}
+
 	//DrawRect(200, 100, 100, 50, &BLACK);
-	DrawTTF(L"开始游戏", BLACK, { 200,100,100,50 });
+	DrawTTF(L"开始游戏", BLACK, { 200,100,100,40 });
 	DrawLine(180, 150, 320, 150);
 	//DrawRect(200, 200, 100, 50, &BLACK);
-	DrawTTF(L"技能介绍", BLACK, { 200,200,100,50 });
+	DrawTTF(L"技能介绍", BLACK, { 200,200,100,40 });
 	DrawLine(180, 250, 320, 250);
 	//获取鼠标坐标
 	Point* nowPoint = input->GetNowPoint();
@@ -207,7 +217,7 @@ int Main_Window::Draw_MainWindow()
 		&& nowPoint->y > 100 && nowPoint->y < 150)
 	{
 		//移动到键上
-		FillRect(100, 100, 50, 50, &RED);
+		FillRect(140, 110, 30, 30, &RED);
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
@@ -220,7 +230,7 @@ int Main_Window::Draw_MainWindow()
 		&& nowPoint->y > 200 && nowPoint->y < 250)
 	{
 		//移动到键上
-		FillRect(100, 200, 50, 50, &RED);
+		FillRect(140, 210, 30, 30, &RED);
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{

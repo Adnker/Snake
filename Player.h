@@ -1,6 +1,7 @@
 #pragma once
 #ifndef PLAYER_H
 #define PLAYER_H
+
 #include <vector>
 #include "Main_Window.h"
 #include "Input.h"
@@ -11,7 +12,7 @@ const int Blue_Player = 1;
 
 const int DEAD = 0;
 const int LIFE = 1;
-
+#pragma message ("Loading Player...")
 class Player {
 public:
 	int CreatePlayer(class Main_Window* main_window,
@@ -59,5 +60,6 @@ private:
 	class Main_Window* main_window;
 	class Map* map;
 };
+#pragma message("Player is loaded")
 
 #endif // !PLAYER_H

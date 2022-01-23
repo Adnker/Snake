@@ -7,6 +7,7 @@
 #include "Map.h"
 
 
+#pragma message ("Loading Game...")
 class Game {
 public:
 	int OpenGame();
@@ -35,3 +36,4 @@ private:
 	//µØÍ¼Àà
 	class Map map;
 };
+#pragma message ("Game is loaded")

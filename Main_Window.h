@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <vector>
+#include "Mouse_Window.h"
 
 
 const int All_true = 0;
@@ -31,6 +32,7 @@ struct Window_Msg {
 	int liveTime;
 };
 
+#pragma message ("Loading Main_Window...")
 class Main_Window {
 public:
 	//初始化
@@ -72,6 +74,8 @@ private:
 	class Input* input;
 	class Player* red_player;
 	class Player* blue_player;
+	//额外类
+	class Mouse_Window* mouse_window;
 	//窗口
 	SDL_Window* window;
 	//着色器
@@ -88,4 +92,5 @@ private:
 	//用于显示谁获得胜利
 	int flag_Player;
 };
+#pragma message ("Main_Window is loaded")
 #endif // !Main_Window_H

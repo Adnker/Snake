@@ -17,6 +17,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>Class\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Mouse_Window.cpp">
+      <Filter>Class\Main_Window\Mouse_Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Class">
@@ -37,6 +40,9 @@
     <Filter Include="Class\Player">
       <UniqueIdentifier>{8bfd679c-ab1b-415d-b8a3-c637f5088840}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Class\Main_Window\Mouse_Window">
+      <UniqueIdentifier>{c4b32575-c4ee-4d37-8bde-1809400f5c3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -53,6 +59,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Class\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse_Window.h">
+      <Filter>Class\Main_Window\Mouse_Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

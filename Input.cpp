@@ -15,19 +15,14 @@ int Input::Updata()
 {
 	//交换键盘值
 	memcpy(beforeKeyState, nowKeyState, SDL_NUM_SCANCODES);
-
 	//获取新的键盘状态
 	const Uint8* temp = SDL_GetKeyboardState(NULL);
 	memcpy(nowKeyState, temp, SDL_NUM_SCANCODES);
-	
-	
 	//交换鼠标状态
 	beforeMouseState = nowMouseState;
 	beforePoint = nowPoint;
-
 	//获取新的鼠标状态
 	nowMouseState = SDL_GetMouseState(&nowPoint.x, &nowPoint.y);
-
 	return 0;
 }
 
@@ -83,4 +78,10 @@ int Input::GetMouseState(int button)
 			return Key_Keep;
 		}
 	}
+}
+
+bool Input::GetMouseMove()
+{
+	if (beforePoint.x != nowPoint.x || beforePoint.y != nowPoint.y) { return true; }
+	return false;
 }

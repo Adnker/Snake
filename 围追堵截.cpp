@@ -1,6 +1,14 @@
 #include "Game.h"
 #include <Windows.h>
 
+
+//SDL2.lib
+//SDL2main.lib
+//SDL2_ttf.lib
+#pragma comment (lib,"SDL2.lib")
+#pragma comment (lib,"SDL2main.lib")
+#pragma comment (lib,"SDL2_ttf.lib")
+
 #undef main
 
 int main(){
@@ -18,4 +26,5 @@ int main(){
 		game.Updata();
 	}
 	game.Shutdown();
+	int i;std::cin >> i;
 }
