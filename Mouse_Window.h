@@ -4,14 +4,14 @@
 
 #include <vector>
 #include "Input.h"
+#include "Main_Window.h"
 using std::vector;
 
 class Mouse_Window {
 public:
-	Mouse_Window(Input* input_);
-	int Updata();
-
-	vector<Point*> Getpoint();
+	Mouse_Window(Input* input_, class Main_Window* main_window);
+	//绘制小蛇
+	int DrawSnake();
 private:
 	//捕获频率
 	int flag_mouse_time;
@@ -20,5 +20,6 @@ private:
 
 	//class
 	class Input* input;
+	class Main_Window* main_window;
 };
 #endif

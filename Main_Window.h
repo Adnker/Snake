@@ -50,6 +50,16 @@ public:
 	int GetFlag() { return flagWindow; };
 	//游戏结束
 	int GameIsEnd(int flag_Player);
+
+	//绘制线
+	void DrawLine(int x1, int y1, int x2, int y2);
+	void DrawLineColor(int x1, int y1, int x2, int y2, SDL_Color color);
+	//绘制矩形
+	void DrawRect(int x, int y, int w, int h, SDL_Color* color);
+	//绘制填充矩形
+	void FillRect(int x, int y, int w, int h, SDL_Color* color);
+	//绘制文字
+	void DrawTTF(const wchar_t* text, SDL_Color color, SDL_Rect rect);
 private:
 	//创建新的窗口
 	int CreatNewWindow(const char* title, int x, int y, int w, int h);
@@ -59,15 +69,6 @@ private:
 	int Draw_MainWindow();
 	//绘制游戏结束的界面
 	int Draw_GameOverWindow();
-	//绘制线
-	void DrawLine(int x1, int y1, int x2, int y2);
-	void DrawLineColor(int x1, int y1, int x2, int y2, SDL_Color color);
-	//绘制矩形
-	void DrawRect(int x, int y, int w, int h,SDL_Color* color);
-	//绘制填充矩形
-	void FillRect(int x, int y, int w, int h, SDL_Color* color);
-	//绘制文字
-	void DrawTTF(const wchar_t* text, SDL_Color color, SDL_Rect rect);
 	//窗口提示
 	std::vector<Window_Msg*> window_msg;
 	//核心类

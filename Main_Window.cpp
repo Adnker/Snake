@@ -52,6 +52,7 @@ int Main_Window::CreatWindow(Game* game_, class Player* red_player_,
 	input = game->GetInput();
 	red_player = red_player_;
 	blue_player = blue_player_;
+	mouse_window = new Mouse_Window(input, this);
 
 	//初始化TTF文字库
 	if (TTF_Init() == -1) {
@@ -98,15 +99,7 @@ int Main_Window::Updata()
 	DrawLineColor(0, 0, 700, 0,BLACK);
 
 	//绘制一条小蛇
-	if (!mouse_window) {
-		mouse_window = new Mouse_Window(input);
-	}
-	mouse_window->Updata();//更新鼠标移动
-	//绘制鼠标移动线路
-	auto point_sum = mouse_window->Getpoint();
-	for (int i = 1; i < point_sum.size(); i++) {
-		DrawLine(point_sum[i - 1]->x, point_sum[i - 1]->y, point_sum[i]->x, point_sum[i]->y);
-	}
+	mouse_window->DrawSnake();
 
 	switch (flagWindow)
 	{
