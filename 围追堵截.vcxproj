@@ -158,6 +158,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mouse_Window.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Skill.cpp" />
     <ClCompile Include="围追堵截.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Mouse_Window.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Skill.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\函数文档.docx" />

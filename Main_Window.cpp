@@ -15,6 +15,7 @@ int Main_Window::GameIsEnd(int flag_Player_)
 	flagWindow = GameoverWindow;
 	SDL_DestroyWindow(window);
 	CreatNewWindow("Snake", 300, 300, 200, 200);
+	game->DestroyPlay();
 	return 0;
 }
 
@@ -96,7 +97,7 @@ int Main_Window::Updata()
 	SDL_SetRenderDrawColor(renderer, 240, 240, 240, 255);
 	SDL_RenderClear(renderer);
 
-	DrawLineColor(0, 0, 700, 0,BLACK);
+	DrawLineColor(0, 0, 700, 0, BLACK);
 
 	//绘制一条小蛇
 	mouse_window->DrawSnake();
@@ -111,6 +112,9 @@ int Main_Window::Updata()
 		break;
 	case GameoverWindow://游戏结束界面
 		Draw_GameOverWindow();
+		break;
+	case SkillWindow://技能选择界面
+		Draw_SkillWindow();
 		break;
 	}
 
@@ -135,37 +139,66 @@ int Main_Window::Draw_FrightWindow()
 	}
 	DrawLine(350, 700, 350, 800);
 
-	Point temp;
-	vector<Point*> move_point;
 
+	int jidi_h = 50;//基地矩形边长
+	vector<Point*>* jidi_point;
+	vector<Point*>* move_point;
 	//绘制玩家路线
 	move_point = red_player->Getmove_point();//获取红方移动数组
+	jidi_point = red_player->Getjidi_point();//获取红方基地数组
+	//绘制红方基地
+	if (jidi_point->at(0)->x > 0) {
+		FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &RED);
+	}
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//设置着色器颜色为红色
 	int now = 1;
+	int jidi_index = 1;//基地索引
 	//遍历移动数组并绘制
-	for (int before = 0; now < move_point.size(); now++) {
-		DrawLine(move_point[before]->x, move_point[before]->y,
-			move_point[now]->x, move_point[now]->y);
+	for (int before = 0; now < (*move_point).size(); now++) {
+		//特殊标识检测
+		if ((*move_point).at(now)->x == 0) {
+			FillRect((*jidi_point).at(jidi_index)->x, (*jidi_point).at(jidi_index)->y, jidi_h, jidi_h, &RED);
+		}
+		else if ((*move_point).at(before)->x == 0) {
+			DrawLine(jidi_point->at(jidi_index)->x + 25, jidi_point->at(jidi_index)->y,
+				(*move_point).at(now)->x, (*move_point).at(now)->y);
+			jidi_index++;//为下一次绘制矩形做准备
+		}
+		else {
+			DrawLine((*move_point).at(before)->x, (*move_point).at(before)->y,
+				(*move_point).at(now)->x, (*move_point).at(now)->y);
+		}
 		before++;
 	}
 	move_point = blue_player->Getmove_point();//获取蓝方移动数组
+	jidi_point = blue_player->Getjidi_point();//获取蓝方基地数组
+	//绘制蓝方基地
+	if (jidi_point->at(0)->x > 0) {
+		FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &BLUE);
+	}
 	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);//设置着色器颜色为蓝色
 	now = 1;
+	jidi_index = 1;//基地索引
 	//遍历移动数组并绘制
-	for (int before = 0; now < move_point.size(); now++) {
-		DrawLine(move_point[before]->x, move_point[before]->y,
-			move_point[now]->x, move_point[now]->y);
+	for (int before = 0; now < (*move_point).size(); now++) {
+		//特殊标识检测
+		if ((*move_point).at(now)->x == 0) {
+			FillRect((*jidi_point).at(jidi_index)->x, (*jidi_point).at(jidi_index)->y, jidi_h, jidi_h, &RED);
+		}
+		else if ((*move_point).at(before)->x == 0) {
+			DrawLine(jidi_point->at(jidi_index)->x + 25, jidi_point->at(jidi_index)->y,
+				(*move_point).at(now)->x, (*move_point).at(now)->y);
+			jidi_index++;//为下一次绘制矩形做准备
+		}
+		else {
+			DrawLine((*move_point).at(before)->x, (*move_point).at(before)->y,
+				(*move_point).at(now)->x, (*move_point).at(now)->y);
+		}
 		before++;
 	}
 
-	//绘制玩家基地
-	//temp.x被初始为0，当x>0时玩家基地被选定
-	temp = red_player->Getjidi_point();//获取红方基地坐标
-	if (temp.x > 0) { FillRect(temp.x, temp.y, 50, 50, &RED); }
-	temp = blue_player->Getjidi_point();//获取蓝方基地坐标
-	if (temp.x > 0) { FillRect(temp.x, temp.y, 50, 50, &BLUE); }
-
 	//绘制玩家预选框
+	Point temp;
 	temp = red_player->Getyuxuan_point();//获取红方预选框坐标
 	FillRect(temp.x, temp.y, 20, 20, &RED);
 	temp = blue_player->Getyuxuan_point();//获取蓝方预选框坐标
@@ -216,9 +249,9 @@ int Main_Window::Draw_MainWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			flagWindow = FrightWindow;
-			CreatNewWindow("Snake", 100,100,700,800);
-			game->CreatePlay();
+			flagWindow = SkillWindow;
+			game->CreatePlay();//创建玩家
+			CreatNewWindow("Player1 chiose skill", 100, 100, 300, 300);
 		}
 	}
 	else if (nowPoint->x < 300 && nowPoint->x > 200
@@ -242,7 +275,6 @@ int Main_Window::Draw_GameOverWindow()
 {
 	SDL_Rect rect = { 50,30,100,50 };
 	flagWindow = GameoverWindow;
-	game->DestroyPlay();
 	if (flag_Player == Red_Player) {
 		DrawTTF(L"蓝方胜利", BLUE, rect);
 	}
@@ -254,6 +286,103 @@ int Main_Window::Draw_GameOverWindow()
 		CreatNewWindow("Snake", 100, 100, 500, 500);
 		flagWindow = MainWindow;
 	}
+	return 0;
+}
+
+int Main_Window::Draw_SkillWindow()
+{
+	flagWindow = SkillWindow;
+	//选中正方形的边
+	int h = 20;
+	SDL_Rect name1 = { 100,20,90,40 };//技能一矩形
+	SDL_Rect name2 = { 100,90,90,40 };//技能二矩形
+	DrawLine(name1.x, name1.y + name1.h + 10, name1.x + name1.w, name1.y + name1.h + 10);
+	DrawLine(name2.x, name2.y + name2.h + 10, name2.x + name2.w, name2.y + name2.h + 10);
+	const wchar_t* skill_name = game->Getskill_name(index);
+	if (skill_name) { DrawTTF(skill_name, BLACK, name1); }
+	skill_name = game->Getskill_name(index + 1);
+	if (skill_name) { DrawTTF(skill_name, BLACK, name2); }
+	SDL_Rect text1 = { 0,250,fontSize * 3,40 };//文本一矩形
+	SDL_Rect text2 = { 300 - fontSize * 3,250,fontSize * 3,40 };//文本二矩形
+	DrawLine(text1.x, text1.y + text1.h + 10, text1.x + text1.w, text1.y + text1.h + 10);
+	DrawLine(text2.x, text2.y + text2.h + 10, text2.x + text2.w, text2.y + text2.h + 10);
+	DrawTTF(L"上一页", BLACK, text1);
+	DrawTTF(L"下一页", BLACK, text2);
+	//获取鼠标坐标
+	Point* nowPoint = input->GetNowPoint();
+	//判断鼠标是否进入按钮区
+	//第一个技能区
+	if (nowPoint->x > name1.x && nowPoint->x < name1.x + name1.w
+		&& nowPoint->y > name1.y && nowPoint->y < name1.y + name1.h + 10)
+	{
+		//移动到键上
+		FillRect(name1.x - h * 2, name1.y + 10, h, h, &RED);
+		//按下键
+		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
+		{
+			if (red_player->Getskill_flag() == -1) { 
+				//修改玩家一的技能选择
+				red_player->ChangeSkill(index);
+				//轮到玩家二选择技能
+				flagWindow = SkillWindow;
+				index = 1;
+				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
+			}
+			else { 
+				blue_player->ChangeSkill(index);
+				flagWindow = FrightWindow;
+				CreatNewWindow("Snake Firght", 100, 100, 700, 800);
+			}
+		}
+	}
+	//第二个技能区
+	else if (nowPoint->x > name2.x && nowPoint->x < name2.x + name2.w
+		&& nowPoint->y > name2.y && nowPoint->y < name2.y + name2.h + 10)
+	{
+		//移动到键上
+		FillRect(name2.x - h * 2, name2.y + 10, h, h, &RED);
+		//按下键
+		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
+		{
+			if (red_player->Getskill_flag() == -1) {
+				//修改玩家一的技能选择
+				red_player->ChangeSkill(index + 1);
+				//轮到玩家二选择技能
+				index = 1;//重置索引
+				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
+			}
+			else { 
+				blue_player->ChangeSkill(index + 1);
+				flagWindow = FrightWindow;
+				CreatNewWindow("Snake Firght", 100, 100, 700, 800);
+			}
+		}
+	}
+	//上一页
+	else if (nowPoint->x > text1.x && nowPoint->x < text1.x + text1.w
+		&& nowPoint->y > text1.y && nowPoint->y < text1.y + text1.h + 10)
+	{
+		//移动到键上
+		FillRect(text1.x + text1.w + h, text1.y + 10, h, h, &RED);
+		//按下键
+		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
+		{
+			if (index > 1) { index -= 2; }
+		}
+	}
+	//下一页
+	else if (nowPoint->x > text2.x && nowPoint->x < text2.x + text2.w
+		&& nowPoint->y > text2.y && nowPoint->y < text2.y + text2.h + 10)
+	{
+		//移动到键上
+		FillRect(text2.x - h * 2, text2.y + 10, h, h, &RED);
+		//按下键
+		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
+		{
+			if (index + 2 <= game->Getskill_sum()) { index += 2; }
+		}
+	}
+
 	return 0;
 }
 
