@@ -10,10 +10,7 @@ int Mouse_Window::DrawSnake()
 		if (point_sum.size() > 4) {
 			point_sum.erase(point_sum.begin(), point_sum.begin() + 1);//删除多余的元素
 		}
-		Point* temp = new Point();//创建新的鼠标点
-		//获取现在的鼠标位置
-		temp->x = input->GetNowPoint()->x;
-		temp->y = input->GetNowPoint()->y;
+		Point* temp = new Point(input->GetNowPoint()->x, input->GetNowPoint()->y);//创建新的鼠标点
 		point_sum.emplace_back(temp);//加入缓冲区
 		flag_mouse_time++;//开始计时
 	}

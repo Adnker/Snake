@@ -13,18 +13,27 @@ struct Map_Point
 	int huihe;
 };
 
+//地图点位无人占用
+//const int Red_Player = 0;
+//const int Blue_Player = 1;
 const int NOONE = 3;
+
+//地图点位区域占用
 const int QUYU = 2;
+//地图点位被占用
 const int ZHAN = 1;
+//地图点位未被占用
 const int NONE = 0;
 
+//空地图点位
 static struct Map_Point Map_None = { NONE, NOONE , 49};
 
 #pragma message ("Loading Map...")
 class Map {
 public:
+	int Clear();
 	int CreateMap();
-	int Update(Point* point_,int flag_);
+	int Update(Point* point_,int flag_player_,bool flag_ = true);
 
 	//获取回合数
 	int Gethuihe();
@@ -38,8 +47,7 @@ private:
 	//回合数
 	int huihe;
 	//初始地图位置设定
-	struct Map_Point map[7][7] = 
-	{
+	struct Map_Point map[7][7] = {
 		{Map_None,Map_None,Map_None,Map_None,Map_None,Map_None,Map_None},
 		{Map_None,Map_None,Map_None,Map_None,Map_None,Map_None,Map_None},
 		{Map_None,Map_None,Map_None,Map_None,Map_None,Map_None,Map_None},

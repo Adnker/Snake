@@ -20,6 +20,9 @@
     <ClCompile Include="Mouse_Window.cpp">
       <Filter>Class\Main_Window\Mouse_Window</Filter>
     </ClCompile>
+    <ClCompile Include="Skill.cpp">
+      <Filter>Class\Skill</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Class">
@@ -43,6 +46,9 @@
     <Filter Include="Class\Main_Window\Mouse_Window">
       <UniqueIdentifier>{c4b32575-c4ee-4d37-8bde-1809400f5c3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Class\Skill">
+      <UniqueIdentifier>{b5c125c4-2137-4cff-a5bb-2989c54a553f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -62,6 +68,9 @@
     </ClInclude>
     <ClInclude Include="Mouse_Window.h">
       <Filter>Class\Main_Window\Mouse_Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Skill.h">
+      <Filter>Class\Skill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

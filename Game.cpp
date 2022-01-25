@@ -1,13 +1,15 @@
 #include "Game.h"
+#include "Input.h"
 
 int Game::OpenGame()
 {
 	isRuning = true;
 	//创建各个类
-	input = Input();
-	input.CreateInput();
-	main_window = Main_Window();
-	if (main_window.CreatWindow(this, &red_player, &blue_player) > 0) { isRuning = false; return false; }
+	input = new Input();
+	input->CreateInput();
+	main_window = new Main_Window();
+	skiller = new Skiller();
+	if (main_window->CreatWindow(this, &red_player, &blue_player) > 0) { isRuning = false; return false; }
 
 	//创建
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
@@ -44,43 +46,53 @@ int Game::Updata()
 		}
 
 
-		input.Updata();
+		input->Updata();
 		//在战斗界面才更新玩家操作
-		if (main_window.GetFlag() == FrightWindow)
+		if (main_window->GetFlag() == FrightWindow)
 		{
 			if (gameIsRun) { red_player.Updata(); }
 			if (gameIsRun) { blue_player.Updata(); }
 		}
-		main_window.Updata();
+		main_window->Updata();
 	}
 	return 0;
 }
 
 int Game::Shutdown()
 {
-	main_window.Shutdown();
+	main_window->Shutdown();
+	delete main_window;
+	delete input;
+	delete map;
 	SDL_Quit();
 	return 0;
 }
 
 int Game::CreatePlay()
 {
-	map = Map();
-	map.CreateMap();
-	red_player = Player();
-	red_player.CreatePlayer(&main_window, &input, &map, Red_Player);
-	blue_player = Player();
-	blue_player.CreatePlayer(&main_window, &input, &map, Blue_Player);
+	map = new Map();
+	map->CreateMap();
+	skiller->CreateSkiller(&red_player, &blue_player);
+	red_player.CreatePlayer(main_window, input, map, &blue_player, Red_Player);
+	blue_player.CreatePlayer(main_window, input, map, &red_player, Blue_Player);
 	gameIsRun = true;
 	return 0;
 }
 
 int Game::DestroyPlay()
 {
-	if (&map) {
-		red_player.~Player();
-		blue_player.~Player();
-		map.~Map();
-	}
+	red_player.Clear();
+	blue_player.Clear();
+	map->Clear();
 	return 0;
+}
+
+const wchar_t* Game::Getskill_name(int index)
+{
+	return skiller->Getskill_name(index);
+}
+
+int Game::Getskill_sum()
+{
+	return skiller->Getskill_sum();
 }
