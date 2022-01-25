@@ -6,7 +6,7 @@
 struct Map_Point
 {
 	//地图点位是否被占用
-	bool zhan_Point;
+	int zhan_Point;
 	//玩家标识
 	int flag_player;
 	//第几步
@@ -33,6 +33,8 @@ class Map {
 public:
 	int Clear();
 	int CreateMap();
+	//point_ 坐标 自动转化为索引
+	//flag_ 是否更新回合
 	int Update(Point* point_,int flag_player_,bool flag_ = true);
 
 	//获取回合数

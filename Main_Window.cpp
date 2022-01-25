@@ -46,13 +46,10 @@ int Main_Window::CreatNewWindow(const char* title, int x, int y, int w, int h)
 	return All_true;
 }
 
-int Main_Window::CreatWindow(Game* game_, class Player* red_player_,
-	Player* blue_player_)
+int Main_Window::CreatWindow(Game* game_)
 {
 	game = game_;
 	input = game->GetInput();
-	red_player = red_player_;
-	blue_player = blue_player_;
 	mouse_window = new Mouse_Window(input, this);
 
 	//初始化TTF文字库
@@ -77,18 +74,22 @@ int Main_Window::Shutdown()
 	return 0;
 }
 
-int Main_Window::Player_Window(const wchar_t* text_, SDL_Rect rect_)
+int Main_Window::Player_Window(const wchar_t* text_, SDL_Rect rect_,int& flag_window_)
 {
+	if (flag_window_ != 0) { return false; }
 	Window_Msg* temp = new Window_Msg();
 	temp->text = text_;
 	temp->rect = rect_;
 	temp->liveTime = 0;
 	window_msg.push_back(temp);
-	return 0;
+	flag_window_ = 1;
+	return true;
 }
 
-int Main_Window::Updata()
+int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
 {
+	red_player = red_player_;
+	blue_player = blue_player_;
 	if (!window) {
 		CreatNewWindow("Snake", 100, 100, 500, 500);
 		flagWindow = MainWindow;
@@ -320,7 +321,7 @@ int Main_Window::Draw_SkillWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			if (red_player->Getskill_flag() == -1) { 
+			if (red_player->Getskill() == -1) { 
 				//修改玩家一的技能选择
 				red_player->ChangeSkill(index);
 				//轮到玩家二选择技能
@@ -331,7 +332,7 @@ int Main_Window::Draw_SkillWindow()
 			else { 
 				blue_player->ChangeSkill(index);
 				flagWindow = FrightWindow;
-				CreatNewWindow("Snake Firght", 100, 100, 700, 800);
+				CreatNewWindow("Snake Firght", 10, 200, 700, 800);
 			}
 		}
 	}
@@ -344,7 +345,7 @@ int Main_Window::Draw_SkillWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			if (red_player->Getskill_flag() == -1) {
+			if (red_player->Getskill() == -1) {
 				//修改玩家一的技能选择
 				red_player->ChangeSkill(index + 1);
 				//轮到玩家二选择技能

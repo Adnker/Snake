@@ -9,7 +9,7 @@ int Game::OpenGame()
 	input->CreateInput();
 	main_window = new Main_Window();
 	skiller = new Skiller();
-	if (main_window->CreatWindow(this, &red_player, &blue_player) > 0) { isRuning = false; return false; }
+	if (main_window->CreatWindow(this) > 0) { isRuning = false; return false; }
 
 	//创建
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
@@ -50,10 +50,10 @@ int Game::Updata()
 		//在战斗界面才更新玩家操作
 		if (main_window->GetFlag() == FrightWindow)
 		{
-			if (gameIsRun) { red_player.Updata(); }
-			if (gameIsRun) { blue_player.Updata(); }
+			if (gameIsRun) { red_player->Updata(); }
+			if (gameIsRun) { blue_player->Updata(); }
 		}
-		main_window->Updata();
+		main_window->Updata(red_player,blue_player);
 	}
 	return 0;
 }
@@ -72,17 +72,20 @@ int Game::CreatePlay()
 {
 	map = new Map();
 	map->CreateMap();
-	skiller->CreateSkiller(&red_player, &blue_player);
-	red_player.CreatePlayer(main_window, input, map, &blue_player, Red_Player);
-	blue_player.CreatePlayer(main_window, input, map, &red_player, Blue_Player);
+	skiller->CreateSkiller(map);
+	//获取玩家指针
+	red_player = skiller->GetRed_Player();
+	blue_player = skiller->GetBlue_Player();
+	red_player->CreatePlayer(main_window, input, map, blue_player, skiller, Red_Player);
+	blue_player->CreatePlayer(main_window, input, map, red_player, skiller, Blue_Player);
 	gameIsRun = true;
 	return 0;
 }
 
 int Game::DestroyPlay()
 {
-	red_player.Clear();
-	blue_player.Clear();
+	red_player->Clear();
+	blue_player->Clear();
 	map->Clear();
 	return 0;
 }

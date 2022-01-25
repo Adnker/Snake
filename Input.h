@@ -6,7 +6,7 @@
 #include <iostream>
 
 struct Point {
-	Point(){}
+	Point() { x = 0; y = 0; }
 	Point(int x_, int y_) {
 		x = x_;
 		y = y_;

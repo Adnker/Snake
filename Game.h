@@ -34,8 +34,8 @@ private:
 	//Ö÷´°¿ÚÀà
 	class Main_Window* main_window;
 	class Input* input;
-	class Player red_player;
-	class Player blue_player;
+	class Player* red_player;
+	class Player* blue_player;
 	class Map* map;
 	class Skiller* skiller;
 };

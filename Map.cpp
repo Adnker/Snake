@@ -18,14 +18,23 @@ int Map::CreateMap()
 	return 0;
 }
 
+//flag = true
 int Map::Update(Point* point_, int flag_player_, bool flag_)
 {
-	huihe++;
+	auto point = &map[point_->x - 1][point_->y - 1];
+	point->zhan_Point = ZHAN;
+	point->flag_player = flag_player_;
+	point->huihe = huihe;
 	if (flag_) {
-		auto point = &map[point_->x - 1][point_->y - 1];
-		point->zhan_Point = ZHAN;
-		point->flag_player = flag_player_;
-		point->huihe = huihe;
+		huihe++;
+	}
+	std::cout << huihe << std::endl;
+	for (int i = 0; i < 7; i++) {
+		for (int j = 0; j < 7; j++) {
+			if (map[i][j].zhan_Point == ZHAN) {
+				std::cout << "X£º" << i + 1<< "  Y£º" << j + 1<< std::endl;
+			}
+		}
 	}
 	return 0;
 }

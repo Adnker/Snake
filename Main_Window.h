@@ -44,15 +44,15 @@ struct Window_Msg {
 class Main_Window {
 public:
 	//初始化
-	int CreatWindow(class Game* game_, class Player* player_red,
-		Player* player_blue);
+	int CreatWindow(class Game* game_);
 	//更新
-	int Updata();
+	int Updata(class Player* red_player_,class Player* blue_player);
 	//关闭
 	int Shutdown();
 
 	//添加玩家提示窗口
-	int Player_Window(const wchar_t* text_,SDL_Rect rect_);
+	//flag_window = 0
+	int Player_Window(const wchar_t* text_,SDL_Rect rect_,int& flag_window_);
 	//获取窗口标志
 	int GetFlag() { return flagWindow; };
 	//游戏结束
