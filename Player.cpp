@@ -405,7 +405,7 @@ int Player::IsLife()
 			}
 		}
 	}
-	if (skiller->IsLiveSkill(skill_flag)) {
+	if (skiller->IsLiveSkill(skill_flag) && skill_flag_num > 0) {
 		isLife = LIFE;
 	}
 	return isLife;
