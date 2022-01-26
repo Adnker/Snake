@@ -140,62 +140,42 @@ int Main_Window::Draw_FrightWindow()
 	}
 	DrawLine(350, 700, 350, 800);
 
+	int skill = red_player->Getskill_flag();
+	const wchar_t* skill_name = game->Getskill_name(skill);
+	DrawTTF(skill_name, RED, { 0,700,fontSize * 3,40 });
+	DrawTTF(game->Getskill_flag_sum(red_player->Getskill_flag_num()), RED, { 1,740,40,40 });
 
-	int jidi_h = 50;//基地矩形边长
-	vector<Point*>* jidi_point;
-	vector<Point*>* move_point;
-	//绘制玩家路线
-	move_point = red_player->Getmove_point();//获取红方移动数组
-	jidi_point = red_player->Getjidi_point();//获取红方基地数组
-	//绘制红方基地
-	if (jidi_point->at(0)->x > 0) {
-		FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &RED);
-	}
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//设置着色器颜色为红色
-	int now = 1;
-	int jidi_index = 1;//基地索引
-	//遍历移动数组并绘制
-	for (int before = 0; now < (*move_point).size(); now++) {
-		//特殊标识检测
-		if ((*move_point).at(now)->x == 0) {
-			FillRect((*jidi_point).at(jidi_index)->x, (*jidi_point).at(jidi_index)->y, jidi_h, jidi_h, &RED);
+	skill = blue_player->Getskill_flag();
+	skill_name = game->Getskill_name(skill);
+	DrawTTF(skill_name, BLUE, { 700-fontSize*3,700,fontSize * 3,40 });
+	DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_flag_num()), BLUE, { 700-41,740,40,40 });
+
+	//绘制玩家移动
+	{
+		int jidi_h = 50;//基地矩形边长
+		vector<Point*>* jidi_point;
+		vector<Point*>* move_point;
+		vector<QuYu*>* quyu_point;
+		//绘制玩家路线
+		move_point = red_player->Getmove_point();//获取红方移动数组
+		jidi_point = red_player->Getjidi_point();//获取红方基地数组
+		quyu_point = red_player->Getquyu_point();//获取红方区域数组
+		//绘制红方基地
+		if (jidi_point->at(0)->x > 0) {
+			FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &RED);
 		}
-		else if ((*move_point).at(before)->x == 0) {
-			DrawLine(jidi_point->at(jidi_index)->x + 25, jidi_point->at(jidi_index)->y,
-				(*move_point).at(now)->x, (*move_point).at(now)->y);
-			jidi_index++;//为下一次绘制矩形做准备
+		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//设置着色器颜色为红色
+		DrawMove(move_point, jidi_point, quyu_point,&RED);
+
+		move_point = blue_player->Getmove_point();//获取蓝方移动数组
+		jidi_point = blue_player->Getjidi_point();//获取蓝方基地数组
+		quyu_point = blue_player->Getquyu_point();//获取蓝方区域数组
+		//绘制蓝方基地
+		if (jidi_point->at(0)->x > 0) {
+			FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &BLUE);
 		}
-		else {
-			DrawLine((*move_point).at(before)->x, (*move_point).at(before)->y,
-				(*move_point).at(now)->x, (*move_point).at(now)->y);
-		}
-		before++;
-	}
-	move_point = blue_player->Getmove_point();//获取蓝方移动数组
-	jidi_point = blue_player->Getjidi_point();//获取蓝方基地数组
-	//绘制蓝方基地
-	if (jidi_point->at(0)->x > 0) {
-		FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &BLUE);
-	}
-	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);//设置着色器颜色为蓝色
-	now = 1;
-	jidi_index = 1;//基地索引
-	//遍历移动数组并绘制
-	for (int before = 0; now < (*move_point).size(); now++) {
-		//特殊标识检测
-		if ((*move_point).at(now)->x == 0) {
-			FillRect((*jidi_point).at(jidi_index)->x, (*jidi_point).at(jidi_index)->y, jidi_h, jidi_h, &RED);
-		}
-		else if ((*move_point).at(before)->x == 0) {
-			DrawLine(jidi_point->at(jidi_index)->x + 25, jidi_point->at(jidi_index)->y,
-				(*move_point).at(now)->x, (*move_point).at(now)->y);
-			jidi_index++;//为下一次绘制矩形做准备
-		}
-		else {
-			DrawLine((*move_point).at(before)->x, (*move_point).at(before)->y,
-				(*move_point).at(now)->x, (*move_point).at(now)->y);
-		}
-		before++;
+		SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);//设置着色器颜色为蓝色
+		DrawMove(move_point, jidi_point, quyu_point,&BLUE);
 	}
 
 	//绘制玩家预选框
@@ -321,18 +301,19 @@ int Main_Window::Draw_SkillWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			if (red_player->Getskill() == -1) { 
+			if (red_player->Getskill_flag() == -1) { 
 				//修改玩家一的技能选择
-				red_player->ChangeSkill(index);
+				red_player->Changeskill_flag(index);
 				//轮到玩家二选择技能
 				flagWindow = SkillWindow;
 				index = 1;
 				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
 			}
 			else { 
-				blue_player->ChangeSkill(index);
+				blue_player->Changeskill_flag(index);
 				flagWindow = FrightWindow;
-				CreatNewWindow("Snake Firght", 10, 200, 700, 800);
+				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
+				index = 1;
 			}
 		}
 	}
@@ -345,17 +326,18 @@ int Main_Window::Draw_SkillWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			if (red_player->Getskill() == -1) {
+			if (red_player->Getskill_flag() == -1) {
 				//修改玩家一的技能选择
-				red_player->ChangeSkill(index + 1);
+				red_player->Changeskill_flag(index + 1);
 				//轮到玩家二选择技能
 				index = 1;//重置索引
 				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
 			}
 			else { 
-				blue_player->ChangeSkill(index + 1);
+				blue_player->Changeskill_flag(index + 1);
 				flagWindow = FrightWindow;
-				CreatNewWindow("Snake Firght", 100, 100, 700, 800);
+				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
+				index = 1;
 			}
 		}
 	}
@@ -384,6 +366,54 @@ int Main_Window::Draw_SkillWindow()
 		}
 	}
 
+	return 0;
+}
+
+int Main_Window::DrawMove(vector<Point*>* move_point, vector<Point*>* jidi_point,
+	vector<QuYu*>* quyu_point,SDL_Color* color_)
+{
+	int jidi_h = 50;
+	int quyu_h = 30;
+	int now = 1;
+	int before = 0;
+	while (now < (*move_point).size()) {
+		Point* now_point = (*move_point).at(now);
+		Point* before_point = (*move_point).at(before);
+		switch (now_point->x) {
+		case QUYU:
+			FillRect((*quyu_point).at(now_point->y)->x, (*quyu_point).at(now_point->y)->y, quyu_h, quyu_h, color_);
+			break;
+		case JIDI:
+			FillRect((*jidi_point).at(now_point->y)->x, (*jidi_point).at(now_point->y)->y, jidi_h, jidi_h, color_);
+			break;
+		default:
+			switch (before_point->x)
+			{
+			case QUYU:
+				for (int k = before - 1; k >= 0; k--) {
+					if ((*move_point).at(k)->x == JIDI) {
+						DrawLine((*jidi_point).at((*move_point).at(k)->y)->x, (*jidi_point).at((*move_point).at(k)->y)->y,
+							now_point->x, now_point->y);
+						break;
+					}
+					else if ((*move_point).at(k)->x != QUYU) {
+						DrawLine((*move_point).at(k)->x, (*move_point).at(k)->y, now_point->x, now_point->y);
+						break;
+					}
+				}
+				break;
+			case JIDI:
+				DrawLine((*jidi_point).at(before_point->y)->x + 25, (*jidi_point).at(before_point->y)->y + 25, now_point->x, now_point->y);
+				break;
+			default:
+				DrawLine(before_point->x, before_point->y, now_point->x, now_point->y);
+				break;
+			}
+			break;
+		}
+		before++;
+		now++;
+	}
 	return 0;
 }
 

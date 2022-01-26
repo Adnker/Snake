@@ -13,17 +13,23 @@ struct Map_Point
 	int huihe;
 };
 
-//地图点位无人占用
-//const int Red_Player = 0;
-//const int Blue_Player = 1;
-const int NOONE = 3;
-
-//地图点位区域占用
+//用于特殊标识定位
 const int QUYU = 2;
+const int JIDI = 1;
+
+//地图点位区域使用，可以行走
+const int QUYU_NONE = 3;
+//地图点位区域占用，不可以行走
+const int QUYU_ZHAN = 2;
 //地图点位被占用
 const int ZHAN = 1;
 //地图点位未被占用
 const int NONE = 0;
+
+//地图点位无人占用
+//const int Red_Player = 0;
+//const int Blue_Player = 1;
+const int NOONE = -1;
 
 //空地图点位
 static struct Map_Point Map_None = { NONE, NOONE , 49};
@@ -34,8 +40,13 @@ public:
 	int Clear();
 	int CreateMap();
 	//point_ 坐标 自动转化为索引
+	//flag_point_ 点位设置为什么状态
 	//flag_ 是否更新回合
-	int Update(Point* point_,int flag_player_,bool flag_ = true);
+	int Updata(Point* point_, int flag_player_, int flag_point, bool flag_);
+	int Updatahuihe();
+
+	//显示地图点位情况
+	int Print();
 
 	//获取回合数
 	int Gethuihe();

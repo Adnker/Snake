@@ -24,6 +24,8 @@ public:
 
 	//获取全技能名称
 	const wchar_t* Getskill_name(int index);
+	//转化为技能次数的const wchar_t* 格式
+	const wchar_t* Getskill_flag_sum(int sum);
 	//获取技能总数
 	int Getskill_sum();
 private:

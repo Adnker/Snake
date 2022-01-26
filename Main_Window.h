@@ -78,6 +78,9 @@ private:
 	int Draw_GameOverWindow();
 	//绘制技能选择窗口
 	int Draw_SkillWindow();
+	//绘制玩家行动
+	int DrawMove(vector<Point*>* move_point, vector<Point*>* jidi_point,
+		vector<struct QuYu*>* quyu_point,SDL_Color* color_);
 	//窗口提示
 	std::vector<Window_Msg*> window_msg;
 	//核心类

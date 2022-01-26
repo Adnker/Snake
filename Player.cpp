@@ -4,14 +4,14 @@
 
 const int TOO_LONG = 2;
 const int THOUGH = 3;
+const int NOPOINT = 4;
 
 void Player::Clear()
 {
-	skill_num.clear();
 	quyu_point.clear();
-	skill = -1;
-	move_flag = 1;
-	skill_flag = 1;
+	skill_flag = -1;
+	move_num = 1;
+	skill_num = 1;
 	move_point.clear();
 	jidi_point.clear();
 	flag_window = 0;
@@ -36,10 +36,12 @@ int Player::CreatePlayer(Main_Window* main_window_, Input* input_, Map* map_, Pl
 
 int Player::Updata()
 {
-	if (flag_window > 0) { 
-		flag_window++; }
-	if (flag_window >= 100) { 
-		flag_window = 0; }
+	if (flag_window > 0) {
+		flag_window++;
+	}
+	if (flag_window >= 100) {
+		flag_window = 0;
+	}
 
 	//更新玩家操作
 	if (map->Gethuihe() > 2 && map->Gethuihe() % 2 == flag) {
@@ -126,8 +128,8 @@ int Player::Updata()
 
 void Player::UpdataSum()
 {
-	move_flag = 1;
-	skill_flag = 1;
+	move_num = 1;
+	skill_num = 1;
 }
 
 Point Player::Getyuxuan_point()
@@ -153,15 +155,26 @@ vector<Point*>* Player::Getmove_point()
 	return &move_point;
 }
 
-
-void Player::ChangeSkill(int skill_)
+vector<QuYu*>* Player::Getquyu_point()
 {
-	skill = skill_;
+	return &quyu_point;
 }
 
-int Player::Getskill()
+
+void Player::Changeskill_flag(int skill_flag_)
 {
-	return skill;
+	skill_flag = skill_flag_;
+	skill_flag_num = skiller->Getskill_flag_sum(skill_flag);
+}
+
+int Player::Getskill_flag()
+{
+	return skill_flag;
+}
+
+int Player::Getskill_flag_num()
+{
+	return skill_flag_num;
 }
 
 Point* Player::ToMapPoint(Point* point_)
@@ -182,22 +195,44 @@ Point* Player::ToquyuPoint(Point* point_)
 	return temp;
 }
 
+Point Player::MapToIndex(Point* point_)
+{
+	for (int i = 0; i < 7; i++) {
+		for (int j = 0; j < 7; j++) {
+			if (i * 100 < point_->x && (i + 1) * 100 > point_->x && j * 100 < point_->y && (j + 1) * 100 > point_->y) {
+				return { i + 1,j + 1 };
+			}
+		}
+	}
+	return { -1,0 };
+}
+
+Point Player::MapToMap(Point* point_)
+{
+	//将其转化为地图索引+1
+	Point temp_point = MapToIndex(point_);
+	//转化为中心点位
+	temp_point.x = temp_point.x * 100 - 50;
+	temp_point.y = temp_point.y * 100 - 50;
+	return temp_point;
+}
+
 int Player::CanMove()
 {
-	skill_flag--;
-	move_flag--;
+	skill_num--;
+	move_num--;
 	//还有移动次数时
-	if (move_flag >= 1) {
+	if (move_num >= 1) {
 		//更新地图 但不更新回合
-		map->Update(&yuxuan_point, flag, false);
+		map->Updata(&yuxuan_point, flag, ZHAN, false);
 		return true;
 	}
 	//没有移动次数和技能次数时
-	else if (move_flag < 1 && skill_flag < 1) {
+	else if (move_num < 1 && skill_num < 1) {
 		//更新敌人的移动和技能次数
 		//更新地图
 		player->UpdataSum();
-		map->Update(&yuxuan_point, flag);
+		map->Updata(&yuxuan_point, flag, ZHAN, true);
 		return false;
 	}
 }
@@ -206,28 +241,41 @@ int Player::MoveIsRight(bool flag_, Point point_)
 {
 	Point* temp;
 	if (flag_) {
-		if (point_.x < 1 || point_.x > 7 || point_.y < 1 || point_.y > 7) { return THOUGH; }
+		if (point_.x < 1 || point_.x > 7 || point_.y < 1 || point_.y > 7) { return NOPOINT; }
 		temp = &point_;
 	}
 	else { temp = &yuxuan_point; }
 
-	Point* before = move_point.back();//最后一个点位
-	if (before->x == JIDI) {
-		before = jidi_point.back();
+	//最后一个点位 赋值
+	int index = move_point.size() - 1;
+	Point before = *move_point.at(index);
+	//判断标识
+	if (before.x == JIDI) {
+		before = MapToMap(jidi_point.back());//将基地点位转化为中心点位
 	}
-	else if (before->x == QUYU) {
-		before->x = quyu_point.back()->x;
-		before->y = quyu_point.back()->y;
+	else if (before.x == QUYU) {
+		//向前遍历知道找到可使用的点位
+		while (index >= 0) {
+			index--;
+			before = *move_point.at(index);
+			if (before.x == JIDI) {
+				before = MapToMap(jidi_point.at(before.y));
+				break;
+			}
+			else if (before.x > QUYU) {
+				break;
+			}
+		}
 	}
 	Point* now = ToMapPoint(temp);//现在的点位
 	//计算两点之间的距离是否是正确的
 	int distance = static_cast<int>(
 		sqrt((
-			(before->x - now->x) * (before->x - now->x) +
-			(before->y - now->y) * (before->y - now->y)
+			(before.x - now->x) * (before.x - now->x) +
+			(before.y - now->y) * (before.y - now->y)
 			))
 		);
-	if (distance > 198) { return TOO_LONG; }
+	if (distance > 199) { return TOO_LONG; }
 	else if (map->IsThoughLine(
 		before_point.x - 1, temp->y - 1, temp->x - 1, before_point.y - 1)
 		) {
@@ -236,26 +284,27 @@ int Player::MoveIsRight(bool flag_, Point point_)
 	else { return true; }
 }
 
-int Player::Movetion()
+//flag = false
+int Player::Movetion(int flag_)
 {
 	//提示窗口大小
 	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
 	//判断是否是玩家的回合
-	if (map->Gethuihe() % 2 == flag)
+	if (map->Gethuihe() % 2 == flag || flag_)
 	{
 		//如果没有移动次数
-		if (move_flag < 1) {
-			if (flag_window == 0) {
-				main_window->Player_Window(L"不可移动", text_rect,flag_window);
+		if (move_num < 1) {
+			if (flag_window == 0 && !flag_) {
+				main_window->Player_Window(L"不可移动", text_rect, flag_window);
 			}
-			return 0;
+			return false;
 		}
 		//地图点位未被占用
 		if (map->GetMapState(&yuxuan_point).zhan_Point == NONE)
 		{
 			//基地还没确定，优先确定基地
 			if (!(*jidi_point[0]).x) {
-				map->Update(&yuxuan_point, flag);//更新地图
+				map->Updata(&yuxuan_point, flag, ZHAN, true);//更新地图，回合增加
 				//将预选点位转化为地图点位，并保存
 				jidi_point[0]->x = yuxuan_point.x * 100 - 75;
 				jidi_point[0]->y = yuxuan_point.y * 100 - 75;
@@ -265,44 +314,46 @@ int Player::Movetion()
 				point->x += 25;
 				point->y += 25;
 				move_point.emplace_back(point);//将点位加入
+				return true;
 			}
 			else {
 				switch (MoveIsRight()) {
-				case 1:
+				case true:
 					before_point = yuxuan_point;
 					move_point.emplace_back(ToMapPoint(&yuxuan_point));//将点位加入
 					CanMove();
-					break;
+					return true;
 				case TOO_LONG:
 					//提示玩家距离过长
-					if (flag_window == 0) {
-						main_window->Player_Window(L"距离过长", text_rect,flag_window);
+					if (flag_window == 0 && !flag_) {
+						main_window->Player_Window(L"距离过长", text_rect, flag_window);
 					}
-					break;
+					return false;
 				case THOUGH:
 					//提示玩家禁止穿线
-					if (flag_window == 0) {
-						main_window->Player_Window(L"禁止穿线", text_rect,flag_window);
+					if (flag_window == 0 && !flag_) {
+						main_window->Player_Window(L"禁止穿线", text_rect, flag_window);
 					}
-					break;
+					return false;
 				}
 			}
 		}
 		else
 		{
 			//点位被占用
-			if (flag_window == 0) {
-				main_window->Player_Window(L"点位被占", text_rect,flag_window);
+			if (flag_window == 0 && !flag_) {
+				main_window->Player_Window(L"点位被占", text_rect, flag_window);
 			}
+			return false;
 		}
 	}
 	else {
-		if (flag_window == 0) {
+		if (flag_window == 0 && !flag_) {
 			//轮到敌人
-			main_window->Player_Window(L"敌人回合", text_rect,flag_window);
+			main_window->Player_Window(L"敌人回合", text_rect, flag_window);
 		}
+		return false;
 	}
-	return 0;
 }
 
 int Player::Skill()
@@ -310,20 +361,28 @@ int Player::Skill()
 	//提示窗口大小
 	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
 	//基地还未放置无法使用技能
-	if (jidi_point[0]->x == 0) { 
+	if (jidi_point[0]->x == 0) {
 		main_window->Player_Window(L"基地未放", text_rect, flag_window);
 	}
 	//技能使用次数少
-	else if (skill_flag < 1) { 
+	else if (skill_num < 1) {
 		main_window->Player_Window(L"不可使用", text_rect, flag_window);
 	}
+	//敌人的回合
 	else if (map->Gethuihe() % 2 != flag) {
 		main_window->Player_Window(L"敌人回合", text_rect, flag_window);
+	}
+	else if (skill_flag_num < 1) {
+		main_window->Player_Window(L"使用失败", text_rect, flag_window);
 	}
 	else {
 		//调用技能使用函数
 		//是否更新回合在技能使用中已经调用
-		if (skiller->Use_Skill(skill, flag)) { skill_flag--; }
+		if (skiller->Use_Skill(skill_flag, flag)) { 
+			//回合技能数和技能总次数均-1
+			skill_num--;
+			skill_flag_num--;
+		}
 		else { main_window->Player_Window(L"使用失败", text_rect, flag_window); }
 	}
 	return 0;
@@ -340,11 +399,14 @@ int Player::IsLife()
 	for (int i = -1; i < 2; i++) {
 		for (int j = -1; j < 2; j++) {
 			if (map->GetMapStatexy(before_point.x + i, before_point.y + j).zhan_Point == NONE) {
-				if (MoveIsRight(true, { before_point.x + i,before_point.y + j }) == 1) {
+				if (MoveIsRight(true, { before_point.x + i,before_point.y + j }) == true) {
 					isLife = LIFE;
 				}
 			}
 		}
+	}
+	if (skiller->IsLiveSkill(skill_flag)) {
+		isLife = LIFE;
 	}
 	return isLife;
 }

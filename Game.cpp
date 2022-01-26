@@ -95,6 +95,30 @@ const wchar_t* Game::Getskill_name(int index)
 	return skiller->Getskill_name(index);
 }
 
+const wchar_t* Game::Getskill_flag_sum(int sum)
+{
+	switch (sum)
+	{
+	case 1:
+		return L"1";
+	case 2:
+		return L"2";
+	case 3:
+		return L"3";
+	case 4:
+		return L"4";
+	case 5:
+		return L"5";
+	case 6:
+		return L"6";
+	case 7:
+		return L"7";
+	case 8:
+		return L"8";
+	}
+	return L"0";
+}
+
 int Game::Getskill_sum()
 {
 	return skiller->Getskill_sum();

@@ -23,6 +23,9 @@
     <ClCompile Include="Skill.cpp">
       <Filter>Class\Skill</Filter>
     </ClCompile>
+    <ClCompile Include="Skill_fun.cpp">
+      <Filter>Class\Skill</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Class">
@@ -70,6 +73,9 @@
       <Filter>Class\Main_Window\Mouse_Window</Filter>
     </ClInclude>
     <ClInclude Include="Skill.h">
+      <Filter>Class\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="Skill_flag.h">
       <Filter>Class\Skill</Filter>
     </ClInclude>
   </ItemGroup>
