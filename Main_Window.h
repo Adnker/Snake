@@ -28,6 +28,15 @@ const int FrightWindow = 1;
 const int GameoverWindow = 2;
 //技能选择窗口
 const int SkillWindow = 4;
+//模式选择窗口
+const int ModelWindow = 5;
+
+//普通模式
+const int BaseModel = 1;
+//技能模式
+const int SkillModel = 2;
+//竞技模式
+const int FrightModel = 3;
 
 //加载的字体
 static const char* fontText = "simkai.TTF";
@@ -78,6 +87,8 @@ private:
 	int Draw_GameOverWindow();
 	//绘制技能选择窗口
 	int Draw_SkillWindow();
+	//绘制模式选择界面
+	int Draw_ModelWindow();
 	//绘制玩家行动
 	int DrawMove(vector<Point*>* move_point, vector<Point*>* jidi_point,
 		vector<struct QuYu*>* quyu_point,SDL_Color* color_);
@@ -107,6 +118,8 @@ private:
 	int flag_Player;
 	//用于技能选择界面的页面索引
 	int index = 1;
+	//用于模式选择
+	int model = 1;
 };
 #pragma message ("Main_Window is loaded")
 #endif // !Main_Window_H
