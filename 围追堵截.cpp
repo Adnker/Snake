@@ -10,12 +10,11 @@
 #pragma comment (lib,"SDL2_ttf.lib")
 
 #undef main
-
 int main(){
 
 	//Òþ²Øcmd´°¿Ú
-	//HWND hwnd = GetForegroundWindow();
-	//ShowWindow(hwnd, SW_HIDE);
+	HWND hwnd = GetForegroundWindow();
+	ShowWindow(hwnd, SW_HIDE);
 
 	class Game game = Game();
 	bool isRun = true;
@@ -26,5 +25,7 @@ int main(){
 		game.Updata();
 	}
 	game.Shutdown();
-	int i;std::cin >> i;
+
+	ShowWindow(hwnd, SW_SHOW);
+	system("pause");
 }
