@@ -60,10 +60,6 @@ int Game::Updata()
 
 int Game::Shutdown()
 {
-	if (isRuning == true) {
-		isRuning = false;
-		return 0;
-	}
 	main_window->Shutdown();
 	delete main_window;
 	delete input;

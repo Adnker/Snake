@@ -91,15 +91,14 @@ private:
 	int Skill();
 	//判断玩家是否死亡
 	int IsLife();
-
 	//训练营模式下使用单个技能
 	//技能标识  为-1时为还未确定技能
 	int skill_flag = -1;
-	//玩家技能对应的技能次数
+	//可用技能次数
 	int skill_flag_num;
-	//此回合玩家可移动次数
+	//玩家可移动次数
 	int move_num = 1;
-	//此回合玩家可使用技能次数
+	//玩家可使用技能次数
 	int skill_num = 1;
 	//存放玩家行走路线 地图坐标
 	//x = 0 或 1是为特殊标识 0到jidi_point找这一步的移动 1到quyu找这一步

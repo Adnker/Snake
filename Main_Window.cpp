@@ -74,7 +74,7 @@ int Main_Window::Shutdown()
 	return 0;
 }
 
-int Main_Window::Player_Window(const wchar_t* text_, SDL_Rect rect_, int& flag_window_)
+int Main_Window::Player_Window(const wchar_t* text_, SDL_Rect rect_,int& flag_window_)
 {
 	if (flag_window_ != 0) { return false; }
 	Window_Msg* temp = new Window_Msg();
@@ -117,12 +117,6 @@ int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
 	case SkillWindow://技能选择界面
 		Draw_SkillWindow();
 		break;
-	case ModelWindow:
-		Draw_ModelWindow();
-		break;
-	default:
-		DrawTTF(L"错误", RED, { 0,0,100,50 });
-		break;
 	}
 
 	//绘制缓冲区
@@ -146,20 +140,15 @@ int Main_Window::Draw_FrightWindow()
 	}
 	DrawLine(350, 700, 350, 800);
 
-	switch (model)
-	{
-	case SkillModel:
-		int skill = red_player->Getskill_flag();
-		const wchar_t* skill_name = game->Getskill_name(skill);
-		DrawTTF(skill_name, RED, { 0,700,fontSize * 3,40 });
-		DrawTTF(game->Getskill_flag_sum(red_player->Getskill_flag_num()), RED, { 1,740,40,40 });
+	int skill = red_player->Getskill_flag();
+	const wchar_t* skill_name = game->Getskill_name(skill);
+	DrawTTF(skill_name, RED, { 0,700,fontSize * 3,40 });
+	DrawTTF(game->Getskill_flag_sum(red_player->Getskill_flag_num()), RED, { 1,740,40,40 });
 
-		skill = blue_player->Getskill_flag();
-		skill_name = game->Getskill_name(skill);
-		DrawTTF(skill_name, BLUE, { 700 - fontSize * 3,700,fontSize * 3,40 });
-		DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_flag_num()), BLUE, { 700 - 41,740,40,40 });
-		break;
-	}
+	skill = blue_player->Getskill_flag();
+	skill_name = game->Getskill_name(skill);
+	DrawTTF(skill_name, BLUE, { 700-fontSize*3,700,fontSize * 3,40 });
+	DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_flag_num()), BLUE, { 700-41,740,40,40 });
 
 	//绘制玩家移动
 	{
@@ -176,7 +165,7 @@ int Main_Window::Draw_FrightWindow()
 			FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &RED);
 		}
 		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//设置着色器颜色为红色
-		DrawMove(move_point, jidi_point, quyu_point, &RED);
+		DrawMove(move_point, jidi_point, quyu_point,&RED);
 
 		move_point = blue_player->Getmove_point();//获取蓝方移动数组
 		jidi_point = blue_player->Getjidi_point();//获取蓝方基地数组
@@ -186,7 +175,7 @@ int Main_Window::Draw_FrightWindow()
 			FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &BLUE);
 		}
 		SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);//设置着色器颜色为蓝色
-		DrawMove(move_point, jidi_point, quyu_point, &BLUE);
+		DrawMove(move_point, jidi_point, quyu_point,&BLUE);
 	}
 
 	//绘制玩家预选框
@@ -228,7 +217,7 @@ int Main_Window::Draw_MainWindow()
 	DrawTTF(L"开始游戏", BLACK, { 200,100,100,40 });
 	DrawLine(180, 150, 320, 150);
 	//DrawRect(200, 200, 100, 50, &BLACK);
-	DrawTTF(L"模式选择", BLACK, { 200,200,100,40 });
+	DrawTTF(L"技能介绍", BLACK, { 200,200,100,40 });
 	DrawLine(180, 250, 320, 250);
 	//获取鼠标坐标
 	Point* nowPoint = input->GetNowPoint();
@@ -241,24 +230,9 @@ int Main_Window::Draw_MainWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
+			flagWindow = SkillWindow;
 			game->CreatePlay();//创建玩家
-			switch (model) {
-			case BaseModel:
-				flagWindow = FrightWindow;
-				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
-				break;
-			case SkillModel:
-				flagWindow = SkillWindow;
-				CreatNewWindow("Player1 chiose skill", 100, 100, 300, 300);
-				break;
-			case FrightModel:
-				flagWindow = SkillWindow;
-				CreatNewWindow("Player1 chiose skill", 100, 100, 300, 300);
-				break;
-			default:
-				game->Shutdown();
-				break;
-			}
+			CreatNewWindow("Player1 chiose skill", 100, 100, 300, 300);
 		}
 	}
 	else if (nowPoint->x < 300 && nowPoint->x > 200
@@ -269,7 +243,9 @@ int Main_Window::Draw_MainWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			flagWindow = ModelWindow;
+			flagWindow = FrightWindow;
+			CreatNewWindow("Snake", 100, 100, 700, 800);
+			game->CreatePlay();
 		}
 	}
 
@@ -325,7 +301,7 @@ int Main_Window::Draw_SkillWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			if (red_player->Getskill_flag() == -1) {
+			if (red_player->Getskill_flag() == -1) { 
 				//修改玩家一的技能选择
 				red_player->Changeskill_flag(index);
 				//轮到玩家二选择技能
@@ -333,7 +309,7 @@ int Main_Window::Draw_SkillWindow()
 				index = 1;
 				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
 			}
-			else {
+			else { 
 				blue_player->Changeskill_flag(index);
 				flagWindow = FrightWindow;
 				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
@@ -357,7 +333,7 @@ int Main_Window::Draw_SkillWindow()
 				index = 1;//重置索引
 				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
 			}
-			else {
+			else { 
 				blue_player->Changeskill_flag(index + 1);
 				flagWindow = FrightWindow;
 				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
@@ -393,48 +369,8 @@ int Main_Window::Draw_SkillWindow()
 	return 0;
 }
 
-int Main_Window::Draw_ModelWindow()
-{
-	flagWindow = ModelWindow;
-
-	//文本框架
-	int x = 200;
-	int y = 100;
-	int w = 100;
-	int h = 40;
-
-	//文本1
-	DrawTTF(L"普通训练", BLACK, { x,y * 1,w,h });
-	DrawLine(180, 150, 320, 150);
-	//文本2
-	DrawTTF(L"技能训练", BLACK, { x,y * 2,w,h });
-	DrawLine(180, 250, 320, 250);
-	//文本3
-	DrawTTF(L"暂不开放", BLACK, { x,y * 3,w,h });
-	DrawLine(180, 350, 320, 350);
-
-	//获取鼠标坐标
-	Point* nowPoint = input->GetNowPoint();
-	for (int flag_model = 1; flag_model <= 3; flag_model++) {
-		//判断鼠标是否进入“开始游戏”按钮区
-		if (nowPoint->x < x + w && nowPoint->x > x
-			&& nowPoint->y < y * flag_model + 50 + h && nowPoint->y > y * flag_model)
-		{
-			//移动到键上
-			FillRect(x - 50, y * flag_model + 20, 20, 20, &RED);
-			//按下键
-			if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
-			{
-				flagWindow = MainWindow;
-				model = flag_model;
-			}
-		}
-	}
-	return 0;
-}
-
 int Main_Window::DrawMove(vector<Point*>* move_point, vector<Point*>* jidi_point,
-	vector<QuYu*>* quyu_point, SDL_Color* color_)
+	vector<QuYu*>* quyu_point,SDL_Color* color_)
 {
 	int jidi_h = 50;
 	int quyu_h = 30;
