@@ -43,6 +43,7 @@ public:
 	//flag_point_ 点位设置为什么状态
 	//flag_ 是否更新回合
 	int Updata(Point* point_, int flag_player_, int flag_point, bool flag_);
+	//更新回合
 	int Updatahuihe();
 
 	//显示地图点位情况

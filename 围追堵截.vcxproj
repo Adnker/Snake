@@ -161,6 +161,7 @@
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="Skill_fun.cpp" />
     <ClCompile Include="围追堵截.cpp" />
+    <ClCompile Include="myMath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -168,12 +169,14 @@
     <ClInclude Include="Main_Window.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Mouse_Window.h" />
+    <ClInclude Include="myMath.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="Skill_flag.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\函数文档.docx" />
+    <None Include="..\技能.docx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

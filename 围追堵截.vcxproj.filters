@@ -26,6 +26,9 @@
     <ClCompile Include="Skill_fun.cpp">
       <Filter>Class\Skill</Filter>
     </ClCompile>
+    <ClCompile Include="myMath.cpp">
+      <Filter>My</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Class">
@@ -51,6 +54,9 @@
     </Filter>
     <Filter Include="Class\Skill">
       <UniqueIdentifier>{b5c125c4-2137-4cff-a5bb-2989c54a553f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="My">
+      <UniqueIdentifier>{164e3b8b-1689-4b84-bf58-d36813fa8dcd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -78,8 +84,12 @@
     <ClInclude Include="Skill_flag.h">
       <Filter>Class\Skill</Filter>
     </ClInclude>
+    <ClInclude Include="myMath.h">
+      <Filter>My</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\函数文档.docx" />
+    <None Include="..\技能.docx" />
   </ItemGroup>
 </Project>

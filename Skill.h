@@ -29,16 +29,17 @@ private:
 	//筛选 将player设置为对应的玩家
 	//返回值为对应使用预选点位是否被占用
 	//flag_  = false 是否反转玩家
-	int PlayerChoise(int flag_player_,bool flag_ = false);
+	int PlayerChoise(int flag_player_, bool flag_ = false);
 	//存放技能名字
-	const wchar_t* skill_name[5] = { L"疾跑",L"路障",L"传送",L"控制",L"交换" };
+	const wchar_t* skill_name[7] = { L"疾跑",L"路障",L"传送",L"控制",L"交换",L"穿身",L"追击" };
 	//存放技能使用次数
-	int skill_flag_sum[5] = { 8,3,1 ,2,1 };
+	int skill_flag_sum[7] = { 8,3,1 ,2,1 ,2,1 };
 	//现有技能总数
-	int skill_sum = 5;
+	int skill_sum = 7;
 	//不具有生存性技能
-	int skill_flag_live[1] = {
-		skill_flag_jipao
+	int skill_flag_live[2] = {
+		skill_flag_jipao,
+		skill_flag_zhuiji
 	};
 
 	//技能函数
@@ -46,7 +47,10 @@ private:
 	int skill_luzhang(int flag_player_);
 	int skill_chuangsong(int flag_player_);
 	int skill_kongzhi(int flag_player);
-	int skill_jiaohuan(int flag_player);
+	int skill_jiaohuan(int flag_player_);
+	int skill_chuanshen(int flag_player_);
+	int skill_zhuiji(int flag_player_);
+
 	class Map* map;
 	class Player* red_player;
 	class Player* blue_player;
