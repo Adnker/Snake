@@ -146,15 +146,19 @@ int Main_Window::Draw_FrightWindow()
 	}
 	DrawLine(350, 700, 350, 800);
 
-	int skill = red_player->Getskill_flag();
-	const wchar_t* skill_name = game->Getskill_name(skill);
-	DrawTTF(skill_name, RED, { 0,700,fontSize * 3,40 });
-	DrawTTF(game->Getskill_flag_sum(red_player->Getskill_flag_num()), RED, { 1,740,40,40 });
+	switch (model) {
+	case SkillModel:
+		int skill = red_player->Getskill_flag();
+		const wchar_t* skill_name = game->Getskill_name(skill);
+		DrawTTF(skill_name, RED, { 0,700,fontSize * 3,40 });
+		DrawTTF(game->Getskill_flag_sum(red_player->Getskill_flag_num()), RED, { 1,740,40,40 });
 
-	skill = blue_player->Getskill_flag();
-	skill_name = game->Getskill_name(skill);
-	DrawTTF(skill_name, BLUE, { 700 - fontSize * 3,700,fontSize * 3,40 });
-	DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_flag_num()), BLUE, { 700 - 41,740,40,40 });
+		skill = blue_player->Getskill_flag();
+		skill_name = game->Getskill_name(skill);
+		DrawTTF(skill_name, BLUE, { 700 - fontSize * 3,700,fontSize * 3,40 });
+		DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_flag_num()), BLUE, { 700 - 41,740,40,40 });
+		break;
+	}
 
 	//ªÊ÷∆ÕÊº““∆∂Ø
 	{
