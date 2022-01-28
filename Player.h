@@ -51,47 +51,69 @@ public:
 	//获取预选位置的坐标 地图坐标
 	struct Point Getyuxuan_point();
 	//获取基地位置的坐标 地图坐标
-	vector<Point*>* Getjidi_point();
+	const vector<Point*>* Getjidi_point();
 	//获取玩家行走路线 地图坐标
-	vector<Point*>* Getmove_point();
+	const vector<Point*>* Getmove_point();
 	//获取区域位置坐标 地图坐标
-	vector<QuYu*>* Getquyu_point();
+	const vector<QuYu*>* Getquyu_point();
 	//设置技能
 	void Changeskill_flag(int skill_flag_);
 	//获取技能标识
 	int Getskill_flag();
 	//获取技能次数
 	int Getskill_flag_num();
+	//获取手牌数组
+	const vector<int>* GetHand();
+	//获取手牌可用次数数组
+	int GetHandNum(int index_);
 private:
 	//转化为地图中心矩形坐标
 	//创建新的点位 分配内存
-	//point_ = 数组索引
+	//point_ = 地图索引+1
 	Point* ToMapPoint(Point* point_);
 	//转化为基地格式的地图坐标
 	//创建新的点位 分配内存
+	//point_ = 地图索引+1
 	Point* TojidiPoint(Point* point_);
 	//转化为区域格式的地图坐标
 	//创建新的点位 分配内存
+	//point_ = 地图索引+1
 	Point* ToquyuPoint(Point* point_);
 	//地图点位转化为索引+1
+	//point_ = 任意地图点位
 	Point MapToIndex(Point* point_);
 	//地图点位转化为地图中心点位
+	//point_ = 任意地图点位
 	Point MapToMap(Point* point_);
 	//判断玩家是否还可以行动
 	//只需调用 自动完成更新操作
 	int CanMove();
 	//判断玩家行走点位是否正确
 	//flag_ = 是否传入点位
-	//point_ = 现在点位
+	//point_ = 需要判断的点位
 	int MoveIsRight(bool flag_ = false, Point point_ = { 0,0 });
 	//玩家行动
 	//flag  = false是否是强制调用
 	int Movetion(int flag = false);
 	//玩家使用技能
-	int Skill();
+	int Skill(int flag_ = 0);
 	//判断玩家是否死亡
 	int IsLife();
+	//创建卡牌组
+	int CreateSkillSum();
+	//更新手牌
+	int ChangeHand();
 
+
+	//玩家剩余技能卡牌
+	vector<int>* all_skill_sum;
+	//玩家手头的技能卡牌
+	vector<int>* hand_skill_flag;
+	//玩家手牌可用技能次数
+	vector<int>* hand_skill_num;
+	//玩家是否补充过技能
+	bool flag_add = true;
+	
 	//训练营模式下使用单个技能
 	//技能标识  为-1时为还未确定技能
 	int skill_flag = -1;

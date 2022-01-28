@@ -19,6 +19,11 @@ int Main_Window::GameIsEnd(int flag_Player_)
 	return 0;
 }
 
+int Main_Window::GetGameModel()
+{
+	return model;
+}
+
 int Main_Window::CreatNewWindow(const char* title, int x, int y, int w, int h)
 {
 	if (window) {
@@ -51,6 +56,7 @@ int Main_Window::CreatWindow(Game* game_)
 	game = game_;
 	input = game->GetInput();
 	mouse_window = new Mouse_Window(input, this);
+	rander = new Rander();
 
 	//初始化TTF文字库
 	if (TTF_Init() == -1) {
@@ -68,6 +74,7 @@ int Main_Window::CreatWindow(Game* game_)
 
 int Main_Window::Shutdown()
 {
+	delete rander;
 	TTF_CloseFont(font);
 	TTF_Quit();
 	SDL_DestroyWindow(window);
@@ -84,6 +91,11 @@ int Main_Window::Player_Window(const wchar_t* text_, SDL_Rect rect_, int& flag_w
 	window_msg.push_back(temp);
 	flag_window_ = 1;
 	return true;
+}
+
+int Main_Window::GetFlag()
+{
+	return flagWindow;
 }
 
 int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
@@ -117,7 +129,7 @@ int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
 	case SkillWindow://技能选择界面
 		Draw_SkillWindow();
 		break;
-	case ModelWindow:
+	case ModelWindow://模式选择界面
 		Draw_ModelWindow();
 		break;
 	default:
@@ -146,8 +158,8 @@ int Main_Window::Draw_FrightWindow()
 	}
 	DrawLine(350, 700, 350, 800);
 
-	switch (model) {
-	case SkillModel:
+	if (model == SkillModel) {
+		//绘制技能显示窗口
 		int skill = red_player->Getskill_flag();
 		const wchar_t* skill_name = game->Getskill_name(skill);
 		DrawTTF(skill_name, RED, { 0,700,fontSize * 3,40 });
@@ -157,15 +169,32 @@ int Main_Window::Draw_FrightWindow()
 		skill_name = game->Getskill_name(skill);
 		DrawTTF(skill_name, BLUE, { 700 - fontSize * 3,700,fontSize * 3,40 });
 		DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_flag_num()), BLUE, { 700 - 41,740,40,40 });
-		break;
+	}
+	else if (model == FrightModel) {
+		const vector<int>* hand = red_player->GetHand();
+		for (int i = 0; i < 3; i++) {
+			const wchar_t* skill_name = game->Getskill_name(hand->at(i));
+			int w = fontSize * 3;
+			int x = i * w;
+			DrawTTF(skill_name, RED, { x,700,w,40 });
+			DrawTTF(game->Getskill_flag_sum(red_player->GetHandNum(i)), RED, { x,740,40,40 });
+		}
+		const vector<int>* hand1 = blue_player->GetHand();
+		for (int i = 0; i < 3; i++) {
+			const wchar_t* skill_name = game->Getskill_name(hand1->at(i));
+			int w = fontSize * 3;
+			int x = (i+1) * w;
+			DrawTTF(skill_name, BLUE, { 700 - x,700,w,40 });
+			DrawTTF(game->Getskill_flag_sum(blue_player->GetHandNum(i)), BLUE, { 700 - x,740,40,40 });
+		}
 	}
 
 	//绘制玩家移动
 	{
 		int jidi_h = 50;//基地矩形边长
-		vector<Point*>* jidi_point;
-		vector<Point*>* move_point;
-		vector<QuYu*>* quyu_point;
+		const vector<Point*>* jidi_point;
+		const vector<Point*>* move_point;
+		const vector<QuYu*>* quyu_point;
 		//绘制玩家路线
 		move_point = red_player->Getmove_point();//获取红方移动数组
 		jidi_point = red_player->Getjidi_point();//获取红方基地数组
@@ -251,8 +280,9 @@ int Main_Window::Draw_MainWindow()
 				CreatNewWindow("Player1 chiose skill", 100, 100, 300, 300);
 				break;
 			case FrightModel:
-				flagWindow = SkillWindow;
-				CreatNewWindow("Player1 chiose skill", 100, 100, 300, 300);
+				flagWindow = FrightWindow;
+
+				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
 				break;
 			default:
 				game->Shutdown();
@@ -409,7 +439,7 @@ int Main_Window::Draw_ModelWindow()
 	DrawTTF(L"技能训练", BLACK, { x,y * 2,w,h });
 	DrawLine(180, 250, 320, 250);
 	//文本3
-	DrawTTF(L"暂不开放", BLACK, { x,y * 3,w,h });
+	DrawTTF(L"竞技模式", BLACK, { x,y * 3,w,h });
 	DrawLine(180, 350, 320, 350);
 
 	//获取鼠标坐标
@@ -432,8 +462,8 @@ int Main_Window::Draw_ModelWindow()
 	return 0;
 }
 
-int Main_Window::DrawMove(vector<Point*>* move_point, vector<Point*>* jidi_point,
-	vector<QuYu*>* quyu_point, SDL_Color* color_)
+int Main_Window::DrawMove(const vector<Point*>* move_point, const vector<Point*>* jidi_point,
+	const vector<QuYu*>* quyu_point, SDL_Color* color_)
 {
 	int jidi_h = 50;
 	int quyu_h = 30;

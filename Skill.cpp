@@ -16,6 +16,9 @@ int Skiller::CreateSkiller(Map* map_)
 
 const wchar_t* Skiller::Getskill_name(int index)
 {
+	if (index == -1) {
+		return L"空";
+	}
 	//大于现有技能总数超出索引
 	if (index > skill_sum) { return 0; }
 	index--;

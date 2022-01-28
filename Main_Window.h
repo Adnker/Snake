@@ -8,6 +8,7 @@
 #include <vector>
 #include "Mouse_Window.h"
 #include "Skill.h"
+#include "myMath.h"
 
 
 //错误值
@@ -52,6 +53,7 @@ struct Window_Msg {
 #pragma message ("Loading Main_Window...")
 class Main_Window {
 public:
+	class Rander* rander;
 	//初始化
 	int CreatWindow(class Game* game_);
 	//更新
@@ -63,9 +65,11 @@ public:
 	//flag_window = 0
 	int Player_Window(const wchar_t* text_,SDL_Rect rect_,int& flag_window_);
 	//获取窗口标志
-	int GetFlag() { return flagWindow; };
+	int GetFlag();
 	//游戏结束
 	int GameIsEnd(int flag_Player);
+	//获取游戏模式
+	int GetGameModel();
 
 	//绘制线
 	void DrawLine(int x1, int y1, int x2, int y2);
@@ -90,8 +94,8 @@ private:
 	//绘制模式选择界面
 	int Draw_ModelWindow();
 	//绘制玩家行动
-	int DrawMove(vector<Point*>* move_point, vector<Point*>* jidi_point,
-		vector<struct QuYu*>* quyu_point,SDL_Color* color_);
+	int DrawMove(const vector<Point*>* move_point, const vector<Point*>* jidi_point,
+		const vector<struct QuYu*>* quyu_point,SDL_Color* color_);
 	//窗口提示
 	std::vector<Window_Msg*> window_msg;
 	//核心类
@@ -119,7 +123,7 @@ private:
 	//用于技能选择界面的页面索引
 	int index = 1;
 	//用于模式选择
-	int model = 1;
+	int model = BaseModel;
 };
 #pragma message ("Main_Window is loaded")
 #endif // !Main_Window_H

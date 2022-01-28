@@ -108,20 +108,16 @@ int Skiller::skill_jiaohuan(int flag_player_)
 {
 	PlayerChoise(flag_player_);
 
-	//将对方的基地数组加入移动数组的最后一个
-	Point* temp_point = new Point(*player->player->move_point.back());
-	temp_point->x -= 25;
-	temp_point->y -= 25;
+	//将对方的基地数组加入上一步
+	Point* temp_point = player->ToMapPoint(&player->player->before_point);
 	player->jidi_point.emplace_back(temp_point);
-	Point* temp_point1 = new Point(*player->move_point.back());
-	temp_point1->x -= 25;
-	temp_point1->y -= 25;
+	Point* temp_point1 = player->ToMapPoint(&player->before_point);
 	player->player->jidi_point.emplace_back(temp_point1);
 	//分别将两个玩家的移动数组加入特殊标识
 	Point* temp_point2 = new Point(JIDI, player->jidi_point.size() - 1);
 	player->move_point.emplace_back(temp_point2);
 	Point* temp_point3 = new Point(JIDI, player->player->jidi_point.size() - 1);
-	player->player->move_point.emplace_back(temp_point2);
+	player->player->move_point.emplace_back(temp_point3);
 
 	//固定操作
 	player->move_num--;//玩家不可在移动

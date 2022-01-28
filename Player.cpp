@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Map.h"
+#include "myMath.h"
 #pragma message("Loading player.cpp")
 
 const int TOO_LONG = 2;
@@ -31,11 +32,25 @@ int Player::CreatePlayer(Main_Window* main_window_, Input* input_, Map* map_, Pl
 	Point* temp_point = new Point(0, 0);
 	jidi_point.emplace_back(temp_point);
 	skiller = skiller_;
+	if (main_window->GetGameModel() == FrightModel) {
+		CreateSkillSum();
+	}
+
 	return 0;
 }
 
 int Player::Updata()
 {
+	if (map->Gethuihe() % 10 != 0) {
+		flag_add = false;
+	}
+	for (int i = 0; i < 3; i++) {
+		if (hand_skill_flag->at(i) == -1 && map->Gethuihe() % 10 == 0 && flag_add == false) {
+			ChangeHand();
+			flag_add = true;
+			break;
+		}
+	}
 	if (flag_window > 0) {
 		flag_window++;
 	}
@@ -79,7 +94,18 @@ int Player::Updata()
 		//移动
 		else if (input->GetKeyState(SDL_SCANCODE_G) == Key_Down) { Movetion(); }
 		//技能
-		else if (input->GetKeyState(SDL_SCANCODE_H) == Key_Down) { Skill(); }
+		else if (input->GetKeyState(SDL_SCANCODE_H) == Key_Down) {
+			if (main_window->GetGameModel() == FrightModel) {
+				Skill(1);
+			}
+			else {
+				Skill();
+			}
+		}
+		//技能
+		else if (input->GetKeyState(SDL_SCANCODE_J) == Key_Down) { Skill(2); }
+		//技能
+		else if (input->GetKeyState(SDL_SCANCODE_K) == Key_Down) { Skill(3); }
 
 	}
 	//蓝色玩家
@@ -113,9 +139,20 @@ int Player::Updata()
 		//选择
 		//选择结束时记得更新地图
 		//移动
-		else if (input->GetKeyState(SDL_SCANCODE_KP_1) == Key_Down) { Movetion(); }
+		else if (input->GetKeyState(SDL_SCANCODE_KP_0) == Key_Down) { Movetion(); }
 		//技能
-		else if (input->GetKeyState(SDL_SCANCODE_KP_2) == Key_Down) { Skill(); }
+		else if (input->GetKeyState(SDL_SCANCODE_KP_1) == Key_Down) { 
+			if (main_window->GetGameModel() == FrightModel) {
+				Skill(1);
+			}
+			else {
+				Skill();
+			}
+		}
+		//技能
+		else if (input->GetKeyState(SDL_SCANCODE_KP_2) == Key_Down) { Skill(2); }
+		//技能
+		else if (input->GetKeyState(SDL_SCANCODE_KP_3) == Key_Down) { Skill(3); }
 	}
 	//检验预选位置是否超出范围
 	if (yuxuan_point.x < 1) { yuxuan_point.x = 1; }
@@ -145,17 +182,17 @@ Point Player::Getyuxuan_point()
 	}
 }
 
-vector<Point*>* Player::Getjidi_point()
+const vector<Point*>* Player::Getjidi_point()
 {
 	return &jidi_point;
 }
 
-vector<Point*>* Player::Getmove_point()
+const vector<Point*>* Player::Getmove_point()
 {
 	return &move_point;
 }
 
-vector<QuYu*>* Player::Getquyu_point()
+const vector<QuYu*>* Player::Getquyu_point()
 {
 	return &quyu_point;
 }
@@ -177,6 +214,62 @@ int Player::Getskill_flag_num()
 	return skill_flag_num;
 }
 
+int Player::CreateSkillSum()
+{
+	int max = skiller->Getskill_sum();
+	all_skill_sum = new vector<int>;
+	//将技能标识添加进卡牌堆
+	for (int i = 1; i < max + 1; i++) {
+		all_skill_sum->emplace_back(i);
+	}
+	hand_skill_flag = new vector<int>;
+	hand_skill_num = new vector<int>;
+
+	for (int i = 0; i < 3; i++) {
+		int rands = main_window->rander->GetARand(max - i);
+		rands--;
+		//将对应的技能加入手牌
+		hand_skill_flag->emplace_back(all_skill_sum->at(rands));
+		hand_skill_num->emplace_back(skiller->Getskill_flag_sum(all_skill_sum->at(rands)));
+		//在总的牌堆中删除加入手牌的技能牌
+		all_skill_sum->erase(all_skill_sum->begin() + rands, all_skill_sum->begin() + rands + 1);
+	}
+
+	return 0;
+}
+
+int Player::ChangeHand()
+{
+	if (map->Gethuihe() % 10 == 0) {
+		//判断牌堆中是否还有卡牌
+		if (all_skill_sum->size() < 1) { return false; }
+		int rands = main_window->rander->GetARand(all_skill_sum->size() - 1);
+		rands--;
+		int index = 0;
+		for (int i = 0; i < 3; i++) {
+			if (hand_skill_num->at(i) < 1) { index = i; break; }
+		}
+		//将对应的技能加入手牌
+		int temp_skill = all_skill_sum->at(rands);
+		hand_skill_flag->at(index) = temp_skill;
+		hand_skill_num->at(index) = skiller->Getskill_flag_sum(temp_skill);
+		//在总的牌堆中删除加入手牌的技能牌
+		all_skill_sum->erase(all_skill_sum->begin() + rands, all_skill_sum->begin() + rands + 1);
+		return true;
+	}
+	return false;
+}
+
+const vector<int>* Player::GetHand()
+{
+	return hand_skill_flag;
+}
+
+int Player::GetHandNum(int index_)
+{
+	return hand_skill_num->at(index_);
+}
+
 Point* Player::ToMapPoint(Point* point_)
 {
 	Point* temp = new Point(point_->x * 100 - 50, point_->y * 100 - 50);
@@ -185,13 +278,13 @@ Point* Player::ToMapPoint(Point* point_)
 
 Point* Player::TojidiPoint(Point* point_)
 {
-	Point* temp = new Point(yuxuan_point.x * 100 - 75, yuxuan_point.y * 100 - 75);
+	Point* temp = new Point(point_->x * 100 - 75, point_->y * 100 - 75);
 	return temp;
 }
 
 Point* Player::ToquyuPoint(Point* point_)
 {
-	Point* temp = new Point(yuxuan_point.x * 100 - 60, yuxuan_point.y * 100 - 60);
+	Point* temp = new Point(point_->x * 100 - 60, point_->y * 100 - 60);
 	return temp;
 }
 
@@ -276,6 +369,7 @@ int Player::MoveIsRight(bool flag_, Point point_)
 			))
 		);
 	if (distance > 199) { return TOO_LONG; }
+	//是否穿线
 	else if (map->IsThoughLine(
 		before_point.x - 1, temp->y - 1, temp->x - 1, before_point.y - 1)
 		) {
@@ -356,7 +450,7 @@ int Player::Movetion(int flag_)
 	}
 }
 
-int Player::Skill()
+int Player::Skill(int flag_)
 {
 	//提示窗口大小
 	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
@@ -372,16 +466,33 @@ int Player::Skill()
 	else if (map->Gethuihe() % 2 != flag) {
 		main_window->Player_Window(L"敌人回合", text_rect, flag_window);
 	}
-	else if (skill_flag_num < 1) {
-		main_window->Player_Window(L"使用失败", text_rect, flag_window);
-	}
 	else {
+		if (main_window->GetGameModel() != FrightModel && skill_flag_num < 1) {
+			main_window->Player_Window(L"使用失败", text_rect, flag_window);
+			return false;
+		}
+		else if (main_window->GetGameModel() == FrightModel && hand_skill_num->at(flag_ - 1) < 1) {
+			main_window->Player_Window(L"使用失败", text_rect, flag_window);
+			return false;
+		}
 		//调用技能使用函数
 		//是否更新回合在技能使用中已经调用
-		if (skiller->Use_Skill(skill_flag, flag)) { 
+		int temp_skill_flag = skill_flag;
+		if (flag_ > 0) {
+			temp_skill_flag = hand_skill_flag->at(flag_ - 1);
+		}
+		if (skiller->Use_Skill(temp_skill_flag, flag)) { 
 			//回合技能数和技能总次数均-1
 			skill_num--;
-			skill_flag_num--;
+			if (main_window->GetGameModel() == FrightModel) {
+				hand_skill_num->at(flag_ - 1)--;
+				if (hand_skill_num->at(flag_ - 1) < 1) {
+					hand_skill_flag->at(flag_ - 1) = -1;
+				}
+			}
+			else {
+				skill_flag_num--;
+			}
 		}
 		else { main_window->Player_Window(L"使用失败", text_rect, flag_window); }
 	}
@@ -405,8 +516,17 @@ int Player::IsLife()
 			}
 		}
 	}
-	if (skiller->IsLiveSkill(skill_flag) && skill_flag_num > 0) {
-		isLife = LIFE;
+	if (main_window->GetGameModel() == FrightModel) {
+		for (int i = 0; i < 3; i++) {
+			if (skiller->IsLiveSkill(hand_skill_flag->at(i)) && hand_skill_num->at(i) > 0) {
+				isLife = LIFE;
+			}
+		}
+	}
+	else {
+		if (skiller->IsLiveSkill(skill_flag) && skill_flag_num > 0) {
+			isLife = LIFE;
+		}
 	}
 	return isLife;
 }
