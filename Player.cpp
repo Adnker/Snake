@@ -41,16 +41,23 @@ int Player::CreatePlayer(Main_Window* main_window_, Input* input_, Map* map_, Pl
 
 int Player::Updata()
 {
-	if (map->Gethuihe() % 10 != 0) {
-		flag_add = false;
-	}
-	for (int i = 0; i < 3; i++) {
-		if (hand_skill_flag->at(i) == -1 && map->Gethuihe() % 10 == 0 && flag_add == false) {
-			ChangeHand();
-			flag_add = true;
-			break;
+	//如果是竞技模式，判断是否需要更新玩家的手牌
+	if (main_window->GetGameModel() == FrightModel) {
+		//每5个来回判断一次
+		if (map->Gethuihe() % 10 != 0) {
+			flag_add = false;
+		}
+		//当手牌数量为0时更新手牌
+		for (int i = 0; i < 3; i++) {
+			if (hand_skill_num->at(i) < 1 && map->Gethuihe() % 10 == 0 && flag_add == false) {
+				ChangeHand();
+				flag_add = true;
+				break;
+			}
 		}
 	}
+
+	//更新提示窗体的时间
 	if (flag_window > 0) {
 		flag_window++;
 	}
@@ -59,6 +66,7 @@ int Player::Updata()
 	}
 
 	//更新玩家操作
+	//判断玩家是否死亡
 	if (map->Gethuihe() > 2 && map->Gethuihe() % 2 == flag) {
 		if (IsLife() == DEAD) {
 			main_window->GameIsEnd(flag);
@@ -141,7 +149,7 @@ int Player::Updata()
 		//移动
 		else if (input->GetKeyState(SDL_SCANCODE_KP_0) == Key_Down) { Movetion(); }
 		//技能
-		else if (input->GetKeyState(SDL_SCANCODE_KP_1) == Key_Down) { 
+		else if (input->GetKeyState(SDL_SCANCODE_KP_1) == Key_Down) {
 			if (main_window->GetGameModel() == FrightModel) {
 				Skill(1);
 			}
@@ -243,7 +251,14 @@ int Player::ChangeHand()
 	if (map->Gethuihe() % 10 == 0) {
 		//判断牌堆中是否还有卡牌
 		if (all_skill_sum->size() < 1) { return false; }
-		int rands = main_window->rander->GetARand(all_skill_sum->size() - 1);
+		int max = all_skill_sum->size() - 1;
+		int rands = 0;
+		if (max == 0) {
+			rands = 1;
+		}
+		else {
+			rands = main_window->rander->GetARand(max);
+		}
 		rands--;
 		int index = 0;
 		for (int i = 0; i < 3; i++) {
@@ -481,7 +496,7 @@ int Player::Skill(int flag_)
 		if (flag_ > 0) {
 			temp_skill_flag = hand_skill_flag->at(flag_ - 1);
 		}
-		if (skiller->Use_Skill(temp_skill_flag, flag)) { 
+		if (skiller->Use_Skill(temp_skill_flag, flag)) {
 			//回合技能数和技能总次数均-1
 			skill_num--;
 			if (main_window->GetGameModel() == FrightModel) {
@@ -507,6 +522,7 @@ int Player::Skill(int flag_)
 int Player::IsLife()
 {
 	bool isLife = DEAD;
+	//判断9宫格内是否有可以行走的点位
 	for (int i = -1; i < 2; i++) {
 		for (int j = -1; j < 2; j++) {
 			if (map->GetMapStatexy(before_point.x + i, before_point.y + j).zhan_Point == NONE) {
@@ -516,6 +532,10 @@ int Player::IsLife()
 			}
 		}
 	}
+	if (skill_num < 1 && map->Gethuihe() % 2 == flag) {
+		return isLife;
+	}
+	//判断玩家的技能是否可以使用
 	if (main_window->GetGameModel() == FrightModel) {
 		for (int i = 0; i < 3; i++) {
 			if (skiller->IsLiveSkill(hand_skill_flag->at(i)) && hand_skill_num->at(i) > 0) {

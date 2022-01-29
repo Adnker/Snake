@@ -67,7 +67,7 @@ public:
 	//获取手牌可用次数数组
 	int GetHandNum(int index_);
 private:
-	//转化为地图中心矩形坐标
+	//转化为地图中心坐标
 	//创建新的点位 分配内存
 	//point_ = 地图索引+1
 	Point* ToMapPoint(Point* point_);
@@ -85,6 +85,7 @@ private:
 	//地图点位转化为地图中心点位
 	//point_ = 任意地图点位
 	Point MapToMap(Point* point_);
+
 	//判断玩家是否还可以行动
 	//只需调用 自动完成更新操作
 	int CanMove();

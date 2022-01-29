@@ -106,18 +106,26 @@ int Skiller::skill_kongzhi(int flag_player_)
 
 int Skiller::skill_jiaohuan(int flag_player_)
 {
+	//不需要判断点位是否被占用
 	PlayerChoise(flag_player_);
 
 	//将对方的基地数组加入上一步
 	Point* temp_point = player->ToMapPoint(&player->player->before_point);
 	player->jidi_point.emplace_back(temp_point);
+
 	Point* temp_point1 = player->ToMapPoint(&player->before_point);
 	player->player->jidi_point.emplace_back(temp_point1);
+
 	//分别将两个玩家的移动数组加入特殊标识
 	Point* temp_point2 = new Point(JIDI, player->jidi_point.size() - 1);
 	player->move_point.emplace_back(temp_point2);
+
 	Point* temp_point3 = new Point(JIDI, player->player->jidi_point.size() - 1);
 	player->player->move_point.emplace_back(temp_point3);
+
+	//保存点位
+	player->before_point = player->MapToIndex(temp_point);
+	player->player->before_point = player->player->MapToIndex(temp_point1);
 
 	//固定操作
 	player->move_num--;//玩家不可在移动
@@ -136,14 +144,17 @@ int Skiller::skill_chuanshen(int flag_player_)
 	//yuxuan_point and before
 	if (distance((double)temp_before->x, (double)temp_before->y,
 		(double)temp_yuxuan->x, (double)temp_yuxuan->y) > 199) {
+		delete temp_before;
+		delete temp_yuxuan;
 		return false;
 	}
 	delete temp_before;
 
-	//创建新的点位
-	Point* temp_point = player->ToMapPoint(&player->yuxuan_point);
 	//将点位加入到move_point中
-	player->move_point.emplace_back(temp_point);
+	player->move_point.emplace_back(temp_yuxuan);
+
+	//将上一个点位保存到before_point中
+	player->before_point = player->yuxuan_point;
 
 	//固定操作
 	player->move_num--;//玩家不可在移动
@@ -156,30 +167,44 @@ int Skiller::skill_zhuiji(int flag_player_)
 {
 	if (!PlayerChoise(flag_player_)) { return false; }
 
-	//先获取自己的预选位置并转化为中心点位
-	//获取敌人的上一步
-	//判断距离是否正确
-	Point* temp_before = player->ToMapPoint(&player->player->before_point);
-	Point* temp_yuxuan = player->ToMapPoint(&player->yuxuan_point);
-	//yuxuan and player->before
+	//创建点位
+	Point* temp_before1 = player->ToMapPoint(&player->before_point);//将使用者上一个点位转化为地图点位
+	Point* temp_before = player->ToMapPoint(&player->player->before_point);//将使用者敌人的上一个点位转化为地图点位
+	Point* temp_yuxuan = player->ToMapPoint(&player->yuxuan_point);//将使用者预选点位转化为地图点位
+
+	//判断使用者上一个点位和使用者预选点位的距离是否在范围中
+	if (distance((double)temp_before1->x, (double)temp_before1->y,
+		(double)temp_yuxuan->x, (double)temp_yuxuan->y) > 199) {
+		//回收内存
+		delete temp_yuxuan;
+		delete temp_before;
+		delete temp_before1;
+		return false;
+	}
+
+	//判断使用者敌人上一个点位和使用者预选点位的距离是否在范围中
 	if(distance((double)temp_before->x, (double)temp_before->y,
 		(double)temp_yuxuan->x, (double)temp_yuxuan->y) > 199) {
+		delete temp_yuxuan;
+		delete temp_before;
+		delete temp_before1;
 		return false;
 	}
 	delete temp_before;
 
-	//创建新的点位加入基地数组
-	Point* temp_point = new Point(JIDI, player->jidi_point.size());
-	player->move_point.emplace_back(temp_point);
+	Point* temp_point = new Point(JIDI, player->jidi_point.size());//创建新的基地特殊标识点位
+	player->move_point.emplace_back(temp_point);//将特殊点位加入到移动数组中
 
 	//将对应的点位转化为基地格式并加入基地数组
-	Point* temp_point1 = player->TojidiPoint(&player->yuxuan_point);
-	player->jidi_point.emplace_back(temp_point1);
-	player->before_point = player->MapToIndex(temp_point1);
+	Point* temp_point1 = player->TojidiPoint(&player->yuxuan_point);//将使用者预选点位转化为地图点位 创建新的点位
+	player->jidi_point.emplace_back(temp_point1);//将点位加入到使用者基地数组中
+
+	//修改使用者上一步点位
+	player->before_point = player->MapToIndex(temp_point1);//上一步为基地点位的相同点位
 
 	//固定操作
 	//player->move_num--;//玩家要再移动一次移动
-	map->Updata(&player->yuxuan_point, flag_player_, ZHAN,false);
+	map->Updata(&player->yuxuan_point, flag_player_,QUYU_ZHAN,false);
 	player->player->UpdataSum();//更新敌人移动次数和技能次数
 	return true;
 }

@@ -16,22 +16,27 @@ public:
 
 	//技能筛选器 使用技能
 	int Use_Skill(int skill_flag_, int flag_player);
+
 	//获取技能名字
 	//index = 第几个技能
 	const wchar_t* Getskill_name(int index);
+
 	//获取对应技能总次数
 	//index = 第几个技能
 	int Getskill_flag_sum(int index_);
+
 	//获取技能总数
 	int Getskill_sum();
+	
 	//获取玩家指针
 	class Player* GetRed_Player();
 	class Player* GetBlue_Player();
+
 	//判断技能是否是生存性技能
 	//skill_flag_ = 技能标识
 	int IsLiveSkill(int skill_flag_);
 private:
-	//筛选 将player设置为对应的玩家
+	//筛选 将player设置玩家
 	//flag_  = false 是否反转玩家(传入红方则获取蓝方)
 	//返回值 = 所选玩家对应的预选点位是否被占用
 	int PlayerChoise(int flag_player_, bool flag_ = false);
