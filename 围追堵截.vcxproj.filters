@@ -20,14 +20,11 @@
     <ClCompile Include="Mouse_Window.cpp">
       <Filter>Class\Main_Window\Mouse_Window</Filter>
     </ClCompile>
-    <ClCompile Include="Skill.cpp">
-      <Filter>Class\Skill</Filter>
-    </ClCompile>
-    <ClCompile Include="Skill_fun.cpp">
-      <Filter>Class\Skill</Filter>
-    </ClCompile>
     <ClCompile Include="myMath.cpp">
       <Filter>My</Filter>
+    </ClCompile>
+    <ClCompile Include="Skiller.cpp">
+      <Filter>Class\Skiller</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -52,11 +49,11 @@
     <Filter Include="Class\Main_Window\Mouse_Window">
       <UniqueIdentifier>{c4b32575-c4ee-4d37-8bde-1809400f5c3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Class\Skill">
-      <UniqueIdentifier>{b5c125c4-2137-4cff-a5bb-2989c54a553f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="My">
       <UniqueIdentifier>{164e3b8b-1689-4b84-bf58-d36813fa8dcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Class\Skiller">
+      <UniqueIdentifier>{3056962c-f80b-4285-a92f-f62a28e82fb6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -78,14 +75,11 @@
     <ClInclude Include="Mouse_Window.h">
       <Filter>Class\Main_Window\Mouse_Window</Filter>
     </ClInclude>
-    <ClInclude Include="Skill.h">
-      <Filter>Class\Skill</Filter>
-    </ClInclude>
-    <ClInclude Include="Skill_flag.h">
-      <Filter>Class\Skill</Filter>
-    </ClInclude>
     <ClInclude Include="myMath.h">
       <Filter>My</Filter>
+    </ClInclude>
+    <ClInclude Include="Skiller.h">
+      <Filter>Class\Skiller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -7,8 +7,8 @@
 #include <SDL_ttf.h>
 #include <vector>
 #include "Mouse_Window.h"
-#include "Skill.h"
 #include "myMath.h"
+#include "Player.h"
 
 
 //错误值
@@ -62,7 +62,7 @@ public:
 	int Shutdown();
 
 	//添加玩家提示窗口
-	//flag_window = 0
+	//window_time = 0
 	int Player_Window(const wchar_t* text_,SDL_Rect rect_,int& flag_window_);
 	//获取窗口标志
 	int GetFlag();
@@ -94,8 +94,7 @@ private:
 	//绘制模式选择界面
 	int Draw_ModelWindow();
 	//绘制玩家行动
-	int DrawMove(const vector<Point*>* move_point, const vector<Point*>* jidi_point,
-		const vector<struct QuYu*>* quyu_point,SDL_Color* color_);
+	int DrawMove(const vector<struct Move_point*>* move_point,SDL_Color* color_);
 	//窗口提示
 	std::vector<Window_Msg*> window_msg;
 	//核心类

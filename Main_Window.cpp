@@ -158,63 +158,55 @@ int Main_Window::Draw_FrightWindow()
 	}
 	DrawLine(350, 700, 350, 800);
 
+	//技能模式
 	if (model == SkillModel) {
-		//绘制技能显示窗口
-		int skill = red_player->Getskill_flag();
-		const wchar_t* skill_name = game->Getskill_name(skill);
+		//技能模式绘制玩家的技能显示
+		const vector<int>* skill = red_player->Getskill();
+		const wchar_t* skill_name = game->Getskill_name(skill->at(0));
 		DrawTTF(skill_name, RED, { 0,700,fontSize * 3,40 });
-		DrawTTF(game->Getskill_flag_sum(red_player->Getskill_flag_num()), RED, { 1,740,40,40 });
+		DrawTTF(game->Getskill_flag_sum(red_player->Getskill_sum()), RED, { 1,740,40,40 });
 
-		skill = blue_player->Getskill_flag();
-		skill_name = game->Getskill_name(skill);
+		skill = blue_player->Getskill();
+		skill_name = game->Getskill_name(skill->at(0));
 		DrawTTF(skill_name, BLUE, { 700 - fontSize * 3,700,fontSize * 3,40 });
-		DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_flag_num()), BLUE, { 700 - 41,740,40,40 });
+		DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_sum()), BLUE, { 700 - 41,740,40,40 });
 	}
-	else if (model == FrightModel) {
-		const vector<int>* hand = red_player->GetHand();
+	//竞技模式
+	else if(model == FrightModel){
+		const vector<int>* skill = red_player->Getskill();
 		for (int i = 0; i < 3; i++) {
-			const wchar_t* skill_name = game->Getskill_name(hand->at(i));
+			const wchar_t* skill_name = game->Getskill_name(skill->at(i));
 			int w = fontSize * 3;
 			int x = i * w;
 			DrawTTF(skill_name, RED, { x,700,w,40 });
-			DrawTTF(game->Getskill_flag_sum(red_player->GetHandNum(i)), RED, { x,740,40,40 });
+			DrawTTF(game->Getskill_flag_sum(red_player->Getskill_num(i)), RED, { x,740,40,40 });
 		}
-		const vector<int>* hand1 = blue_player->GetHand();
+		const vector<int>* hand1 = blue_player->Getskill();
 		for (int i = 0; i < 3; i++) {
 			const wchar_t* skill_name = game->Getskill_name(hand1->at(i));
 			int w = fontSize * 3;
-			int x = (i+1) * w;
+			int x = (i + 1) * w;
 			DrawTTF(skill_name, BLUE, { 700 - x,700,w,40 });
-			DrawTTF(game->Getskill_flag_sum(blue_player->GetHandNum(i)), BLUE, { 700 - x,740,40,40 });
+			DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_num(i)), BLUE, { 700 - x,740,40,40 });
 		}
 	}
 
 	//绘制玩家移动
 	{
-		int jidi_h = 50;//基地矩形边长
-		const vector<Point*>* jidi_point;
-		const vector<Point*>* move_point;
-		const vector<QuYu*>* quyu_point;
-		//绘制玩家路线
-		move_point = red_player->Getmove_point();//获取红方移动数组
-		jidi_point = red_player->Getjidi_point();//获取红方基地数组
-		quyu_point = red_player->Getquyu_point();//获取红方区域数组
-		//绘制红方基地
-		if (jidi_point->at(0)->x > 0) {
-			FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &RED);
+		int jidi_h = 50;
+		const vector<Move_point*>* move_point = red_player->GetMove_point();//获取玩家的移动数组
+		if (!move_point->empty()) {
+			FillRect(move_point->at(0)->point->x, move_point->at(0)->point->y, jidi_h, jidi_h, &RED);//绘制玩家的基地
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//设置着色器颜色为红色
+			DrawMove(move_point, &RED);
 		}
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//设置着色器颜色为红色
-		DrawMove(move_point, jidi_point, quyu_point, &RED);
 
-		move_point = blue_player->Getmove_point();//获取蓝方移动数组
-		jidi_point = blue_player->Getjidi_point();//获取蓝方基地数组
-		quyu_point = blue_player->Getquyu_point();//获取蓝方区域数组
-		//绘制蓝方基地
-		if (jidi_point->at(0)->x > 0) {
-			FillRect(jidi_point->at(0)->x, jidi_point->at(0)->y, jidi_h, jidi_h, &BLUE);
+		move_point = blue_player->GetMove_point();//获取蓝方移动数组
+		if (!move_point->empty()) {//绘制蓝方基地
+			FillRect(move_point->at(0)->point->x, move_point->at(0)->point->y, jidi_h, jidi_h, &BLUE);
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);//设置着色器颜色为蓝色
+			DrawMove(move_point, &BLUE);
 		}
-		SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);//设置着色器颜色为蓝色
-		DrawMove(move_point, jidi_point, quyu_point, &BLUE);
 	}
 
 	//绘制玩家预选框
@@ -354,16 +346,16 @@ int Main_Window::Draw_SkillWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			if (red_player->Getskill_flag() == -1) {
+			if (red_player->Getskill()->at(0) == -1) {
 				//修改玩家一的技能选择
-				red_player->Changeskill_flag(index);
+				red_player->Changeskill(index);
 				//轮到玩家二选择技能
 				flagWindow = SkillWindow;
 				index = 1;
 				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
 			}
 			else {
-				blue_player->Changeskill_flag(index);
+				blue_player->Changeskill(index);
 				flagWindow = FrightWindow;
 				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
 				index = 1;
@@ -379,15 +371,15 @@ int Main_Window::Draw_SkillWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			if (red_player->Getskill_flag() == -1) {
+			if (red_player->Getskill()->at(0) == -1) {
 				//修改玩家一的技能选择
-				red_player->Changeskill_flag(index + 1);
+				red_player->Changeskill(index + 1);
 				//轮到玩家二选择技能
 				index = 1;//重置索引
 				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
 			}
 			else {
-				blue_player->Changeskill_flag(index + 1);
+				blue_player->Changeskill(index + 1);
 				flagWindow = FrightWindow;
 				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
 				index = 1;
@@ -462,50 +454,35 @@ int Main_Window::Draw_ModelWindow()
 	return 0;
 }
 
-int Main_Window::DrawMove(const vector<Point*>* move_point, const vector<Point*>* jidi_point,
-	const vector<QuYu*>* quyu_point, SDL_Color* color_)
+int Main_Window::DrawMove(const vector<Move_point*>* move_point, SDL_Color* color_)
 {
 	int jidi_h = 50;
 	int quyu_h = 30;
-	int now = 1;
-	int before = 0;
-	while (now < (*move_point).size()) {
-		Point* now_point = (*move_point).at(now);
-		Point* before_point = (*move_point).at(before);
-		switch (now_point->x) {
-		case QUYU:
-			FillRect((*quyu_point).at(now_point->y)->x, (*quyu_point).at(now_point->y)->y, quyu_h, quyu_h, color_);
-			break;
-		case JIDI:
-			FillRect((*jidi_point).at(now_point->y)->x, (*jidi_point).at(now_point->y)->y, jidi_h, jidi_h, color_);
-			break;
-		default:
-			switch (before_point->x)
-			{
-			case QUYU:
-				for (int k = before - 1; k >= 0; k--) {
-					if ((*move_point).at(k)->x == JIDI) {
-						DrawLine((*jidi_point).at((*move_point).at(k)->y)->x, (*jidi_point).at((*move_point).at(k)->y)->y,
-							now_point->x, now_point->y);
-						break;
-					}
-					else if ((*move_point).at(k)->x != QUYU) {
-						DrawLine((*move_point).at(k)->x, (*move_point).at(k)->y, now_point->x, now_point->y);
-						break;
-					}
+	int index_now = 1;
+	int index_before = 0;
+	Point* point_now;
+	Point* point_before;
+	while (index_now < move_point->size()) {
+		if (move_point->at(index_now)->flag == NULL) {
+			point_before = move_point->at(index_before)->point;
+			if (move_point->at(index_before)->flag == QUYU) {
+				int i = index_before - 1;
+				while (move_point->at(i)->flag == QUYU) {
+					i--;
 				}
-				break;
-			case JIDI:
-				DrawLine((*jidi_point).at(before_point->y)->x + 25, (*jidi_point).at(before_point->y)->y + 25, now_point->x, now_point->y);
-				break;
-			default:
-				DrawLine(before_point->x, before_point->y, now_point->x, now_point->y);
-				break;
+				point_before = move_point->at(i)->point;
 			}
-			break;
+			DrawLine(move_point->at(index_now)->point->x, move_point->at(index_now)->point->y,
+				point_before->x,point_before->y);
 		}
-		before++;
-		now++;
+		else if (move_point->at(index_now)->flag == JIDI) {
+			FillRect(move_point->at(index_now)->point->x, move_point->at(index_now)->point->y,
+				jidi_h, jidi_h,color_);
+		}
+		else if (move_point->at(index_now)->flag == QUYU) {
+			FillRect(move_point->at(index_now)->point->x, move_point->at(index_now)->point->y,
+				quyu_h, quyu_h, color_);
+		}
 	}
 	return 0;
 }
