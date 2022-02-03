@@ -73,6 +73,7 @@ int Player::Updata()
 			return 0;
 		}
 	}
+
 	//ºìÉ«Íæ¼Ò
 	if (flag == Red_Player)
 	{

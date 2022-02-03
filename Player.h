@@ -23,7 +23,6 @@ struct QuYu {
 	int x;
 	int y;
 };
-
 //蓝方玩家标识
 const int Red_Player = 0;
 //红方玩家标识
