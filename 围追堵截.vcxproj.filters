@@ -23,7 +23,7 @@
     <ClCompile Include="myMath.cpp">
       <Filter>My</Filter>
     </ClCompile>
-    <ClCompile Include="Skiller.cpp">
+    <ClCompile Include="Skill.cpp">
       <Filter>Class\Skiller</Filter>
     </ClCompile>
   </ItemGroup>
@@ -78,7 +78,7 @@
     <ClInclude Include="myMath.h">
       <Filter>My</Filter>
     </ClInclude>
-    <ClInclude Include="Skiller.h">
+    <ClInclude Include="Skill.h">
       <Filter>Class\Skiller</Filter>
     </ClInclude>
   </ItemGroup>

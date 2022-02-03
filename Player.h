@@ -5,7 +5,7 @@
 #include <vector>
 #include "Input.h"
 #include "Main_Window.h"
-#include "Skiller.h"
+#include "Skill.h"
 using namespace std;
 
 //用于标识玩家的行动点位

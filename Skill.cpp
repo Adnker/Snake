@@ -1,4 +1,4 @@
-#include "Skiller.h"
+#include "Skill.h"
 
 int Skiller::CreateSkiller(Map* map_)
 {
@@ -43,4 +43,9 @@ class Player* Skiller::GetRed_Player() {
 
 class Player* Skiller::GetBlue_Player() {
 	return blue_player;
+}
+
+int Skiller::Getskill_sum()
+{
+	return skill_sum;
 }
