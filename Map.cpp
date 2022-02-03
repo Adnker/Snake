@@ -21,7 +21,7 @@ int Map::CreateMap()
 //flag = true
 int Map::Updata(Point* point_, int flag_player_,int flag_point_, bool flag_)
 {
-	auto point = &map[point_->x - 1][point_->y - 1];
+	auto point = &map[point_->x][point_->y];
 	point->zhan_Point = flag_point_;
 	point->flag_player = flag_player_;
 	point->huihe = huihe;
@@ -58,13 +58,11 @@ int Map::Gethuihe()
 
 Map_Point Map::GetMapState(Point* point_)
 {
-	return map[point_->x - 1][point_->y - 1];
+	return map[point_->x][point_->y];
 }
 
 Map_Point Map::GetMapStatexy(int x, int y)
 {
-	x -= 1;
-	y -= 1;
 	if (x < 0 || x > 6 || y < 0 || y > 6) { return{ ZHAN,0,0 }; }
 	return map[x][y];
 }

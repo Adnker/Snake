@@ -10,12 +10,12 @@ int Skiller::CreateSkiller(Map* map_)
 
 int Skiller::GetSkillSum(int index_)
 {
-	return skill_num[index_];
+	return skill_num[index_-1];
 }
 
 const wchar_t* Skiller::GetSkillName(int index_)
 {
-	return skill_name[index_];
+	return skill_name[index_-1];
 }
 
 int Skiller::Use_Skill(int index_, int player_flag_)

@@ -196,14 +196,14 @@ int Main_Window::Draw_FrightWindow()
 		int jidi_h = 50;
 		const vector<Move_point*>* move_point = red_player->GetMove_point();//获取玩家的移动数组
 		if (!move_point->empty()) {
-			FillRect(move_point->at(0)->point->x, move_point->at(0)->point->y, jidi_h, jidi_h, &RED);//绘制玩家的基地
+			FillRect(move_point->at(0)->point->x * 100 + 25, move_point->at(0)->point->y * 100 + 25, jidi_h, jidi_h, &RED);//绘制玩家的基地
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//设置着色器颜色为红色
 			DrawMove(move_point, &RED);
 		}
 
 		move_point = blue_player->GetMove_point();//获取蓝方移动数组
 		if (!move_point->empty()) {//绘制蓝方基地
-			FillRect(move_point->at(0)->point->x, move_point->at(0)->point->y, jidi_h, jidi_h, &BLUE);
+			FillRect(move_point->at(0)->point->x * 100 + 25, move_point->at(0)->point->y * 100 + 25, jidi_h, jidi_h, &BLUE);
 			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);//设置着色器颜色为蓝色
 			DrawMove(move_point, &BLUE);
 		}
@@ -346,7 +346,7 @@ int Main_Window::Draw_SkillWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			if (red_player->Getskill()->at(0) == -1) {
+			if (red_player->Getskill()->empty()) {
 				//修改玩家一的技能选择
 				red_player->Changeskill(index);
 				//轮到玩家二选择技能
@@ -371,7 +371,7 @@ int Main_Window::Draw_SkillWindow()
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
-			if (red_player->Getskill()->at(0) == -1) {
+			if (red_player->Getskill()->empty()) {
 				//修改玩家一的技能选择
 				red_player->Changeskill(index + 1);
 				//轮到玩家二选择技能
@@ -437,7 +437,7 @@ int Main_Window::Draw_ModelWindow()
 	//获取鼠标坐标
 	Point* nowPoint = input->GetNowPoint();
 	for (int flag_model = 1; flag_model <= 3; flag_model++) {
-		//判断鼠标是否进入“开始游戏”按钮区
+		//判断鼠标是否进入对应的按钮区
 		if (nowPoint->x < x + w && nowPoint->x > x
 			&& nowPoint->y < y * flag_model + 50 + h && nowPoint->y > y * flag_model)
 		{
@@ -460,7 +460,6 @@ int Main_Window::DrawMove(const vector<Move_point*>* move_point, SDL_Color* colo
 	int quyu_h = 30;
 	int index_now = 1;
 	int index_before = 0;
-	Point* point_now;
 	Point* point_before;
 	while (index_now < move_point->size()) {
 		if (move_point->at(index_now)->flag == NULL) {
@@ -472,17 +471,19 @@ int Main_Window::DrawMove(const vector<Move_point*>* move_point, SDL_Color* colo
 				}
 				point_before = move_point->at(i)->point;
 			}
-			DrawLine(move_point->at(index_now)->point->x, move_point->at(index_now)->point->y,
-				point_before->x,point_before->y);
+			DrawLine(move_point->at(index_now)->point->x * 100 + 50, move_point->at(index_now)->point->y * 100 + 50,
+				point_before->x * 100 + 50,point_before->y * 100 + 50);
 		}
 		else if (move_point->at(index_now)->flag == JIDI) {
-			FillRect(move_point->at(index_now)->point->x, move_point->at(index_now)->point->y,
+			FillRect(move_point->at(index_now)->point->x * 100 + 25, move_point->at(index_now)->point->y * 100 + 25,
 				jidi_h, jidi_h,color_);
 		}
 		else if (move_point->at(index_now)->flag == QUYU) {
-			FillRect(move_point->at(index_now)->point->x, move_point->at(index_now)->point->y,
+			FillRect(move_point->at(index_now)->point->x * 100 + 20, move_point->at(index_now)->point->y * 100 + 20,
 				quyu_h, quyu_h, color_);
 		}
+		index_now++;
+		index_before++;
 	}
 	return 0;
 }

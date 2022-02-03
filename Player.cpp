@@ -26,6 +26,8 @@ int Player::CreatePlayer(Main_Window* main_window_, Input* input_, Map* map_, Pl
 	flag = flag_;
 	player = player_;
 	skiller = skiller_;
+	skill_num = 1;
+	move_num = 1;
 	/*if (main_window->GetGameModel() == FrightModel) {
 		CreateSkillSum();
 	}*/
@@ -187,6 +189,7 @@ int Player::Changeskill(int index)
 {
 	if (skill.empty()) {
 		skill.emplace_back(index);
+		skill_sum.emplace_back(skiller->GetSkillSum(index));
 		return true;
 	}
 	return false;
@@ -230,7 +233,7 @@ int Player::MoveIsRight(bool flag_, Point point_)
 
 	//最后一个点位 赋值
 	int index = move_point.size() - 1;
-	Point before;
+	Point before = ToMapPoint(move_point.at(index)->point);
 	//判断标识
 	if (move_point.at(index)->flag == JIDI) {
 		before = JidiToMap(move_point.at(index));//将基地点位转化为中心点位
@@ -260,7 +263,8 @@ int Player::MoveIsRight(bool flag_, Point point_)
 	Point* before_point = move_point.at(move_point.size() - 1)->point;
 	if (distance > 199) { return TOO_LONG; }
 	//是否穿线
-	else if (map->IsThoughLine(
+	else if (
+		map->IsThoughLine(
 		before_point->x, temp->y, temp->x, before_point->y)
 		) {
 		return THOUGH;
@@ -390,14 +394,15 @@ int Player::IsLife()
 		return isLife;
 	}
 	//判断玩家的技能是否可以使用
-	if (main_window->GetGameModel() == FrightModel) {
+	int model = main_window->GetGameModel();
+	if (model == FrightModel) {
 		for (int i = 0; i < 3; i++) {
 			if (skiller->IsLiveSkill(skill.at(i)) && skill.at(i) > 0) {
 				isLife = LIFE;
 			}
 		}
 	}
-	else {
+	else if(model == SkillModel){
 		if (skiller->IsLiveSkill(skill.at(0)) && skill_sum.at(0) > 0) {
 			isLife = LIFE;
 		}
