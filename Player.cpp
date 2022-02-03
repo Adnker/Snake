@@ -13,6 +13,7 @@ int Player::Clear()
 	skill_num = 1;
 	window_time = 0;
 	yuxuan_point = { 0,0 };
+	return true;
 }
 
 int Player::CreatePlayer(Main_Window* main_window_, Input* input_, Map* map_, Player* player_,
@@ -79,9 +80,7 @@ int Player::Updata()
 		//移动
 		else if (input->GetKeyState(SDL_SCANCODE_G) == Key_Down) { Movetion(); }
 		//技能
-		else if (input->GetKeyState(SDL_SCANCODE_H) == Key_Down) {
-				Skill();
-		}
+		else if (input->GetKeyState(SDL_SCANCODE_H) == Key_Down) { Skill(); }
 		//技能
 		else if (input->GetKeyState(SDL_SCANCODE_J) == Key_Down) { Skill(1); }
 		//技能
@@ -120,9 +119,7 @@ int Player::Updata()
 		//选择结束时记得更新地图
 		//移动
 		else if (input->GetKeyState(SDL_SCANCODE_KP_0) == Key_Down) { Movetion(); }
-		else if (input->GetKeyState(SDL_SCANCODE_KP_1) == Key_Down) {
-			Skill();
-		}
+		else if (input->GetKeyState(SDL_SCANCODE_KP_1) == Key_Down) { Skill(); }
 		//技能
 		else if (input->GetKeyState(SDL_SCANCODE_KP_2) == Key_Down) { Skill(1); }
 		//技能
@@ -298,9 +295,11 @@ int Player::Movetion(int flag_)
 				return true;
 			}
 			else {
+				Move_point* point;
 				switch (MoveIsRight()) {
 				case true:
-					move_point.emplace_back(yuxuan_point);//将点位加入
+					point = new Move_point(yuxuan_point, NULL);
+					move_point.emplace_back(point);//将点位加入
 					CanMove();
 					return true;
 				case TOO_LONG:

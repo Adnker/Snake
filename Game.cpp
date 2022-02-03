@@ -96,7 +96,7 @@ int Game::DestroyPlay()
 
 const wchar_t* Game::Getskill_name(int index)
 {
-	return skiller->Getskill_name(index);
+	return skiller->GetSkillName(index);
 }
 
 const wchar_t* Game::Getskill_flag_sum(int sum)

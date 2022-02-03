@@ -5,7 +5,7 @@
 #include <vector>
 #include "Input.h"
 #include "Main_Window.h"
-#include "Skill.h"
+#include "Skiller.h"
 using namespace std;
 
 //用于标识玩家的行动点位
@@ -43,7 +43,7 @@ public:
 	Point ToMapPoint(Point* point_);//将索引转化为地图坐标
 	vector<int>* Getskill();//获取玩家技能
 	int Getskill_sum(int index = 0);//获取玩家对应技能的可使用次数
-	vector<struct Move_point*>* GetMove_point();//获取玩家移动数组
+	vector<Move_point*>* GetMove_point();//获取玩家移动数组
 	int Changeskill(int index);//修改玩家的技能选择
 	int Getskill_num(int index_);//获取玩家技能对应的可使用次数
 private:
