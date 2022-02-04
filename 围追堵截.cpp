@@ -17,14 +17,18 @@ int main(){
 	//HWND hwnd = GetForegroundWindow();
 	//ShowWindow(hwnd, SW_HIDE);
 
-	class Game game = Game();
-	bool isRun = true;
-	if (game.OpenGame() > 0) {
-		isRun = false;
+	HANDLE handle;
+	handle = CreateMutex(NULL, FALSE, "Snake");
+	if (GetLastError() != ERROR_ALREADY_EXISTS) {
+		class Game game = Game();
+		bool isRun = true;
+		if (game.OpenGame() > 0) {
+			isRun = false;
+		}
+		if (isRun) {
+			game.Updata();
+		}
+		game.Shutdown();
+		//int i; std::cin >> i;
 	}
-	if (isRun) {
-		game.Updata();
-	}
-	game.Shutdown();
-	int i;std::cin >> i;
 }

@@ -11,6 +11,13 @@ using namespace std;
 //用于标识玩家的行动点位
 //保存索引
 struct Move_point {
+	/*
+	* flag = 特殊标识
+	* JIDI 基地特俗标识
+	* QUYU 区域特殊标识
+	* NULL 移动 无特殊标识
+	* >0 待定
+	*/
 	Move_point(Point point_, int flag_) {
 		point = new Point(point_);
 		flag = flag_;
@@ -47,6 +54,7 @@ public:
 	int Changeskill(int index);//修改玩家的技能选择
 	int Getskill_num(int index_);//获取玩家技能对应的可使用次数
 private:
+	Point* GetBeforePoint();//获取玩家上一个可用点位
 	int CanMove();//判断玩家是否能继续移动
 	int MoveIsRight(bool flag_ = false, Point point_ = { -1,-1 });//判断玩家选择的点位是否正确
 	int Movetion(int flag_ = false);//玩家选择移动

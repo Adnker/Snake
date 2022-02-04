@@ -200,6 +200,18 @@ int Player::Getskill_num(int index_)
 	return skill_sum.at(index_);
 }
 
+Point* Player::GetBeforePoint()
+{
+	int index = move_point.size() - 1;
+	if (move_point.at(index)->flag == QUYU) {
+		while(move_point.at(index)->flag == QUYU){
+			index--;
+		}
+		return move_point.at(index)->point;
+	}
+	return move_point.at(index)->point;
+}
+
 int Player::CanMove()
 {
 	skill_num--;
@@ -243,10 +255,10 @@ int Player::MoveIsRight(bool flag_, Point point_)
 		while (index >= 0) {
 			index--;
 			if (move_point.at(index)->flag == JIDI) {
-				before = JidiToMap(move_point.at(index));
+				before = ToMapPoint(move_point.at(index)->point);
 				break;
 			}
-			else if (move_point.at(index) == NULL) {
+			else if (move_point.at(index)->flag == NULL) {
 				before = ToMapPoint(move_point.at(index)->point);
 				break;
 			}
@@ -343,6 +355,12 @@ int Player::Skill(int index_)
 {
 	//提示窗口大小
 	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
+	if (main_window->GetGameModel() == SkillModel) {
+		if (index_ > 0) {
+			main_window->Player_Window(L"使用失败", text_rect, window_time);
+			return 0;
+		}
+	}
 	//基地还未放置无法使用技能
 	if (move_point.empty()) {
 		main_window->Player_Window(L"基地未放", text_rect, window_time);
@@ -366,10 +384,11 @@ int Player::Skill(int index_)
 			//回合技能数和技能总次数均-1
 			skill_num--;
 			skill_sum.at(index_)--;
+			return true;
 		}
 		else { main_window->Player_Window(L"使用失败", text_rect, window_time); }
 	}
-	return 0;
+	return false;
 }
 
 /*
@@ -380,7 +399,7 @@ int Player::Skill(int index_)
 int Player::IsLife()
 {
 	bool isLife = DEAD;
-	Point* before_point = move_point.at(move_point.size() - 1)->point;
+	Point* before_point = GetBeforePoint();
 	for (int i = -1; i < 2; i++) {
 		for (int j = -1; j < 2; j++) {
 			if (map->GetMapStatexy(before_point->x + i, before_point->y + j).zhan_Point == NONE) {

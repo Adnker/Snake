@@ -31,6 +31,11 @@ private:
 	class Map* map;
 	class Player* red_player;
 	class Player* blue_player;
+
+	int Skill_luzhang();
+	int Skill_chuansong();
+	int Skill_chuanshen();
+	int Skill_zhuiji();
 };
 
 #endif
