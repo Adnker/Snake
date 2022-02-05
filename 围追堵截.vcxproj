@@ -159,6 +159,7 @@
     <ClCompile Include="Mouse_Window.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Skill.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="围追堵截.cpp" />
     <ClCompile Include="myMath.cpp" />
   </ItemGroup>
@@ -171,6 +172,7 @@
     <ClInclude Include="myMath.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Skill.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\函数文档.docx" />

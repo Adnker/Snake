@@ -14,7 +14,7 @@ int Main_Window::GameIsEnd(int flag_Player_)
 	flag_Player = flag_Player_;
 	flagWindow = GameoverWindow;
 	SDL_DestroyWindow(window);
-	CreatNewWindow("Snake", 300, 300, 200, 200);
+	CreatNewWindow("Snake", &rect_Over_Window);
 	game->DestroyPlay();
 	return 0;
 }
@@ -24,20 +24,20 @@ int Main_Window::GetGameModel()
 	return model;
 }
 
-int Main_Window::CreatNewWindow(const char* title, int x, int y, int w, int h)
+int Main_Window::CreatNewWindow(const char* title, SDL_Rect* rect_)
 {
 	if (window) {
 		SDL_DestroyWindow(window);
 	}
 	//创建窗口
-	window = SDL_CreateWindow(title, x, y, w, h, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow(title, rect_->x, rect_->y, rect_->w, rect_->h, SDL_WINDOW_SHOWN);
 	//检查
 	if (!window) {
 		SDL_Log("%s", SDL_GetError());
 		return Window_error;
 	}
 	//获取窗口对应的贴图器
-	windowSurface = SDL_GetWindowSurface(window);
+	surface = SDL_GetWindowSurface(window);
 
 	//创建着色器
 	renderer = SDL_CreateRenderer(window, -1,
@@ -47,6 +47,7 @@ int Main_Window::CreatNewWindow(const char* title, int x, int y, int w, int h)
 		SDL_Log("%s", SDL_GetError());
 		return Renderer_error;
 	}
+	texture->ChangRenderer(renderer);
 
 	return All_true;
 }
@@ -57,6 +58,8 @@ int Main_Window::CreatWindow(Game* game_)
 	input = game->GetInput();
 	mouse_window = new Mouse_Window(input, this);
 	rander = new Rander();
+	texture = new Texture(renderer);
+
 
 	//初始化TTF文字库
 	if (TTF_Init() == -1) {
@@ -103,7 +106,7 @@ int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
 	red_player = red_player_;
 	blue_player = blue_player_;
 	if (!window) {
-		CreatNewWindow("Snake", 100, 100, 500, 500);
+		CreatNewWindow("Snake",&rect_Main_Window);
 		flagWindow = MainWindow;
 	}
 	//循环背景色
@@ -111,9 +114,6 @@ int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
 	SDL_RenderClear(renderer);
 
 	DrawLineColor(0, 0, 700, 0, BLACK);
-
-	//绘制一条小蛇
-	mouse_window->DrawSnake();
 
 	switch (flagWindow)
 	{
@@ -137,6 +137,9 @@ int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
 		break;
 	}
 
+	//绘制一条小蛇
+	mouse_window->DrawSnake();
+
 	//绘制缓冲区
 	SDL_RenderPresent(renderer);
 	return 0;
@@ -145,6 +148,7 @@ int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
 int Main_Window::Draw_FrightWindow()
 {
 	flagWindow = FrightWindow;
+	DrawPicture("background.png", NULL, { 0,0,rect_Fright_Window.w,rect_Fright_Window.h });
 	//黑色
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	//绘制战斗窗口
@@ -228,11 +232,17 @@ int Main_Window::Draw_FrightWindow()
 					window_msg.begin() + i, window_msg.begin() + i + 1);
 				break;//跳出循环
 			}
-			FillRect(window_msg[i]->rect.x, window_msg[i]->rect.y,
+			/*FillRect(window_msg[i]->rect.x, window_msg[i]->rect.y,
 				window_msg[i]->rect.w, window_msg[i]->rect.h, &LITTLE_BLACK);
 			DrawRect(window_msg[i]->rect.x, window_msg[i]->rect.y,
-				window_msg[i]->rect.w, window_msg[i]->rect.h, &BLACK);
-			DrawTTF(window_msg[i]->text, BLACK, window_msg[i]->rect);
+				window_msg[i]->rect.w, window_msg[i]->rect.h, &BLACK);*/
+			//避免提示框越出窗口
+			if (window_msg[i]->rect.x + window_msg[i]->rect.w > rect_Fright_Window.w) {
+				window_msg[i]->rect.x = rect_Fright_Window.w - window_msg[i]->rect.w;
+			}
+			DrawPicture("backgroundPlayer.png", NULL,{ window_msg[i]->rect.x, window_msg[i]->rect.y,
+				window_msg[i]->rect.w, window_msg[i]->rect.h });
+			DrawTTF(window_msg[i]->text, LITTLE_BLACK, window_msg[i]->rect);
 			window_msg[i]->liveTime++;
 		}
 	}
@@ -244,6 +254,7 @@ int Main_Window::Draw_MainWindow()
 {
 	flagWindow = MainWindow;
 
+	DrawPicture("background.png", NULL, { 0,0,rect_Main_Window.w,rect_Main_Window.h });
 	//DrawRect(200, 100, 100, 50, &BLACK);
 	DrawTTF(L"开始游戏", BLACK, { 200,100,100,40 });
 	DrawLine(180, 150, 320, 150);
@@ -257,7 +268,8 @@ int Main_Window::Draw_MainWindow()
 		&& nowPoint->y > 100 && nowPoint->y < 150)
 	{
 		//移动到键上
-		FillRect(150, 120, 20, 20, &RED);
+		DrawPicture("buttonRight.png", NULL, { 150, 105, 40, 40 });
+		//FillRect(150, 120, 20, 20, &RED);
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
@@ -265,16 +277,15 @@ int Main_Window::Draw_MainWindow()
 			switch (model) {
 			case BaseModel:
 				flagWindow = FrightWindow;
-				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
+				CreatNewWindow("Snake Firght", &rect_Fright_Window);
 				break;
 			case SkillModel:
 				flagWindow = SkillWindow;
-				CreatNewWindow("Player1 chiose skill", 100, 100, 300, 300);
+				CreatNewWindow("Player1 chiose skill", &rect_Skill_Window);
 				break;
 			case FrightModel:
 				flagWindow = FrightWindow;
-
-				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
+				CreatNewWindow("Snake Firght", &rect_Fright_Window);
 				break;
 			default:
 				game->Shutdown();
@@ -286,7 +297,8 @@ int Main_Window::Draw_MainWindow()
 		&& nowPoint->y > 200 && nowPoint->y < 250)
 	{
 		//移动到键上
-		FillRect(150, 220, 20, 20, &RED);
+		DrawPicture("buttonRight.png", NULL, { 150, 205, 40, 40 });
+		//FillRect(150, 220, 20, 20, &RED);
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
@@ -301,6 +313,7 @@ int Main_Window::Draw_GameOverWindow()
 {
 	SDL_Rect rect = { 50,30,100,50 };
 	flagWindow = GameoverWindow;
+	DrawPicture("background.png", NULL, { 0,0,rect_Over_Window.w,rect_Over_Window.h });
 	if (flag_Player == Red_Player) {
 		DrawTTF(L"蓝方胜利", BLUE, rect);
 	}
@@ -309,7 +322,7 @@ int Main_Window::Draw_GameOverWindow()
 	}
 	DrawTTF(L"左键回到主页", BLACK, { 20,100,160,50 });
 	if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down) {
-		CreatNewWindow("Snake", 100, 100, 500, 500);
+		CreatNewWindow("Snake", &rect_Main_Window);
 		flagWindow = MainWindow;
 	}
 	return 0;
@@ -318,8 +331,9 @@ int Main_Window::Draw_GameOverWindow()
 int Main_Window::Draw_SkillWindow()
 {
 	flagWindow = SkillWindow;
+	DrawPicture("background.png", NULL, { 0,0,rect_Skill_Window.w,rect_Skill_Window.h });
 	//选中正方形的边
-	int h = 20;
+	int h = 40;
 	SDL_Rect name1 = { 100,20,90,40 };//技能一矩形
 	SDL_Rect name2 = { 100,90,90,40 };//技能二矩形
 	DrawLine(name1.x, name1.y + name1.h + 10, name1.x + name1.w, name1.y + name1.h + 10);
@@ -342,7 +356,8 @@ int Main_Window::Draw_SkillWindow()
 		&& nowPoint->y > name1.y && nowPoint->y < name1.y + name1.h + 10)
 	{
 		//移动到键上
-		FillRect(name1.x - h * 2, name1.y + 10, h, h, &RED);
+		//FillRect(name1.x - h * 2, name1.y + 10, h, h, &RED);
+		DrawPicture("buttonRight.png", NULL, { name1.x - h, name1.y + 5, h, h });
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
@@ -352,12 +367,12 @@ int Main_Window::Draw_SkillWindow()
 				//轮到玩家二选择技能
 				flagWindow = SkillWindow;
 				index = 1;
-				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
+				CreatNewWindow("Player2 chiose skill", &rect_Skill_Window);
 			}
 			else {
 				blue_player->Changeskill(index);
 				flagWindow = FrightWindow;
-				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
+				CreatNewWindow("Snake Firght", &rect_Fright_Window);
 				index = 1;
 			}
 		}
@@ -367,7 +382,8 @@ int Main_Window::Draw_SkillWindow()
 		&& nowPoint->y > name2.y && nowPoint->y < name2.y + name2.h + 10)
 	{
 		//移动到键上
-		FillRect(name2.x - h * 2, name2.y + 10, h, h, &RED);
+		//FillRect(name2.x - h * 2, name2.y + 10, h, h, &RED);
+		DrawPicture("buttonRight.png", NULL, { name2.x - h, name2.y + 5, h, h });
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
@@ -376,12 +392,12 @@ int Main_Window::Draw_SkillWindow()
 				red_player->Changeskill(index + 1);
 				//轮到玩家二选择技能
 				index = 1;//重置索引
-				CreatNewWindow("Player2 chiose skill", 100, 100, 300, 300);
+				CreatNewWindow("Player2 chiose skill", &rect_Skill_Window);
 			}
 			else {
 				blue_player->Changeskill(index + 1);
 				flagWindow = FrightWindow;
-				CreatNewWindow("Snake Firght", 200, 40, 700, 800);
+				CreatNewWindow("Snake Firght", &rect_Fright_Window);
 				index = 1;
 			}
 		}
@@ -391,7 +407,8 @@ int Main_Window::Draw_SkillWindow()
 		&& nowPoint->y > text1.y && nowPoint->y < text1.y + text1.h + 10)
 	{
 		//移动到键上
-		FillRect(text1.x + text1.w + h, text1.y + 10, h, h, &RED);
+		//FillRect(text1.x + text1.w + h, text1.y + 10, h, h, &RED);
+		DrawPicture("buttonleft.png", NULL, { text1.x + text1.w + 5, text1.y + 5, h, h });
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
@@ -403,7 +420,8 @@ int Main_Window::Draw_SkillWindow()
 		&& nowPoint->y > text2.y && nowPoint->y < text2.y + text2.h + 10)
 	{
 		//移动到键上
-		FillRect(text2.x - h * 2, text2.y + 10, h, h, &RED);
+		//FillRect(text2.x - h * 2, text2.y + 10, h, h, &RED);
+		DrawPicture("buttonRight.png", NULL, { text2.x - h, text2.y + 5, h, h });
 		//按下键
 		if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 		{
@@ -417,7 +435,7 @@ int Main_Window::Draw_SkillWindow()
 int Main_Window::Draw_ModelWindow()
 {
 	flagWindow = ModelWindow;
-
+	DrawPicture("background.png", NULL, { 0,0,rect_Model_Window.w,rect_Model_Window.h });
 	//文本框架
 	int x = 200;
 	int y = 100;
@@ -442,7 +460,8 @@ int Main_Window::Draw_ModelWindow()
 			&& nowPoint->y < y * flag_model + 50 + h && nowPoint->y > y * flag_model)
 		{
 			//移动到键上
-			FillRect(x - 50, y * flag_model + 20, 20, 20, &RED);
+			//FillRect(x - 50, y * flag_model + 20, 20, 20, &RED);
+			DrawPicture("buttonRight.png", NULL, { x - 50, y * flag_model + 5, 40, 40 });
 			//按下键
 			if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down)
 			{
@@ -538,4 +557,9 @@ void Main_Window::DrawTTF(const wchar_t* text, SDL_Color color, SDL_Rect rect)
 	SDL_FreeSurface(fontSurface);
 	//将纹理信息绘制到窗口
 	SDL_RenderCopy(renderer, texture, 0, &rect);
+}
+
+void Main_Window::DrawPicture(const std::string fileName, SDL_Rect* rect1, SDL_Rect rect2)
+{
+	texture->Draw(fileName, rect1, &rect2);
 }

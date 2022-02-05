@@ -9,6 +9,7 @@
 #include "Mouse_Window.h"
 #include "myMath.h"
 #include "Player.h"
+#include "Texture.h"
 
 
 //错误值
@@ -80,13 +81,15 @@ public:
 	void FillRect(int x, int y, int w, int h, SDL_Color* color);
 	//绘制文字
 	void DrawTTF(const wchar_t* text, SDL_Color color, SDL_Rect rect);
+	//绘制图片
+	void DrawPicture(const std::string fileName, SDL_Rect* rect1, SDL_Rect rect2);
 private:
 	//创建新的窗口 自动销毁当前窗口
-	int CreatNewWindow(const char* title, int x, int y, int w, int h);
-	//绘制战斗的界面
-	int Draw_FrightWindow();
+	int CreatNewWindow(const char* title, SDL_Rect* rect);
 	//绘制主界面
 	int Draw_MainWindow();
+	//绘制战斗的界面
+	int Draw_FrightWindow();
 	//绘制游戏结束的界面
 	int Draw_GameOverWindow();
 	//绘制技能选择窗口
@@ -102,6 +105,7 @@ private:
 	class Input* input;
 	class Player* red_player;
 	class Player* blue_player;
+	class Texture* texture;
 	//额外类
 	class Mouse_Window* mouse_window;
 	//窗口
@@ -110,10 +114,15 @@ private:
 	SDL_Renderer* renderer;
 	//矩形
 	SDL_Rect rect;
+	SDL_Rect rect_Main_Window = { 100,100,500,500 };
+	SDL_Rect rect_Fright_Window = { 200, 40, 700, 800 };
+	SDL_Rect rect_Skill_Window = { 100, 100, 300, 300 };
+	SDL_Rect rect_Over_Window = { 300, 300, 200, 200 };
+	SDL_Rect rect_Model_Window = { 100,100,500,500 };
 	//文字
 	TTF_Font* font;
-	//窗口核心贴图器
-	SDL_Surface* windowSurface;
+	//窗口贴图器
+	SDL_Surface* surface;
 	//窗口标志
 	//MainWindow = 0 FrightWindow = 1 GameoverWindow = 2 SkillWinodw = 3
 	int flagWindow;

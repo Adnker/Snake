@@ -26,6 +26,9 @@
     <ClCompile Include="Skill.cpp">
       <Filter>Class\Skiller</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Class\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Class">
@@ -55,6 +58,9 @@
     <Filter Include="Class\Skiller">
       <UniqueIdentifier>{3056962c-f80b-4285-a92f-f62a28e82fb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Class\Texture">
+      <UniqueIdentifier>{45a98c44-6ab7-44c3-8ebd-1181b415ced4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -80,6 +86,9 @@
     </ClInclude>
     <ClInclude Include="Skill.h">
       <Filter>Class\Skiller</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Class\Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

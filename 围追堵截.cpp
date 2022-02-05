@@ -8,6 +8,7 @@
 #pragma comment (lib,"SDL2.lib")
 #pragma comment (lib,"SDL2main.lib")
 #pragma comment (lib,"SDL2_ttf.lib")
+#pragma comment (lib,"SDL2_image.lib")
 
 #undef main
 
@@ -18,7 +19,7 @@ int main(){
 	//ShowWindow(hwnd, SW_HIDE);
 
 	HANDLE handle;
-	handle = CreateMutex(NULL, FALSE, "Snake");
+	handle = CreateMutex(NULL, FALSE, "Snake");//Release模式下加上一个使用：handle = CreateMutex(NULL, FALSE, L"Snake");
 	if (GetLastError() != ERROR_ALREADY_EXISTS) {
 		class Game game = Game();
 		bool isRun = true;

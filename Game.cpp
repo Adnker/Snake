@@ -10,11 +10,16 @@ int Game::OpenGame()
 	main_window = new Main_Window();
 	skiller = new Skiller();
 	if (main_window->CreatWindow(this) > 0) { isRuning = false; return false; }
-
 	//创建
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
 		SDL_Log("%s", SDL_GetError());
+		return Init_error;
+	}
+	//初始化图片库
+	if (IMG_Init(IMG_INIT_PNG) == 0)
+	{
+		SDL_Log("image is error %s", SDL_GetError());
 		return Init_error;
 	}
 
