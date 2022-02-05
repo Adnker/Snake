@@ -11,6 +11,11 @@
 #include "Player.h"
 #include "Texture.h"
 
+static SDL_Color WHITE = { 255,255,255,255 };//白色
+static SDL_Color BLACK = { 0,0,0,255 };//黑色
+static SDL_Color RED = { 255,0,0,255 };//红色
+static SDL_Color BLUE = { 0,0,255,255 };//蓝色
+static SDL_Color LITTLE_BLACK = { 200,200,200,255 };//灰色
 
 //错误值
 const int All_true = 0;
@@ -58,13 +63,13 @@ public:
 	//初始化
 	int CreatWindow(class Game* game_);
 	//更新
-	int Updata(class Player* red_player_,class Player* blue_player);
+	int Updata(class Player* red_player_, class Player* blue_player);
 	//关闭
 	int Shutdown();
 
 	//添加玩家提示窗口
 	//window_time = 0
-	int Player_Window(const wchar_t* text_,SDL_Rect rect_,int& flag_window_);
+	int Player_Window(const wchar_t* text_, SDL_Rect rect_, int& flag_window_);
 	//获取窗口标志
 	int GetFlag();
 	//游戏结束
@@ -83,6 +88,8 @@ public:
 	void DrawTTF(const wchar_t* text, SDL_Color color, SDL_Rect rect);
 	//绘制图片
 	void DrawPicture(const std::string fileName, SDL_Rect* rect1, SDL_Rect rect2);
+	//绘制技能图片
+	void DrawSkill(const wchar_t* skill_name, SDL_Rect* rect1, SDL_Rect rect2, int flag_ = true);
 private:
 	//创建新的窗口 自动销毁当前窗口
 	int CreatNewWindow(const char* title, SDL_Rect* rect);
@@ -97,7 +104,7 @@ private:
 	//绘制模式选择界面
 	int Draw_ModelWindow();
 	//绘制玩家行动
-	int DrawMove(const vector<struct Move_point*>* move_point,SDL_Color* color_);
+	int DrawMove(const vector<struct Move_point*>* move_point, SDL_Color* color_);
 	//窗口提示
 	std::vector<Window_Msg*> window_msg;
 	//核心类
