@@ -28,10 +28,15 @@ int Player::CreatePlayer(Main_Window* main_window_, Input* input_, Map* map_, Pl
 	skiller = skiller_;
 	skill_num = 1;
 	move_num = 1;
+	if (flag == Red_Player) {
+		picture_name = "reddown.png";
+	}
+	else {
+		picture_name = "bluedown.png";
+	}
 	/*if (main_window->GetGameModel() == FrightModel) {
-		CreateSkillSum();
+		CreateSkillSum(map);
 	}*/
-
 	return 0;
 }
 
@@ -60,22 +65,25 @@ int Player::Updata()
 		if (input->GetKeyState(SDL_SCANCODE_W) == Key_Down)
 		{
 			yuxuan_point.y--;
+			picture_name = "redup.png";
 		}
 		//预选位置向下移动
 		else if (input->GetKeyState(SDL_SCANCODE_S) == Key_Down)
 		{
 			yuxuan_point.y++;
+			picture_name = "reddown.png";
 		}
 		//预选位置向左移动
 		else if (input->GetKeyState(SDL_SCANCODE_A) == Key_Down)
 		{
-
 			yuxuan_point.x--;
+			picture_name = "redleft.png";
 		}
 		//预选位置向右移动
 		else if (input->GetKeyState(SDL_SCANCODE_D) == Key_Down)
 		{
 			yuxuan_point.x++;
+			picture_name = "redright.png";
 		}
 		//选择
 		//选择结束时记得更新地图
@@ -96,21 +104,25 @@ int Player::Updata()
 		if (input->GetKeyState(SDL_SCANCODE_UP) == Key_Down)
 		{
 			yuxuan_point.y--;
+			picture_name = "blueup.png";
 		}
 		//预选位置向下移动
 		else if (input->GetKeyState(SDL_SCANCODE_DOWN) == Key_Down)
 		{
 			yuxuan_point.y++;
+			picture_name = "bluedown.png";
 		}
 		//预选位置向左移动
 		else if (input->GetKeyState(SDL_SCANCODE_LEFT) == Key_Down)
 		{
 			yuxuan_point.x--;
+			picture_name = "blueleft.png";
 		}
 		//预选位置向右移动
 		else if (input->GetKeyState(SDL_SCANCODE_RIGHT) == Key_Down)
 		{
 			yuxuan_point.x++;
+			picture_name = "blueright.png";
 		}
 		//投降键
 		else if (input->GetKeyState(SDL_SCANCODE_KP_9) == Key_Keep) {
@@ -198,6 +210,11 @@ int Player::Changeskill(int index)
 int Player::Getskill_num(int index_)
 {
 	return skill_sum.at(index_);
+}
+
+string Player::Getpicture_name()
+{
+	return picture_name;
 }
 
 Point* Player::GetBeforePoint()

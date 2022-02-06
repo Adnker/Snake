@@ -53,6 +53,7 @@ public:
 	vector<Move_point*>* GetMove_point();//获取玩家移动数组
 	int Changeskill(int index);//修改玩家的技能选择
 	int Getskill_num(int index_);//获取玩家技能对应的可使用次数
+	string Getpicture_name();//获取玩家图片名字
 private:
 	Point* GetBeforePoint();//获取玩家上一个可用点位
 	int CanMove();//判断玩家是否能继续移动
@@ -69,6 +70,7 @@ private:
 	Point yuxuan_point;//保存玩家预选点位
 	vector<int> skill;//保存玩家的技能
 	vector<int> skill_sum;//保存玩家技能对应的可使用次数
+	std::string picture_name;//保存玩家的图片路径
 
 	/*
 	* flag:

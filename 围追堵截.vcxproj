@@ -152,11 +152,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main_Window.cpp" />
+    <ClCompile Include="Main_Window_Fun.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mouse_Window.cpp" />
+    <ClCompile Include="MW_Draw.cpp" />
+    <ClCompile Include="MW_FrightWindow.cpp" />
+    <ClCompile Include="MW_GameOverWindow.cpp" />
+    <ClCompile Include="MW_MainWindow.cpp" />
+    <ClCompile Include="MW_ModelWindow.cpp" />
+    <ClCompile Include="MW_SkillWindow.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -164,6 +172,7 @@
     <ClCompile Include="myMath.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Main_Window.h" />

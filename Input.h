@@ -19,6 +19,7 @@ const int Key_Up = 0;
 const int Key_Down = 1;
 const int Key_Keep = 2;
 const int Key_None = 3;
+const int Key_Move = 4;
 
 #pragma message ("Loading Input...")
 class Input {

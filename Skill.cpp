@@ -15,6 +15,9 @@ int Skiller::GetSkillSum(int index_)
 
 const wchar_t* Skiller::GetSkillName(int index_)
 {
+	if (index_ > skill_sum) {
+		return L"暂无技能";
+	}
 	return skill_name[index_-1];
 }
 
@@ -119,5 +122,11 @@ int Skiller::Skill_zhuiji()
 	player->move_point.emplace_back(point_new);//将创建的点位加入到行动数组中
 	map->Updata(&player->yuxuan_point, player->flag, ZHAN, false);//更新点位不更新回合
 	player->player->UpdataSum();//更新敌人
+	return true;
+}
+
+int Skiller::Skill_jipao()
+{
+	player->move_num++;
 	return true;
 }

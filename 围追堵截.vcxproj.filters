@@ -29,6 +29,30 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Class\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Main_Window_Fun.cpp">
+      <Filter>Class\Main_Window</Filter>
+    </ClCompile>
+    <ClCompile Include="MW_FrightWindow.cpp">
+      <Filter>Class\Main_Window</Filter>
+    </ClCompile>
+    <ClCompile Include="MW_MainWindow.cpp">
+      <Filter>Class\Main_Window</Filter>
+    </ClCompile>
+    <ClCompile Include="MW_GameOverWindow.cpp">
+      <Filter>Class\Main_Window</Filter>
+    </ClCompile>
+    <ClCompile Include="MW_SkillWindow.cpp">
+      <Filter>Class\Main_Window</Filter>
+    </ClCompile>
+    <ClCompile Include="MW_ModelWindow.cpp">
+      <Filter>Class\Main_Window</Filter>
+    </ClCompile>
+    <ClCompile Include="MW_Draw.cpp">
+      <Filter>Class\Main_Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Class\Button</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Class">
@@ -61,6 +85,9 @@
     <Filter Include="Class\Texture">
       <UniqueIdentifier>{45a98c44-6ab7-44c3-8ebd-1181b415ced4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Class\Button">
+      <UniqueIdentifier>{6261cae4-4ed1-4c77-b644-e171e48532a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -89,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Class\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Class\Button</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
