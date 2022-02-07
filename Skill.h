@@ -12,6 +12,8 @@ const int SKILL_FLAG_CHUANSONG = 2;
 const int SKILL_FLAG_CHUANSHEN = 3;
 const int SKILL_FLAG_ZHUIJI = 4;
 const int SKILL_FLAG_JIPAO = 5;
+const int SKILL_FLAG_JIANXING = 6;
+static const int SKILLSUM = 6;
 
 class Skiller
 {
@@ -25,10 +27,10 @@ public:
 	int Getskill_sum();//获取现在全部的技能总数
 	bool IsLiveSkill(int index_);//判断对应的技能是否是生存性技能
 private:
-	const wchar_t* skill_name[5] = { L"路障", L"传送", L"穿身",L"追击",L"疾跑" };
-	const int skill_num[5] = { 3,1,2,1 ,8 };
-	int skill_sum = 5;
-	int nolifeskill[2] = { SKILL_FLAG_ZHUIJI ,SKILL_FLAG_JIPAO };
+	const wchar_t* skill_name[6] = { L"路障", L"传送", L"穿身",L"追击",L"疾跑",L"箭行"};
+	const int skill_num[6] = { 3,1,2,1 ,8 ,1};
+	int nolifeskill[3] = { SKILL_FLAG_ZHUIJI ,SKILL_FLAG_JIPAO ,SKILL_FLAG_JIANXING};
+	int skill_sum = SKILLSUM;
 
 	class Player* player;
 	class Map* map;
@@ -40,6 +42,7 @@ private:
 	int Skill_chuanshen();
 	int Skill_zhuiji();
 	int Skill_jipao();
+	int Skill_jianxing();
 };
 
 #endif

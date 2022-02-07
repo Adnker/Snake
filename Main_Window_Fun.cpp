@@ -94,13 +94,10 @@ int Main_Window::Shutdown()
 	return 0;
 }
 
-int Main_Window::Player_Window(const wchar_t* text_, SDL_Rect rect_, int& flag_window_)
+int Main_Window::Player_Window(const wchar_t* text_, SDL_Rect rect_, int& flag_window_, int flag_)
 {
 	if (flag_window_ != 0) { return false; }
-	Window_Msg* temp = new Window_Msg();
-	temp->text = text_;
-	temp->rect = rect_;
-	temp->liveTime = 0;
+	Window_Msg* temp = new Window_Msg(text_, rect_, flag_);
 	window_msg.push_back(temp);
 	flag_window_ = 1;
 	return true;

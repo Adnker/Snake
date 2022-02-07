@@ -17,12 +17,10 @@ Rander::Rander()
 	seek = GetARand(seek);
 }
 
-int Rander::GetARand(int max)
+int Rander::GetARand(int max,int min)
 {
-	int rands = 0;
-	for (int i = 0; i < seek; i++) {
-		rands = rand() % max + 1;
-	}
-	seek = rands * 17;
-	return rands;
+	std::uniform_int_distribution<int> u(min, max); // ×ó±ÕÓÒ±ÕÇø¼ä
+	e.seed(time(0) + max + min + seek);
+	seek = u(e);
+	return u(e);
 }

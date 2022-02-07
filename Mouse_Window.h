@@ -15,6 +15,8 @@ public:
 private:
 	//捕获频率
 	int flag_mouse_time;
+	//删除速度
+	int erase_time;
 	//缓冲区
 	vector<Point*> point_sum;
 

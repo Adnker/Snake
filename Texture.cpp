@@ -96,6 +96,7 @@ int Texture::LoadAllSkill()
 	tex_skill.emplace(L"´©Éí", Loading("chuanshen.png"));
 	tex_skill.emplace(L"×·»÷", Loading("zhuiji.png"));
 	tex_skill.emplace(L"¼²ÅÜ", Loading("jipao.png"));
+	tex_skill.emplace(L"¼ýÐÐ", Loading("jianxing.png"));
 	return 0;
 }
 

@@ -1,11 +1,13 @@
 #pragma once
 #include <iostream>
+#include <random>
 
 class Rander {
 public:
 	Rander();
-	int GetARand(int max);
+	int GetARand(int max,int min = 0 );
 private:
+	std::default_random_engine e;
 	int seek;
 };
 

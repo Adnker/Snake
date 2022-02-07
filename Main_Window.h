@@ -60,11 +60,19 @@ const int fontSize = 25;
 * const wchar_t* text 用于保存提示的文字
 * SDL_Rect rect 用于保存提示窗口显示的位置｛显示位置x，显示位置y，窗口宽w，窗口高h｝
 * int liveTime 用于保存窗口已经显示的时间
+* int flag 用于保存谁调用的信息
 */
 struct Window_Msg {
+	Window_Msg(const wchar_t* text_, SDL_Rect rect_,int flag_) {
+		text = text_;
+		rect = rect_;
+		flag = flag_;
+		liveTime = 0;
+	}
 	const wchar_t* text;
 	SDL_Rect rect;
 	int liveTime;
+	int flag;
 };
 //窗口显示的死亡时间 大于此时间的窗口要进行销毁
 const int DeadTime = 100;
@@ -82,7 +90,7 @@ public:
 	int Shutdown();
 	//添加玩家提示窗口
 	//window_time = 0
-	int Player_Window(const wchar_t* text_, SDL_Rect rect_, int& flag_window_);
+	int Player_Window(const wchar_t* text_, SDL_Rect rect_, int& flag_window_,int flag_);
 	//获取窗口标志
 	int GetFlag();
 	//游戏结束

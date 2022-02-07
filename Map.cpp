@@ -71,7 +71,7 @@ bool Map::IsThoughLine(int x1, int y1, int x2, int y2)
 {
 	Map_Point point1 = map[x1][y1];
 	Map_Point point2 = map[x2][y2];
-	if ((point1.huihe - point2.huihe == -2 || point1.huihe - point2.huihe == 2) &&
+	if ((point1.huihe - point2.huihe > -2 || point1.huihe - point2.huihe < 2) &&
 		point1.zhan_Point == ZHAN && point2.zhan_Point == ZHAN) {
 		return true;
 	}

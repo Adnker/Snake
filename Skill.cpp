@@ -42,6 +42,10 @@ int Skiller::Use_Skill(int index_, int player_flag_)
 		return Skill_chuanshen();
 	case SKILL_FLAG_ZHUIJI:
 		return Skill_zhuiji();
+	case SKILL_FLAG_JIPAO:
+		return Skill_jipao();
+	case SKILL_FLAG_JIANXING:
+		return Skill_jianxing();
 	default:
 		break;
 	}
@@ -67,7 +71,7 @@ class Player* Skiller::GetBlue_Player() {
 
 int Skiller::Getskill_sum()
 {
-	return skill_sum;
+	return SKILLSUM;
 }
 
 int Skiller::Skill_luzhang()
@@ -127,6 +131,15 @@ int Skiller::Skill_zhuiji()
 
 int Skiller::Skill_jipao()
 {
-	player->move_num++;
+	player->move_num = 2;
 	return true;
+}
+
+int Skiller::Skill_jianxing()
+{
+	if (map->Gethuihe() > 10) {
+		player->move_num = 4;
+		return true;
+	}
+	return false;
 }

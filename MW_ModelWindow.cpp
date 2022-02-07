@@ -34,5 +34,6 @@ int Main_Window::Draw_ModelWindow()
 			break;
 		}
 	}
+	DrawTTF(L"Ñ¡ÔñÄ£Ê½", BLACK, { 195,25,fontSize * 4,25 });
 	return 0;
 }

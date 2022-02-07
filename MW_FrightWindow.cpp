@@ -94,10 +94,18 @@ int Main_Window::Draw_FrightWindow()
 				window_msg.erase(window_msg.begin() + i, window_msg.begin() + i + 1);
 			}
 			else {
+				if (window_msg.at(i)->flag == Red_Player) {
+					window_msg.at(i)->rect.x = red_player->Getyuxuan_point().x;
+					window_msg.at(i)->rect.y = red_player->Getyuxuan_point().y + window_msg.at(i)->rect.h;
+				}
+				else {
+					window_msg.at(i)->rect.x = blue_player->Getyuxuan_point().x;
+					window_msg.at(i)->rect.y = blue_player->Getyuxuan_point().y + window_msg.at(i)->rect.h;
+				}
 				//绘制窗口
 				//判断提示窗口是否超出窗体，超出窗体则对窗口信息进行修正，避免提示框越出窗口
-				if (window_msg.at(i)->rect.x + window_msg.at(i)->rect.w > rect_Main_Window.w) {
-					window_msg.at(i)->rect.x = rect_Main_Window.w - window_msg.at(i)->rect.w;
+				if (window_msg.at(i)->rect.x + window_msg.at(i)->rect.w > rect_Fright_Window.w) {
+					window_msg.at(i)->rect.x = rect_Fright_Window.w - window_msg.at(i)->rect.w;
 				}
 				DrawPicture("backgroundPlayer.png", NULL, { window_msg.at(i)->rect.x, window_msg.at(i)->rect.y,
 					window_msg.at(i)->rect.w, window_msg.at(i)->rect.h });//绘制提示窗口背景
@@ -105,6 +113,15 @@ int Main_Window::Draw_FrightWindow()
 				window_msg.at(i)->liveTime++;//增加提示窗口显示时间
 			}
 		}
+	}
+
+	if (red_player->SkillNeedShow()) 
+	{
+		DrawSkill(game->Getskill_name(red_player->ShowSkill_index()), NULL, red_player->ShowSkill_rect());
+	}
+	if (blue_player->SkillNeedShow())
+	{
+		DrawSkill(game->Getskill_name(blue_player->ShowSkill_index()), NULL, blue_player->ShowSkill_rect());
 	}
 	return 0;
 }

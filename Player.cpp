@@ -34,9 +34,9 @@ int Player::CreatePlayer(Main_Window* main_window_, Input* input_, Map* map_, Pl
 	else {
 		picture_name = "bluedown.png";
 	}
-	/*if (main_window->GetGameModel() == FrightModel) {
-		CreateSkillSum(map);
-	}*/
+	if (main_window->GetGameModel() == FrightModel) {
+		CreateAllSkill();
+	}
 	return 0;
 }
 
@@ -64,37 +64,60 @@ int Player::Updata()
 		//预选位置向上移动
 		if (input->GetKeyState(SDL_SCANCODE_W) == Key_Down)
 		{
-			yuxuan_point.y--;
-			picture_name = "redup.png";
+			if (!SkillNeedShow()) {
+				yuxuan_point.y--;
+				picture_name = "redup.png";
+			}
 		}
 		//预选位置向下移动
 		else if (input->GetKeyState(SDL_SCANCODE_S) == Key_Down)
 		{
-			yuxuan_point.y++;
-			picture_name = "reddown.png";
+			if (!SkillNeedShow()) {
+				yuxuan_point.y++;
+				picture_name = "reddown.png";
+			}
 		}
 		//预选位置向左移动
 		else if (input->GetKeyState(SDL_SCANCODE_A) == Key_Down)
 		{
-			yuxuan_point.x--;
-			picture_name = "redleft.png";
+			if (SkillNeedShow()) {
+				Change_skill_state(-1);
+			}
+			else {
+				yuxuan_point.x--;
+				picture_name = "redleft.png";
+			}
 		}
 		//预选位置向右移动
 		else if (input->GetKeyState(SDL_SCANCODE_D) == Key_Down)
 		{
-			yuxuan_point.x++;
-			picture_name = "redright.png";
+			if (SkillNeedShow()) {
+				Change_skill_state(1);
+			}
+			else {
+				yuxuan_point.x++;
+				picture_name = "redright.png";
+			}
 		}
 		//选择
 		//选择结束时记得更新地图
 		//移动
-		else if (input->GetKeyState(SDL_SCANCODE_G) == Key_Down) { Movetion(); }
+		else if (input->GetKeyState(SDL_SCANCODE_G) == Key_Down)
+		{
+			if (SkillNeedShow()) {
+				Skill(skill_state);
+				skill_state = -1;
+			}
+			else { Movetion(); }
+		}
 		//技能
-		else if (input->GetKeyState(SDL_SCANCODE_H) == Key_Down) { Skill(); }
-		//技能
-		else if (input->GetKeyState(SDL_SCANCODE_J) == Key_Down) { Skill(1); }
-		//技能
-		else if (input->GetKeyState(SDL_SCANCODE_K) == Key_Down) { Skill(2); }
+		else if (input->GetKeyState(SDL_SCANCODE_H) == Key_Down)
+		{
+			if (main_window->GetGameModel() != BaseModel) {
+				if (SkillNeedShow()) { skill_state = -1; }
+				else { skill_state = 0; }
+			}
+		}
 
 	}
 	//蓝色玩家
@@ -103,41 +126,59 @@ int Player::Updata()
 		//预选位置向上移动
 		if (input->GetKeyState(SDL_SCANCODE_UP) == Key_Down)
 		{
-			yuxuan_point.y--;
-			picture_name = "blueup.png";
+			if (!SkillNeedShow()) {
+				yuxuan_point.y--;
+				picture_name = "blueup.png";
+			}
 		}
 		//预选位置向下移动
 		else if (input->GetKeyState(SDL_SCANCODE_DOWN) == Key_Down)
 		{
-			yuxuan_point.y++;
-			picture_name = "bluedown.png";
+			if (!SkillNeedShow()) {
+				yuxuan_point.y++;
+				picture_name = "bluedown.png";
+			}
 		}
 		//预选位置向左移动
 		else if (input->GetKeyState(SDL_SCANCODE_LEFT) == Key_Down)
 		{
-			yuxuan_point.x--;
-			picture_name = "blueleft.png";
+			if (SkillNeedShow()) {
+				Change_skill_state(-1);
+			}
+			else {
+				yuxuan_point.x--;
+				picture_name = "blueleft.png";
+			}
 		}
 		//预选位置向右移动
 		else if (input->GetKeyState(SDL_SCANCODE_RIGHT) == Key_Down)
 		{
-			yuxuan_point.x++;
-			picture_name = "blueright.png";
-		}
-		//投降键
-		else if (input->GetKeyState(SDL_SCANCODE_KP_9) == Key_Keep) {
-			main_window->GameIsEnd(flag);
-			return 0;
+			if (SkillNeedShow()) {
+				Change_skill_state(1);
+			}
+			else {
+				yuxuan_point.x++;
+				picture_name = "blueright.png";
+			}
 		}
 		//选择
 		//选择结束时记得更新地图
 		//移动
-		else if (input->GetKeyState(SDL_SCANCODE_KP_0) == Key_Down) { Movetion(); }
-		else if (input->GetKeyState(SDL_SCANCODE_KP_1) == Key_Down) { Skill(); }
-		//技能
-		else if (input->GetKeyState(SDL_SCANCODE_KP_2) == Key_Down) { Skill(1); }
-		//技能
-		else if (input->GetKeyState(SDL_SCANCODE_KP_3) == Key_Down) { Skill(2); }
+		else if (input->GetKeyState(SDL_SCANCODE_KP_1) == Key_Down)
+		{
+			if (SkillNeedShow()) {
+				Skill(skill_state);
+				skill_state = -1;
+			}
+			else { Movetion(); }
+		}
+		else if (input->GetKeyState(SDL_SCANCODE_KP_2) == Key_Down)
+		{
+			if (main_window->GetGameModel() != BaseModel) {
+				if (SkillNeedShow()) { skill_state = -1; }
+				else { skill_state = 0; }
+			}
+		}
 	}
 	//检验预选位置是否超出范围
 	if (yuxuan_point.x < 0) { yuxuan_point.x = 0; }
@@ -217,11 +258,44 @@ string Player::Getpicture_name()
 	return picture_name;
 }
 
+bool Player::SkillNeedShow()
+{
+	if (main_window->GetGameModel() == FrightModel) {
+		return skill_state > -1 && skill_state < 3;
+	}
+	else {
+		return skill_state > -1 && skill_state < 1;
+	}
+}
+
+int Player::ShowSkill_index()
+{
+	return skill.at(skill_state);
+}
+
+SDL_Rect Player::ShowSkill_rect()
+{
+	return { Getyuxuan_point().x,Getyuxuan_point().y + 30,50,50 };
+}
+
+int Player::CreateAllSkill()
+{
+	for (SKILL i = 1; i < SKILLSUM; i++) {
+		skill_all.emplace_back(i);
+	}
+	while (skill.size() < 3) {
+		int rand = main_window->rander->GetARand(skill_all.size() - 1);
+		skill.emplace_back(skill_all.at(rand));
+		skill_all.erase(skill_all.begin() + rand, skill_all.begin() + rand + 1);
+	}
+	return 0;
+}
+
 Point* Player::GetBeforePoint()
 {
 	int index = move_point.size() - 1;
 	if (move_point.at(index)->flag == QUYU) {
-		while(move_point.at(index)->flag == QUYU){
+		while (move_point.at(index)->flag == QUYU) {
 			index--;
 		}
 		return move_point.at(index)->point;
@@ -294,7 +368,7 @@ int Player::MoveIsRight(bool flag_, Point point_)
 	//是否穿线
 	else if (
 		map->IsThoughLine(
-		before_point->x, temp->y, temp->x, before_point->y)
+			before_point->x, temp->y, temp->x, before_point->y)
 		) {
 		return THOUGH;
 	}
@@ -312,7 +386,7 @@ int Player::Movetion(int flag_)
 		//如果没有移动次数
 		if (move_num < 1) {
 			if (window_time == 0 && !flag_) {
-				main_window->Player_Window(L"不可移动", text_rect, window_time);
+				main_window->Player_Window(L"不可移动", text_rect, window_time, flag);
 			}
 			return false;
 		}
@@ -338,13 +412,13 @@ int Player::Movetion(int flag_)
 				case TOO_LONG:
 					//提示玩家距离过长
 					if (window_time == 0 && !flag_) {
-						main_window->Player_Window(L"距离过长", text_rect, window_time);
+						main_window->Player_Window(L"距离过长", text_rect, window_time, flag);
 					}
 					return false;
 				case THOUGH:
 					//提示玩家禁止穿线
 					if (window_time == 0 && !flag_) {
-						main_window->Player_Window(L"禁止穿线", text_rect, window_time);
+						main_window->Player_Window(L"禁止穿线", text_rect, window_time, flag);
 					}
 					return false;
 				}
@@ -354,7 +428,7 @@ int Player::Movetion(int flag_)
 		{
 			//点位被占用
 			if (window_time == 0 && !flag_) {
-				main_window->Player_Window(L"点位被占", text_rect, window_time);
+				main_window->Player_Window(L"点位被占", text_rect, window_time, flag);
 			}
 			return false;
 		}
@@ -362,7 +436,7 @@ int Player::Movetion(int flag_)
 	else {
 		if (window_time == 0 && !flag_) {
 			//轮到敌人
-			main_window->Player_Window(L"敌人回合", text_rect, window_time);
+			main_window->Player_Window(L"敌人回合", text_rect, window_time, flag);
 		}
 		return false;
 	}
@@ -374,25 +448,25 @@ int Player::Skill(int index_)
 	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
 	if (main_window->GetGameModel() == SkillModel) {
 		if (index_ > 0) {
-			main_window->Player_Window(L"使用失败", text_rect, window_time);
+			main_window->Player_Window(L"使用失败", text_rect, window_time, flag);
 			return 0;
 		}
 	}
 	//基地还未放置无法使用技能
 	if (move_point.empty()) {
-		main_window->Player_Window(L"基地未放", text_rect, window_time);
+		main_window->Player_Window(L"基地未放", text_rect, window_time, flag);
 	}
 	//技能使用次数少
 	else if (skill_num < 1) {
-		main_window->Player_Window(L"不可使用", text_rect, window_time);
+		main_window->Player_Window(L"不可使用", text_rect, window_time, flag);
 	}
 	//敌人的回合
 	else if (map->Gethuihe() % 2 != flag) {
-		main_window->Player_Window(L"敌人回合", text_rect, window_time);
+		main_window->Player_Window(L"敌人回合", text_rect, window_time, flag);
 	}
 	//技能对应的使用次数小于1
 	else if (skill_sum.at(index_) < 1) {
-		main_window->Player_Window(L"使用失败", text_rect, window_time);
+		main_window->Player_Window(L"使用失败", text_rect, window_time, flag);
 	}
 	else {
 		//调用技能使用函数
@@ -403,7 +477,7 @@ int Player::Skill(int index_)
 			skill_sum.at(index_)--;
 			return true;
 		}
-		else { main_window->Player_Window(L"使用失败", text_rect, window_time); }
+		else { main_window->Player_Window(L"使用失败", text_rect, window_time, flag); }
 	}
 	return false;
 }
@@ -438,12 +512,23 @@ int Player::IsLife()
 			}
 		}
 	}
-	else if(model == SkillModel){
+	else if (model == SkillModel) {
 		if (skiller->IsLiveSkill(skill.at(0)) && skill_sum.at(0) > 0) {
 			isLife = LIFE;
 		}
 	}
 	return isLife;
+}
+
+int Player::Change_skill_state(int flag)
+{
+	if (SkillNeedShow() && main_window->GetGameModel() == FrightModel) {
+		if (skill_state + flag > -1 && skill_state + flag < 3) {
+			skill_state += flag;
+			return true;
+		}
+	}
+	return false;
 }
 
 #pragma message("player.cpp is loaded")

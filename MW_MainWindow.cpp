@@ -64,5 +64,6 @@ int Main_Window::Draw_MainWindow()
 		b_flagWindow = flagWindow;
 		flagWindow = ModelWindow;
 	}
+	DrawTTF(L"Ö÷½çÃæ", BLACK, {210,25,fontSize * 3,25});
 	return 0;
 }
