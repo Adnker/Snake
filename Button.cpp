@@ -54,7 +54,7 @@ int Button::DrawButton(SDL_Renderer* renderer_)
 			}
 			//绘制文字
 			if (button_->text != NULL) {
-				DrawTTF(button_->text, *button_->color, *button_->rectxy, renderer_, button_->font);
+				DrawTTF(button_->text, *button_->color, *button_->recttext, renderer_, button_->font);
 			}
 		}
 	}
@@ -96,21 +96,21 @@ void Button::DrawTTF(const wchar_t* text, SDL_Color color, SDL_Rect rect, SDL_Re
 	SDL_RenderCopy(renderer_, texture, 0, &rect);
 }
 
-int Button::AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect* rectxy_, TTF_Font* font, SDL_Color* color_)
+int Button::AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect* rectxy_, SDL_Rect* recttext, TTF_Font* font, SDL_Color* color_)
 {
 	if (rectxy_->w < 1) { return -1; }
 	if (rectxy_->h < 1) { return -1; }
-	BUTTON* temp_button = new BUTTON(text_, tex_, rect1_, rectxy_, font, color_);//创建新的按钮信息
+	BUTTON* temp_button = new BUTTON(text_, tex_, rect1_, rectxy_, recttext, font, color_);//创建新的按钮信息
 	button.emplace_back(temp_button);//将按钮信息加入到数组中
 	return button.size() - 1;//返回此按钮对应的索引作为按钮标识
 }
 
 int Button::AddButton(BUTTON* button_)
 {
-	return AddButton(button_->text, button_->tex, button_->rect1, button_->rectxy, button_->font, button_->color);
+	return AddButton(button_->text, button_->tex, button_->rect1, button_->rectxy, button_->recttext, button_->font, button_->color);
 }
 
-int Button::AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect rectxy_, TTF_Font* font, SDL_Color* color_)
+int Button::AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect rectxy_, SDL_Rect recttext, TTF_Font* font, SDL_Color* color_)
 {
-	return AddButton(text_, tex_, rect1_, &rectxy_, font, color_);
+	return AddButton(text_, tex_, rect1_, &rectxy_, &recttext, font, color_);
 }

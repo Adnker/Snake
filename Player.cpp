@@ -270,7 +270,7 @@ bool Player::SkillNeedShow()
 
 int Player::ShowSkill_index()
 {
-	return skill.at(skill_state);
+	return skill_state;
 }
 
 SDL_Rect Player::ShowSkill_rect()
@@ -287,14 +287,32 @@ int Player::CreateAllSkill()
 		int rand = main_window->rander->GetARand(skill_all.size() - 1);
 		skill.emplace_back(skill_all.at(rand));
 		skill_all.erase(skill_all.begin() + rand, skill_all.begin() + rand + 1);
+		skill_sum.emplace_back(skiller->GetSkillSum(skill.back()));
 	}
 	return 0;
+}
+
+int Player::AddSkill()
+{
+	if (map->Gethuihe() % 10 != 0 || map->Gethuihe() < 1) { return false; }
+	int index = 0;
+	for (int i = 0; i < skill_sum.size(); i++) {
+		if (skill_sum.at(i) < 0) {
+			index = i;
+			break;
+		}
+	}
+	int rand = main_window->rander->GetARand(skill_all.size() - 1);
+	skill.at(index) = skill_all.at(rand);
+	skill_all.erase(skill_all.begin() + rand, skill_all.begin() + rand + 1);
+	skill_sum.at(index) = skiller->GetSkillSum(skill.back());
+	return true;
 }
 
 Point* Player::GetBeforePoint()
 {
 	int index = move_point.size() - 1;
-	if (move_point.at(index)->flag == QUYU) {
+	if (move_point.at(index)->flag == 0 || move_point.at(index)->flag == JIDI) {
 		while (move_point.at(index)->flag == QUYU) {
 			index--;
 		}
@@ -336,25 +354,7 @@ int Player::MoveIsRight(bool flag_, Point point_)
 
 	//最后一个点位 赋值
 	int index = move_point.size() - 1;
-	Point before = ToMapPoint(move_point.at(index)->point);
-	//判断标识
-	if (move_point.at(index)->flag == JIDI) {
-		before = JidiToMap(move_point.at(index));//将基地点位转化为中心点位
-	}
-	else if (move_point.at(index)->flag == QUYU) {
-		//向前遍历知道找到可使用的点位
-		while (index >= 0) {
-			index--;
-			if (move_point.at(index)->flag == JIDI) {
-				before = ToMapPoint(move_point.at(index)->point);
-				break;
-			}
-			else if (move_point.at(index)->flag == NULL) {
-				before = ToMapPoint(move_point.at(index)->point);
-				break;
-			}
-		}
-	}
+	Point before = ToMapPoint(GetBeforePoint());//上一点位
 	Point now = ToMapPoint(temp);//现在的点位
 	//计算两点之间的距离是否是正确的
 	int distance = static_cast<int>(

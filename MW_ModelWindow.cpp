@@ -11,9 +11,15 @@ int Main_Window::Draw_ModelWindow()
 	int h = 40;
 	if (b_flagWindow != flagWindow) {
 		button->Clear();
-		button->AddButton(L"普通训练", texture->GetTexture("k3.png"), NULL, {x,y * 1,w,h}, font, &BLACK);
-		button->AddButton(L"技能训练", texture->GetTexture("k3.png"), NULL, { x,y * 2,w,h }, font, &BLACK);
-		button->AddButton(L"竞技模式", texture->GetTexture("k3.png"), NULL, { x,y * 3,w,h }, font, &BLACK);
+		button->AddButton(L"普通训练", texture->GetTexture("yun.png"), NULL,
+			{ x - picture_jianju_x,y * 1,w + picture_jianju_w,h },
+			{ x,y * 1,w,h }, font, &BLACK);
+		button->AddButton(L"技能训练", texture->GetTexture("yun.png"), NULL,
+			{ x - picture_jianju_x,y * 2,w + picture_jianju_w,h },
+			{ x,y * 2,w,h }, font, &BLACK);
+		button->AddButton(L"竞技模式", texture->GetTexture("yun.png"), NULL,
+			{ x - picture_jianju_x,y * 3,w + picture_jianju_w,h },
+			{ x,y * 3,w,h }, font, &BLACK);
 	}
 	b_flagWindow = flagWindow;
 	DrawPicture("background.png", NULL, { 0,0,rect_Main_Window.w,rect_Main_Window.h });
@@ -34,6 +40,6 @@ int Main_Window::Draw_ModelWindow()
 			break;
 		}
 	}
-	DrawTTF(L"选择模式", BLACK, { 195,25,fontSize * 4,25 });
+	DrawTTF(L"选择模式", BLACK, { 195,25,fontSize * 4,30 });
 	return 0;
 }

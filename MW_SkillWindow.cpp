@@ -20,11 +20,17 @@ int Main_Window::Draw_SkillWindow()
 
 	if (b_flagWindow != flagWindow) {
 		button->Clear();
-		button->AddButton(L"无技能", texture->GetTexture("k3.png"), NULL, { button_x,button_y * 1,button_w,button_h }, font, &BLACK);
-		button->AddButton(L"无技能", texture->GetTexture("k3.png"), NULL, { button_x,button_y * 2,button_w,button_h }, font, &BLACK);
-		button->AddButton(L"无技能", texture->GetTexture("k3.png"), NULL, { button_x,button_y * 3,button_w,button_h }, font, &BLACK);
-		button->AddButton(NULL, texture->GetTexture("buttonLeft.png"), NULL, text1, font, &BLACK);
-		button->AddButton(NULL, texture->GetTexture("buttonRight.png"), NULL, text2, font, &BLACK);
+		button->AddButton(L"无技能", texture->GetTexture("k3.png"), NULL,
+			{ button_x - picture_jianju_x,button_y * 1,button_w + picture_jianju_w,button_h },
+			{ button_x,button_y * 1,button_w,button_h }, font, &LITTLE_BLACK);
+		button->AddButton(L"无技能", texture->GetTexture("k3.png"), NULL,
+			{ button_x - picture_jianju_x,button_y * 2,button_w + picture_jianju_w,button_h },
+			{ button_x,button_y * 2,button_w,button_h }, font, &LITTLE_BLACK);
+		button->AddButton(L"无技能", texture->GetTexture("k3.png"), NULL,
+			{ button_x - picture_jianju_x,button_y * 3,button_w + picture_jianju_w,button_h },
+			{ button_x,button_y * 3,button_w,button_h }, font, &LITTLE_BLACK);
+		button->AddButton(NULL, texture->GetTexture("buttonLeft.png"), NULL, text1, text1, font, &BLACK);
+		button->AddButton(NULL, texture->GetTexture("buttonRight.png"), NULL, text2, text2, font, &BLACK);
 		button->GetButton(Button4)->drawFlag = false;//一开始的时候上一页不用绘制
 	}
 	b_flagWindow = flagWindow;
@@ -96,8 +102,13 @@ int Main_Window::Draw_SkillWindow()
 			break;
 		}
 	}
+
+
+	//绘制需要显示的技能
 	if (skill_index > -1) {
-		DrawSkill(game->Getskill_name(skill_index), NULL, { 210,380,80,80 });//绘制技能图标提示
+		int y = button_y * (skill_index % 3);
+		if (y == 0) { y = button_y * 3; }
+		DrawSkill(game->Getskill_name(skill_index), NULL, { button_x - picture_jianju_x - button_h,y,button_h,button_h });//绘制技能图标提示
 	}
 	if (picture_index > -1) {
 		picture_index++;
@@ -108,7 +119,7 @@ int Main_Window::Draw_SkillWindow()
 	bool index_isTrue;
 	bool needToDraw;
 	needToDraw = index > 3;
-	if(needToDraw){
+	if (needToDraw) {
 		button->GetButton(Button4)->drawFlag = true;
 		//上一页 第四个按钮
 		int& Button4_x = button->GetButton(Button4)->rectxy->x;//按钮4x坐标
@@ -120,7 +131,7 @@ int Main_Window::Draw_SkillWindow()
 			if (index_isTrue) { index -= 3; }
 			break;
 		case Key_Move:
-			if (Button4_flag == 0) { Button4_x++; if (Button4_x > 20) { Button4_flag = 1; } }
+			if (Button4_flag == 0) { Button4_x++; if (Button4_x > 30) { Button4_flag = 1; } }
 			else { Button4_x--; if (Button4_x < 1) { Button4_flag = 0; } }
 			break;
 		default:
@@ -147,7 +158,7 @@ int Main_Window::Draw_SkillWindow()
 			if (index_isTrue) { index += 3; }
 			break;
 		case Key_Move:
-			if (Button5_flag == 0) { Button5_x--; if (Button5_x < 500 - text2.w - 20) { Button5_flag = 1; } }
+			if (Button5_flag == 0) { Button5_x--; if (Button5_x < 500 - text2.w - 30) { Button5_flag = 1; } }
 			else { Button5_x++; if (Button5_x > 500 - text2.w) { Button5_flag = 0; } }
 			break;
 		default:
@@ -159,7 +170,7 @@ int Main_Window::Draw_SkillWindow()
 	else {
 		button->GetButton(Button5)->drawFlag = false;
 	}
-	
+
 
 
 	const wchar_t* text;//显示的文本内容
@@ -175,8 +186,8 @@ int Main_Window::Draw_SkillWindow()
 		name = "bluedown.png";
 		color = BLUE;
 	}
-	DrawTTF(text, color, { 175,25,fontSize * 6,25 });
-	SDL_Rect rect = { 140,25,25,25 };
+	DrawTTF(text, color, { 175,25,fontSize * 6,30 });
+	SDL_Rect rect = { 140,25,30,30 };
 	texture->Draw(name, NULL, &rect);
 	return 0;
 }

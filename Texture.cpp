@@ -7,8 +7,10 @@ Texture::Texture(SDL_Renderer* renderer_)
 
 SDL_Texture* Texture::Loading(const std::string fileName)
 {
+	std::string way = "Texture\\";
+	way += fileName;
 	//加载文件
-	SDL_Surface* face = IMG_Load(fileName.c_str());
+	SDL_Surface* face = IMG_Load(way.c_str());
 	if (!face)
 	{
 		SDL_Log("error is face %s", SDL_GetError());
@@ -97,6 +99,8 @@ int Texture::LoadAllSkill()
 	tex_skill.emplace(L"追击", Loading("zhuiji.png"));
 	tex_skill.emplace(L"疾跑", Loading("jipao.png"));
 	tex_skill.emplace(L"箭行", Loading("jianxing.png"));
+	tex_skill.emplace(L"控制", Loading("kongzhi.png"));
+	tex_skill.emplace(L"护盾", Loading("hudun.png")); 
 	return 0;
 }
 

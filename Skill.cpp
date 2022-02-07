@@ -46,10 +46,14 @@ int Skiller::Use_Skill(int index_, int player_flag_)
 		return Skill_jipao();
 	case SKILL_FLAG_JIANXING:
 		return Skill_jianxing();
+	case SKILL_FLAG_KONGZHI:
+		return Skill_kongzhi();
+	case SKILL_FLAG_HUDUN:
+		return Skill_hudun();
 	default:
-		break;
+		return false;
 	}
-	return true;
+	return false;
 }
 
 bool Skiller::IsLiveSkill(int index_) {
@@ -142,4 +146,28 @@ int Skiller::Skill_jianxing()
 		return true;
 	}
 	return false;
+}
+
+int Skiller::Skill_kongzhi()
+{
+	if (player->player->MoveIsRight(true, player->yuxuan_point) == true) 
+	{
+		Point point = player->player->yuxuan_point;
+		player->player->yuxuan_point = player->yuxuan_point;
+		player->player->move_num = 1;
+		player->player->Movetion(true);
+		player->player->yuxuan_point = point;
+		map->Updata(&player->yuxuan_point, player->player->flag, ZHAN, false);//更新点位及回合
+		player->player->UpdataSum();//更新敌人
+		return true;
+	}
+	return false;
+}
+
+int Skiller::Skill_hudun()
+{
+	player->player->move_num = 5;
+	player->player->skill_num = 0;
+	map->Updatahuihe();
+	return true;
 }

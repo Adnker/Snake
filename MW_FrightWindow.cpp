@@ -19,35 +19,10 @@ int Main_Window::Draw_FrightWindow()
 	}
 	DrawLine(350, 700, 350, 800);//最顶上的线条
 
-	/*//////////////////////////////////////////////////////////////////////////////////*/
-	//绘制技能
-	int h_skill = 720;//技能统一高度
-	int w_skill = 50;//技能统一宽度
-	int j_skill = 30;//技能统一间距
-	////判断选择的模式 不同的模式需要绘制的东西不同
-	//if (model == SkillModel) {
-	//	//技能模式
-	//	DrawSkill(game->Getskill_name(red_player->Getskill()->at(0)), NULL, { 350 - j_skill - w_skill, h_skill, w_skill, w_skill });//绘制红方玩家的技能图标
-	//	DrawSkill(game->Getskill_name(blue_player->Getskill()->at(0)), NULL, { 350 + j_skill, h_skill, w_skill, w_skill });//绘制蓝方玩家的技能图标
-	//}
-	//else if (model == FrightModel) {
-	//	//竞技模式
-	//	const vector<SKILL>* skill;//保存玩家的技能数组
-	//	const wchar_t* skill_name;//保存对应的技能名字
-
-	//	skill = red_player->Getskill();//获取红方玩家的技能数组
-	//	//绘制红方玩家三个技能
-	//	for (int i = 0; i < 3; i++) {
-	//		DrawSkill(game->Getskill_name(skill->at(i)), NULL, { 700 - w_skill - j_skill,h_skill,w_skill,w_skill });
-	//		DrawTTF(game->Getskill_flag_sum(red_player->Getskill_num(i)), RED, { i * fontSize * 3,740,40,40 });
-	//	}
-	//	skill = blue_player->Getskill();//获取蓝方玩家技能数组
-	//	//绘制蓝方玩家三个技能
-	//	for (int i = 0; i < 3; i++) {
-	//		DrawSkill(game->Getskill_name(skill->at(i)), NULL, { 700 - w_skill - j_skill,h_skill,w_skill,w_skill });
-	//		DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_num(i)), BLUE, { 700 - (i + 1) * fontSize * 3,740,40,40 });
-	//	}
-	//}
+	if (model == FrightModel) {
+		red_player->AddSkill();
+		blue_player->AddSkill();
+	}
 
 	/*///////////////////////////////////////////////////////////////////////////////*/
 	//绘制玩家行动路线
@@ -115,13 +90,38 @@ int Main_Window::Draw_FrightWindow()
 		}
 	}
 
+	int skill_sum_h = 20;
 	if (red_player->SkillNeedShow()) 
 	{
-		DrawSkill(game->Getskill_name(red_player->ShowSkill_index()), NULL, red_player->ShowSkill_rect());
+		SDL_Rect rectShow = red_player->ShowSkill_rect();
+		if (rectShow.x + rectShow.w * 2 + 5 > rect_Fright_Window.w) {
+			rectShow.x = rect_Fright_Window.w - rectShow.w * 2 - 5;
+		}
+		if (rectShow.y + rectShow.h > rect_Fright_Window.h) {
+			rectShow.y = rect_Fright_Window.h - rectShow.h - 30; 
+		}
+		DrawSkill(game->Getskill_name(red_player->Getskill()->at(red_player->ShowSkill_index())), NULL, rectShow);
+		rectShow.x = rectShow.x + rectShow.w - skill_sum_h;
+		rectShow.y = rectShow.y + rectShow.h - skill_sum_h;
+		rectShow.h = skill_sum_h;
+		rectShow.w = skill_sum_h;
+		DrawTTF(game->Getskill_flag_sum(red_player->Getskill_sum(red_player->ShowSkill_index())), WHITE, rectShow);
 	}
 	if (blue_player->SkillNeedShow())
 	{
-		DrawSkill(game->Getskill_name(blue_player->ShowSkill_index()), NULL, blue_player->ShowSkill_rect());
+		SDL_Rect rectShow = blue_player->ShowSkill_rect();
+		if (rectShow.x + rectShow.w * 2 + 5 > rect_Fright_Window.w) {
+			rectShow.x = rect_Fright_Window.w - rectShow.w * 2 - 5;
+		}
+		if (rectShow.y + rectShow.h > rect_Fright_Window.h) {
+			rectShow.y = rect_Fright_Window.h - rectShow.h - 30 ;
+		}
+		DrawSkill(game->Getskill_name(blue_player->Getskill()->at(blue_player->ShowSkill_index())), NULL, rectShow);
+		rectShow.x = rectShow.x + rectShow.w - skill_sum_h;
+		rectShow.y = rectShow.y + rectShow.h - skill_sum_h;
+		rectShow.h = skill_sum_h;
+		rectShow.w = skill_sum_h;
+		DrawTTF(game->Getskill_flag_sum(blue_player->Getskill_sum(blue_player->ShowSkill_index())), WHITE, rectShow);
 	}
 	return 0;
 }

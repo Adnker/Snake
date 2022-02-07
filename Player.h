@@ -58,10 +58,11 @@ public:
 	int ShowSkill_index();//获取玩家需要展示的技能的索引
 	SDL_Rect ShowSkill_rect();//获取玩家需要展示的技能矩形
 	int CreateAllSkill();//为玩家分发技能 只在竞技模式中使用
+	int AddSkill();//为玩家分发技能 只在竞技模式中使用
 private:
 	Point* GetBeforePoint();//获取玩家上一个可用点位
 	int CanMove();//判断玩家是否能继续移动
-	int MoveIsRight(bool flag_ = false, Point point_ = { -1,-1 });//判断玩家选择的点位是否正确
+	int MoveIsRight(bool flag_ = false, Point point_ = { -1,-1 });//判断玩家选择的点位是否正确 flag_是否是外来点位
 	int Movetion(int flag_ = false);//玩家选择移动
 	int Skill(int index_ = 0);//玩家选择使用技能
 	int IsLife();//玩家是否存活

@@ -12,8 +12,12 @@ int Main_Window::Draw_MainWindow()
 	int picture_h = 40;
 	if (b_flagWindow != MainWindow) {
 		button->Clear();
-		button->AddButton(L"开始游戏", texture->GetTexture("k3.png"), NULL, { button_x,button_y * 1,button_w,button_h }, font, &BLACK);
-		button->AddButton(L"模式选择", texture->GetTexture("k3.png"), NULL, { button_x,button_y * 2,button_w,button_h }, font, &BLACK);
+		button->AddButton(L"开始游戏", texture->GetTexture("yun.png"), NULL,
+			{ button_x - picture_jianju_x,button_y * 1,button_w + picture_jianju_w,button_h },
+			{ button_x,button_y * 1,button_w,button_h }, font, &BLACK);
+		button->AddButton(L"模式选择", texture->GetTexture("yun.png"), NULL,
+			{ button_x - picture_jianju_x,button_y * 2,button_w + picture_jianju_w,button_h },
+			{ button_x,button_y * 2,button_w,button_h }, font, &BLACK);
 	}
 	b_flagWindow = flagWindow;
 	DrawPicture("background.png", NULL, { 0,0,rect_Main_Window.w,rect_Main_Window.h });//绘制背景
@@ -64,6 +68,6 @@ int Main_Window::Draw_MainWindow()
 		b_flagWindow = flagWindow;
 		flagWindow = ModelWindow;
 	}
-	DrawTTF(L"主界面", BLACK, {210,25,fontSize * 3,25});
+	DrawTTF(L"主界面", BLACK, { 210,25,fontSize * 3,30 });
 	return 0;
 }

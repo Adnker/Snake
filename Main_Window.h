@@ -17,7 +17,7 @@ static SDL_Color WHITE = { 255,255,255,255 };//白色
 static SDL_Color BLACK = { 0,0,0,255 };//黑色
 static SDL_Color RED = { 255,0,0,255 };//红色
 static SDL_Color BLUE = { 0,0,255,255 };//蓝色
-static SDL_Color LITTLE_BLACK = { 200,200,200,255 };//灰色
+static SDL_Color LITTLE_BLACK = { 220,220,220,255 };//灰色
 
 
 //错误值
@@ -54,6 +54,9 @@ const int FrightModel = 3;
 //加载的字体
 static const char* fontText = "simkai.TTF";
 const int fontSize = 25;
+
+const int picture_jianju_x = 40;
+const int picture_jianju_w = 80;
 
 
 /*用于保存窗口提示的信息

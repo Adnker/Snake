@@ -23,22 +23,28 @@ const int Key_Move = 4;
 *int flag 用于动画的特殊标识
 */
 struct BUTTON {
-	BUTTON(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect* rectxy_, TTF_Font* font_, SDL_Color* color_) {
+	BUTTON(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect* rectxy_, SDL_Rect* recttext_, TTF_Font* font_, SDL_Color* color_) {
 		text = text_;
 		font = font_;
 		color = color_;
 		tex = tex_;
-		if (rect1) {
+		if (rect1_ == NULL) {
 			rect1 = NULL;
 		}
 		else {
 			rect1 = new SDL_Rect(*rect1_);
 		}
 		if (rectxy_ == NULL) {
-			rectxy_ = NULL;//将绘制不出来
+			rectxy = NULL;//将绘制不出来
 		}
 		else {
 			rectxy = new SDL_Rect(*rectxy_);
+		}
+		if (recttext_ == NULL) {
+			recttext = NULL;
+		}
+		else {
+			recttext = new SDL_Rect(*recttext_);
 		}
 	}
 	BUTTON(BUTTON* button_) {
@@ -48,12 +54,14 @@ struct BUTTON {
 		tex = button_->tex;
 		rect1 = button_->rect1;
 		rectxy = button_->rectxy;
+		recttext = button_->recttext;
 	}
 	const wchar_t* text;
 	TTF_Font* font;
 	SDL_Color* color;
 	SDL_Texture* tex;
 	SDL_Rect* rect1;
+	SDL_Rect* recttext;
 	SDL_Rect* rectxy;
 	int Left_state = -1;
 	int Right_state = -1;
@@ -77,9 +85,9 @@ public:
 	//绘制文字
 	void DrawTTF(const wchar_t* text, SDL_Color color, SDL_Rect rect, SDL_Renderer* renderer, TTF_Font* font);
 
-	BUTTONER AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect* rectxy_, TTF_Font* font, SDL_Color* color_);//添加按钮
+	BUTTONER AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect* rectxy_, SDL_Rect* recttext, TTF_Font* font, SDL_Color* color_);//添加按钮
 	BUTTONER AddButton(BUTTON* button_);//添加按钮
-	BUTTONER AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect rectxy_, TTF_Font* font, SDL_Color* color_);//添加按钮
+	BUTTONER AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect rectxy_, SDL_Rect recttext, TTF_Font* font, SDL_Color* color_);//添加按钮
 private:
 	std::vector<BUTTON*> button;
 };
