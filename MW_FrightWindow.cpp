@@ -90,15 +90,15 @@ int Main_Window::Draw_FrightWindow()
 		}
 	}
 
-	int skill_sum_h = 20;
-	if (red_player->SkillNeedShow()) 
+	int skill_sum_h = 25;
+	if (red_player->SkillNeedShow())
 	{
 		SDL_Rect rectShow = red_player->ShowSkill_rect();
 		if (rectShow.x + rectShow.w * 2 + 5 > rect_Fright_Window.w) {
 			rectShow.x = rect_Fright_Window.w - rectShow.w * 2 - 5;
 		}
 		if (rectShow.y + rectShow.h > rect_Fright_Window.h) {
-			rectShow.y = rect_Fright_Window.h - rectShow.h - 30; 
+			rectShow.y = rect_Fright_Window.h - rectShow.h - 30;
 		}
 		DrawSkill(game->Getskill_name(red_player->Getskill()->at(red_player->ShowSkill_index())), NULL, rectShow);
 		rectShow.x = rectShow.x + rectShow.w - skill_sum_h;
@@ -114,7 +114,7 @@ int Main_Window::Draw_FrightWindow()
 			rectShow.x = rect_Fright_Window.w - rectShow.w * 2 - 5;
 		}
 		if (rectShow.y + rectShow.h > rect_Fright_Window.h) {
-			rectShow.y = rect_Fright_Window.h - rectShow.h - 30 ;
+			rectShow.y = rect_Fright_Window.h - rectShow.h - 30;
 		}
 		DrawSkill(game->Getskill_name(blue_player->Getskill()->at(blue_player->ShowSkill_index())), NULL, rectShow);
 		rectShow.x = rectShow.x + rectShow.w - skill_sum_h;

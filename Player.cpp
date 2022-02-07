@@ -312,8 +312,9 @@ int Player::AddSkill()
 Point* Player::GetBeforePoint()
 {
 	int index = move_point.size() - 1;
-	if (move_point.at(index)->flag == 0 || move_point.at(index)->flag == JIDI) {
-		while (move_point.at(index)->flag == QUYU) {
+	#define IsQuyuOrXu  move_point.at(index)->flag == QUYU || move_point.at(index)->flag > 0
+	if (IsQuyuOrXu) {
+		while (IsQuyuOrXu) {
 			index--;
 		}
 		return move_point.at(index)->point;
