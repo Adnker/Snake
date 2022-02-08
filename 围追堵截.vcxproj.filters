@@ -20,7 +20,7 @@
     <ClCompile Include="Mouse_Window.cpp">
       <Filter>Class\Main_Window\Mouse_Window</Filter>
     </ClCompile>
-    <ClCompile Include="myMath.cpp">
+    <ClCompile Include="myFun.cpp">
       <Filter>My</Filter>
     </ClCompile>
     <ClCompile Include="Skill.cpp">
@@ -108,7 +108,7 @@
     <ClInclude Include="Mouse_Window.h">
       <Filter>Class\Main_Window\Mouse_Window</Filter>
     </ClInclude>
-    <ClInclude Include="myMath.h">
+    <ClInclude Include="myFun.h">
       <Filter>My</Filter>
     </ClInclude>
     <ClInclude Include="Skill.h">

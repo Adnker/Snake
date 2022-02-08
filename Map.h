@@ -33,8 +33,6 @@ const int NOONE = -1;
 
 //ø’µÿÕºµ„Œª
 static struct Map_Point Map_None = { NONE, NOONE , 49 };
-
-#pragma message ("Loading Map...")
 class Map {
 public:
 	int Clear();
@@ -81,6 +79,5 @@ private:
 		{Map_None,Map_None,Map_None,Map_None,Map_None,Map_None,Map_None}
 	};
 };
-#pragma message ("Map is loaded")
 
 #endif // !MAP_H

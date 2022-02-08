@@ -1,7 +1,7 @@
 #include "Mouse_Window.h"
 
 const int ERASE = 40;
-const int MAXLONG = 6;
+const int MOUSE_MAXLONG = 6;
 int Mouse_Window::DrawSnake()
 {
 	if (flag_mouse_time > 0) {
@@ -9,7 +9,7 @@ int Mouse_Window::DrawSnake()
 		if (flag_mouse_time > 3) { flag_mouse_time = 0; }
 	}
 	else if (flag_mouse_time == 0 && input->GetMouseMove()) {
-		if (point_sum.size() > MAXLONG) {
+		if (point_sum.size() > MOUSE_MAXLONG) {
 			point_sum.erase(point_sum.begin(), point_sum.begin() + 1);//删除多余的元素
 		}
 		Point* temp = new Point(input->GetNowPoint()->x, input->GetNowPoint()->y);//创建新的鼠标点

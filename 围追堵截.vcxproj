@@ -169,7 +169,7 @@
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="围追堵截.cpp" />
-    <ClCompile Include="myMath.cpp" />
+    <ClCompile Include="myFun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
@@ -178,7 +178,7 @@
     <ClInclude Include="Main_Window.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Mouse_Window.h" />
-    <ClInclude Include="myMath.h" />
+    <ClInclude Include="myFun.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="Texture.h" />

@@ -15,8 +15,8 @@
 int main(){
 
 	//隐藏cmd窗口
-	//HWND hwnd = GetForegroundWindow();
-	//ShowWindow(hwnd, SW_HIDE);
+	/*HWND hwnd = GetForegroundWindow();
+	ShowWindow(hwnd, SW_HIDE);*/
 
 	HANDLE handle;
 	handle = CreateMutex(NULL, FALSE, "Snake");//Release模式下加上一个使用：handle = CreateMutex(NULL, FALSE, L"Snake");

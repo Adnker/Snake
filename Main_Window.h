@@ -7,7 +7,7 @@
 #include <SDL_ttf.h>
 #include <vector>
 #include "Mouse_Window.h"
-#include "myMath.h"
+#include "myFun.h"
 #include "Player.h"
 #include "Texture.h"
 #include "Button.h"
@@ -66,7 +66,7 @@ const int picture_jianju_w = 80;
 * int flag 用于保存谁调用的信息
 */
 struct Window_Msg {
-	Window_Msg(const wchar_t* text_, SDL_Rect rect_,int flag_) {
+	Window_Msg(const wchar_t* text_, SDL_Rect rect_, int flag_) {
 		text = text_;
 		rect = rect_;
 		flag = flag_;
@@ -80,8 +80,6 @@ struct Window_Msg {
 //窗口显示的死亡时间 大于此时间的窗口要进行销毁
 const int DeadTime = 100;
 
-
-#pragma message ("Loading Main_Window...")
 class Main_Window {
 public:
 	class Rander* rander;
@@ -93,7 +91,7 @@ public:
 	int Shutdown();
 	//添加玩家提示窗口
 	//window_time = 0
-	int Player_Window(const wchar_t* text_, SDL_Rect rect_, int& flag_window_,int flag_);
+	int Player_Window(const wchar_t* text_, SDL_Rect rect_, int& flag_window_, int flag_);
 	//获取窗口标志
 	int GetFlag();
 	//游戏结束
@@ -128,8 +126,6 @@ private:
 	int Draw_SkillWindow();
 	//绘制模式选择界面
 	int Draw_ModelWindow();
-	//绘制玩家行动
-	int DrawMove(const vector<struct Move_point*>* move_point, SDL_Color* color_);
 	//窗口提示
 	std::vector<Window_Msg*> window_msg;
 	//核心类
@@ -166,5 +162,4 @@ private:
 	//用于模式选择
 	int model = BaseModel;
 };
-#pragma message ("Main_Window is loaded")
 #endif // !Main_Window_H

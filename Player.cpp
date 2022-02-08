@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "Map.h"
-#include "myMath.h"
-#pragma message("Loading player.cpp")
+#include "myFun.h"
 
 const int TOO_LONG = 2;
 const int THOUGH = 3;
@@ -312,7 +311,7 @@ int Player::AddSkill()
 Point* Player::GetBeforePoint()
 {
 	int index = move_point.size() - 1;
-	#define IsQuyuOrXu  move_point.at(index)->flag == QUYU || move_point.at(index)->flag > 0
+#define IsQuyuOrXu  move_point.at(index)->flag == QUYU || move_point.at(index)->flag > 0
 	if (IsQuyuOrXu) {
 		while (IsQuyuOrXu) {
 			index--;
@@ -531,5 +530,3 @@ int Player::Change_skill_state(int flag)
 	}
 	return false;
 }
-
-#pragma message("player.cpp is loaded")

@@ -1,5 +1,6 @@
 #include "Main_Window.h"
 #include "Game.h"
+#include <Windows.h>
 
 int Main_Window::GameIsEnd(int flag_Player_)
 {
@@ -34,7 +35,8 @@ int Main_Window::CreatNewWindow(SDL_Rect* rect)
 {
 	SDL_DestroyWindow(window);
 	//创建窗口
-	window = SDL_CreateWindow("Snake", rect->x, rect->y, rect->w, rect->h, SDL_WINDOW_SHOWN);
+	const char* name = "Snake";
+	window = SDL_CreateWindow(name, rect->x, rect->y, rect->w, rect->h, SDL_WINDOW_SHOWN);
 	//检查
 	if (!window) {
 		SDL_Log("%s", SDL_GetError());

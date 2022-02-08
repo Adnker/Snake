@@ -50,6 +50,8 @@ int Skiller::Use_Skill(int index_, int player_flag_)
 		return Skill_kongzhi();
 	case SKILL_FLAG_HUDUN:
 		return Skill_hudun();
+	case SKILL_FLAG_JIAOHUAN:
+		return Skill_jiaohuan();
 	default:
 		return false;
 	}
@@ -169,5 +171,16 @@ int Skiller::Skill_hudun()
 	player->player->move_num = 5;
 	player->player->skill_num = 0;
 	map->Updatahuihe();
+	return true;
+}
+
+int Skiller::Skill_jiaohuan()
+{
+	Move_point* temp_point1 = new Move_point(*player->player->GetBeforePoint(),JIDI);
+	Move_point* temp_point2 = new Move_point(*player->GetBeforePoint(), JIDI);
+	player->move_point.emplace_back(temp_point1);
+	player->player->move_point.emplace_back(temp_point2);
+	map->Updatahuihe();
+	player->player->UpdataSum();
 	return true;
 }

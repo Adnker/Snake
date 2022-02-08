@@ -36,7 +36,6 @@ const int DEAD = 0;
 //¥ÊªÓ
 const int LIFE = 1;
 
-#pragma message ("Loading Player...")
 class Player{
 public:
 	friend class Skiller;
@@ -98,6 +97,5 @@ private:
 	class Player* player;//µ–»À
 	class Skiller* skiller;
 };
-#pragma message("Player is loaded")
 
 #endif // !PLAYER_H

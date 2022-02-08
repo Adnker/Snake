@@ -6,7 +6,6 @@
 #include "Player.h"
 #include "Map.h"
 
-#pragma message ("Loading Game...")
 class Game {
 public:
 	int OpenGame();
@@ -31,4 +30,3 @@ private:
 	class Map* map;
 	class Skiller* skiller;
 };
-#pragma message ("Game is loaded")

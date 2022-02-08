@@ -21,7 +21,6 @@ const int Key_Keep = 2;
 const int Key_None = 3;
 const int Key_Move = 4;
 
-#pragma message ("Loading Input...")
 class Input {
 public:
 	//≥ı ºªØ
@@ -48,5 +47,4 @@ private:
 	struct Point beforePoint;
 	Uint32 beforeMouseState;
 };
-#pragma message ("Input is loaded")
 #endif

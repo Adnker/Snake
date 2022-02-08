@@ -27,19 +27,77 @@ int Main_Window::Draw_FrightWindow()
 	/*///////////////////////////////////////////////////////////////////////////////*/
 	//绘制玩家行动路线
 	int jidi_h = 50;//统一基地边长
-	const vector<Move_point*>* move_point;//保存玩家移动数组
+	int quyu_h = 30;
+	int index_now = 1;
+	int index_before = 0;
+	Point* point_before;
+	SDL_Color color;
+	bool needToDrawMove = true;
+	const vector<Move_point*>* red_point;//保存玩家移动数组
+	const vector<Move_point*>* blue_point;//保存玩家移动数组
 
-	move_point = red_player->GetMove_point();//获取玩家的移动数组
-	if (!move_point->empty()) {
-		FillRect(move_point->at(0)->point->x * 100 + 25, move_point->at(0)->point->y * 100 + 25, jidi_h, jidi_h, &RED);//绘制玩家的基地
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//设置着色器颜色为红色
-		DrawMove(move_point, &RED);
+	red_point = red_player->GetMove_point();//获取玩家的移动数组
+	blue_point = blue_player->GetMove_point();//获取蓝方移动数组
+	if (!red_point->empty()) {
+		FillRect(red_point->at(0)->point->x * 100 + 25, red_point->at(0)->point->y * 100 + 25, jidi_h, jidi_h, &RED);//绘制玩家的基地
 	}
-	move_point = blue_player->GetMove_point();//获取蓝方移动数组
-	if (!move_point->empty()) {
-		FillRect(move_point->at(0)->point->x * 100 + 25, move_point->at(0)->point->y * 100 + 25, jidi_h, jidi_h, &BLUE);//绘制蓝方基地
-		SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);//设置着色器颜色为蓝色
-		DrawMove(move_point, &BLUE);
+	if (!blue_point->empty()) {
+		FillRect(blue_point->at(0)->point->x * 100 + 25, blue_point->at(0)->point->y * 100 + 25, jidi_h, jidi_h, &BLUE);//绘制蓝方基地
+	}
+	while (needToDrawMove) {
+		needToDrawMove = false;
+		//红方
+		if (index_now < red_point->size()) {
+			needToDrawMove = true;
+			color = RED;
+			if (red_point->at(index_now)->flag == NULL) {
+				point_before = red_point->at(index_before)->point;
+				if (red_point->at(index_before)->flag == QUYU) {
+					int i = index_before - 1;
+					while (red_point->at(i)->flag == QUYU) {
+						i--;
+					}
+					point_before = red_point->at(i)->point;
+				}
+				DrawLineColor(red_point->at(index_now)->point->x * 100 + 50, red_point->at(index_now)->point->y * 100 + 50,
+					point_before->x * 100 + 50, point_before->y * 100 + 50, color);
+			}
+			else if (red_point->at(index_now)->flag == JIDI) {
+				FillRect(red_point->at(index_now)->point->x * 100 + 25, red_point->at(index_now)->point->y * 100 + 25,
+					jidi_h, jidi_h, &color);
+			}
+			else if (red_point->at(index_now)->flag == QUYU) {
+				FillRect(red_point->at(index_now)->point->x * 100 + 20, red_point->at(index_now)->point->y * 100 + 20,
+					quyu_h, quyu_h, &color);
+			}
+		}
+		//蓝方
+		if (index_now < blue_point->size()) {
+			needToDrawMove = true;
+			color = BLUE;
+			if (blue_point->at(index_now)->flag == NULL) {
+				point_before = blue_point->at(index_before)->point;
+				if (blue_point->at(index_before)->flag == QUYU) {
+					int i = index_before - 1;
+					while (blue_point->at(i)->flag == QUYU) {
+						i--;
+					}
+					point_before = blue_point->at(i)->point;
+				}
+				DrawLineColor(blue_point->at(index_now)->point->x * 100 + 50, blue_point->at(index_now)->point->y * 100 + 50,
+					point_before->x * 100 + 50, point_before->y * 100 + 50, color);
+			}
+			else if (blue_point->at(index_now)->flag == JIDI) {
+				FillRect(blue_point->at(index_now)->point->x * 100 + 25, blue_point->at(index_now)->point->y * 100 + 25,
+					jidi_h, jidi_h, &color);
+			}
+			else if (blue_point->at(index_now)->flag == QUYU) {
+				FillRect(blue_point->at(index_now)->point->x * 100 + 20, blue_point->at(index_now)->point->y * 100 + 20,
+					quyu_h, quyu_h, &color);
+			}
+		}
+		index_now++;
+		index_before++;
 	}
 
 	/*///////////////////////////////////////////////////////////////////////////////*/
