@@ -41,7 +41,8 @@ const int GameoverWindow = 2;
 const int SkillWindow = 4;
 //模式选择窗口
 const int ModelWindow = 5;
-
+//技能介绍窗口
+const int JieshaoWindow = 6;
 
 //普通模式
 const int BaseModel = 1;
@@ -126,6 +127,8 @@ private:
 	int Draw_SkillWindow();
 	//绘制模式选择界面
 	int Draw_ModelWindow();
+	//绘制技能介绍窗口
+	int Draw_JieshaoWindow();
 	//窗口提示
 	std::vector<Window_Msg*> window_msg;
 	//核心类

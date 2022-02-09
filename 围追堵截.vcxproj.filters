@@ -29,27 +29,6 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Class\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="Main_Window_Fun.cpp">
-      <Filter>Class\Main_Window</Filter>
-    </ClCompile>
-    <ClCompile Include="MW_FrightWindow.cpp">
-      <Filter>Class\Main_Window</Filter>
-    </ClCompile>
-    <ClCompile Include="MW_MainWindow.cpp">
-      <Filter>Class\Main_Window</Filter>
-    </ClCompile>
-    <ClCompile Include="MW_GameOverWindow.cpp">
-      <Filter>Class\Main_Window</Filter>
-    </ClCompile>
-    <ClCompile Include="MW_SkillWindow.cpp">
-      <Filter>Class\Main_Window</Filter>
-    </ClCompile>
-    <ClCompile Include="MW_ModelWindow.cpp">
-      <Filter>Class\Main_Window</Filter>
-    </ClCompile>
-    <ClCompile Include="MW_Draw.cpp">
-      <Filter>Class\Main_Window</Filter>
-    </ClCompile>
     <ClCompile Include="Button.cpp">
       <Filter>Class\Button</Filter>
     </ClCompile>

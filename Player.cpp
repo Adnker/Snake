@@ -6,15 +6,10 @@ const int TOO_LONG = 2;
 const int THOUGH = 3;
 const int NOPOINT = 4;
 
-int Player::Clear()
-{
-	move_num = 1;
-	skill_num = 1;
-	window_time = 0;
-	yuxuan_point = { 0,0 };
-	return true;
-}
 
+/*
+* 初始化函数
+*/
 int Player::CreatePlayer(Main_Window* main_window_, Input* input_, Map* map_, Player* player_,
 	Skiller* skiller_, int flag_)
 {
@@ -39,6 +34,23 @@ int Player::CreatePlayer(Main_Window* main_window_, Input* input_, Map* map_, Pl
 	return 0;
 }
 
+
+/*
+* 重置玩家
+*/
+int Player::Clear()
+{
+	move_num = 1;
+	skill_num = 1;
+	window_time = 0;
+	yuxuan_point = { 0,0 };
+	return true;
+}
+
+
+/*
+* 更新
+*/
 int Player::Updata()
 {
 	if (window_time > 0) {
@@ -196,12 +208,21 @@ int Player::Updata()
 	return 0;
 }
 
+
+/*
+* 更新玩家的移动次数，技能可使用次数
+* 每次回合更新的时候都需要调用敌人的这个函数
+*/
 void Player::UpdataSum()
 {
 	move_num = 1;
 	skill_num = 1;
 }
 
+
+/*
+* 获取玩家的预选点位
+*/
 Point Player::Getyuxuan_point()
 {
 	//将预选位置的左边转化为窗口坐标
@@ -215,6 +236,10 @@ Point Player::Getyuxuan_point()
 	}
 }
 
+
+/*
+* 基地点位转化为普通地图点位
+*/
 Point Player::JidiToMap(Move_point* point_)
 {
 	if (point_->flag != JIDI) {
@@ -225,26 +250,46 @@ Point Player::JidiToMap(Move_point* point_)
 	}
 }
 
+
+/*
+* 点位转化为地图点位
+*/
 Point Player::ToMapPoint(Point* point_)
 {
 	return { point_->x * 100 + 50,point_->y * 100 + 50 };
 }
 
+
+/*
+* 获取玩家技能数组
+*/
 vector<int>* Player::Getskill()
 {
 	return &skill;
 }
 
+
+/*
+* 获取对应索引index技能的剩余可用次数
+*/
 int Player::Getskill_sum(int index)
 {
 	return skill_sum.at(index);
 }
 
+
+/*
+* 获取移动数组
+*/
 vector<Move_point*>* Player::GetMove_point()
 {
 	return &move_point;
 }
 
+
+/*
+* 修改玩家的技能
+*/
 int Player::Changeskill(int index)
 {
 	if (skill.empty()) {
@@ -255,16 +300,20 @@ int Player::Changeskill(int index)
 	return false;
 }
 
-int Player::Getskill_num(int index_)
-{
-	return skill_sum.at(index_);
-}
 
+/*
+* 获取玩家这一帧需要显示的图片名字
+*/
 string Player::Getpicture_name()
 {
 	return picture_name;
 }
 
+
+/*
+* 判断战斗界面是否需要绘制技能
+* 返回值为true时 调用ShowSkill_index函数
+*/
 bool Player::SkillNeedShow()
 {
 	if (main_window->GetGameModel() == FrightModel) {
@@ -275,16 +324,30 @@ bool Player::SkillNeedShow()
 	}
 }
 
+
+/*
+* 需要绘制技能时调用此函数获取需要绘制的技能索引
+* SkillNeedShow函数为true时调用
+*/
 int Player::ShowSkill_index()
 {
 	return skill_state;
 }
 
+
+/*
+* 获取需要绘制技能的矩形
+* SkillNeedShow函数为true是调用
+*/
 SDL_Rect Player::ShowSkill_rect()
 {
 	return { Getyuxuan_point().x,Getyuxuan_point().y + 30,50,50 };
 }
 
+
+/*
+* 竞技模式调用此函数为玩家分配技能
+*/
 int Player::CreateAllSkill()
 {
 	for (SKILL i = 1; i < SKILLSUM; i++) {
@@ -299,6 +362,10 @@ int Player::CreateAllSkill()
 	return 0;
 }
 
+
+/*
+* 竞技模式每5个来回调用一次这个函数
+*/
 int Player::AddSkill()
 {
 	if (map->Gethuihe() % 10 != 0 || map->Gethuihe() < 1) { return false; }
@@ -316,6 +383,11 @@ int Player::AddSkill()
 	return true;
 }
 
+
+/*
+* 获取上一个基地点位或者普通点位，一般作为绘制路线的依据
+* 虚路线点位请调用 GetBeforePointXu
+*/
 Point* Player::GetBeforePoint()
 {
 	int index = GetBeforePoint_index();
@@ -323,6 +395,24 @@ Point* Player::GetBeforePoint()
 	return &point;
 }
 
+
+/*
+* 获取上一个虚路线点位
+* 实路线点位请调用 GetBeforePoint
+*/
+Point* Player::GetBeforePointXu()
+{
+	int index = GetBeforePointXu_index();
+	auto point = index == -1 ? Point(-1, -1) : *move_point.at(index)->point;
+	return &point;
+}
+
+
+
+/*
+* 获取上一个基地点位或普通点位的索引
+* 虚路线索引请调用 GetBeforePointXu_index
+*/
 int Player::GetBeforePoint_index()
 {
 	int index = move_point.size() - 1;
@@ -332,13 +422,11 @@ int Player::GetBeforePoint_index()
 	return index;
 }
 
-Point* Player::GetBeforePointXu()
-{
-	int index = GetBeforePointXu_index();
-	auto point = index == -1 ? Point(-1, -1) : *move_point.at(index)->point;
-	return &point;
-}
 
+/*
+* 获取上一个虚路线点位的索引
+* 实路线索引请调用 GetBeforePoint_index
+*/
 int Player::GetBeforePointXu_index()
 {
 	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
@@ -356,6 +444,11 @@ int Player::GetBeforePointXu_index()
 	return index;
 }
 
+
+/*
+* 判断玩家能否继续移动
+* 在回合移动后调用检查，将自动完成回合结束工作
+*/
 int Player::CanMove()
 {
 	skill_num--;
@@ -376,8 +469,13 @@ int Player::CanMove()
 	}
 }
 
-//point_ = {-1,-1}
-//flag_ = false
+
+/*
+* 判断移动点位是否符合规范
+* flag_ 是否是外来点位
+* point_ 外来点位，当flag_为false时此参数被忽略
+* xuhand_flag_ 是否是虚路线头
+*/
 int Player::MoveIsRight(bool flag_, Point point_, bool xuhand_flag_)
 {
 	Point* temp;
@@ -410,7 +508,11 @@ int Player::MoveIsRight(bool flag_, Point point_, bool xuhand_flag_)
 	else { return true; }
 }
 
-//flag = false 是否是强制移动
+
+/*
+* 移动函数
+* flag_ 是否是强制移动
+*/
 int Player::Movetion(int flag_)
 {
 	//提示窗口大小
@@ -477,6 +579,11 @@ int Player::Movetion(int flag_)
 	}
 }
 
+
+/*
+* 技能函数
+* index_ 使用技能数组那个索引index对应的技能
+*/
 int Player::Skill(int index_)
 {
 	//提示窗口大小
@@ -517,6 +624,10 @@ int Player::Skill(int index_)
 	return false;
 }
 
+
+/*
+* 虚路线头移动函数
+*/
 int Player::Xuhand()
 {
 	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
@@ -547,10 +658,10 @@ int Player::Xuhand()
 	}
 }
 
+
 /*
-* (x-1,y-1)(x,y-1)(x+1,y-1)
-* (x-1,y)  (x,y)  (x+1,y)
-* (x-1,y+1)(x,y+1)(x+1,y+1)
+* 判断玩家是否死亡
+* 每个回合都需要进行一次判断
 */
 int Player::IsLife()
 {
@@ -585,6 +696,10 @@ int Player::IsLife()
 	return isLife;
 }
 
+
+/*
+* 修改需要显示的技能的状态
+*/
 int Player::Change_skill_state(int flag)
 {
 	if (SkillNeedShow() && main_window->GetGameModel() == FrightModel) {
