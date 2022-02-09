@@ -117,6 +117,10 @@ int Player::Updata()
 				else { skill_state = 0; }
 			}
 		}
+		else if (input->GetKeyState(SDL_SCANCODE_J) == Key_Down)
+		{
+			Xuhand();
+		}
 
 	}
 	//蓝色玩家
@@ -177,6 +181,10 @@ int Player::Updata()
 				if (SkillNeedShow()) { skill_state = -1; }
 				else { skill_state = 0; }
 			}
+		}
+		else if (input->GetKeyState(SDL_SCANCODE_KP_3) == Key_Down)
+		{
+			Xuhand();
 		}
 	}
 	//检验预选位置是否超出范围
@@ -310,15 +318,42 @@ int Player::AddSkill()
 
 Point* Player::GetBeforePoint()
 {
+	int index = GetBeforePoint_index();
+	auto point = index == -1 ? Point(-1, -1) : *move_point.at(index)->point;
+	return &point;
+}
+
+int Player::GetBeforePoint_index()
+{
 	int index = move_point.size() - 1;
-#define IsQuyuOrXu  move_point.at(index)->flag == QUYU || move_point.at(index)->flag > 0
-	if (IsQuyuOrXu) {
-		while (IsQuyuOrXu) {
-			index--;
-		}
-		return move_point.at(index)->point;
+	while (move_point.at(index)->hand != ZHU_HAND) {
+		index--;
 	}
-	return move_point.at(index)->point;
+	return index;
+}
+
+Point* Player::GetBeforePointXu()
+{
+	int index = GetBeforePointXu_index();
+	auto point = index == -1 ? Point(-1, -1) : *move_point.at(index)->point;
+	return &point;
+}
+
+int Player::GetBeforePointXu_index()
+{
+	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
+	int index = move_point.size() - 1;
+	if (move_point.empty()) {
+		main_window->Player_Window(L"无虚路线", text_rect, window_time, flag);
+		return -1;
+	}
+	while (move_point.at(index)->hand != XU_HAND) {
+		index--;
+		if (index == -1) {
+			return -1;
+		}
+	}
+	return index;
 }
 
 int Player::CanMove()
@@ -343,7 +378,7 @@ int Player::CanMove()
 
 //point_ = {-1,-1}
 //flag_ = false
-int Player::MoveIsRight(bool flag_, Point point_)
+int Player::MoveIsRight(bool flag_, Point point_, bool xuhand_flag_)
 {
 	Point* temp;
 	if (flag_) {
@@ -354,7 +389,7 @@ int Player::MoveIsRight(bool flag_, Point point_)
 
 	//最后一个点位 赋值
 	int index = move_point.size() - 1;
-	Point before = ToMapPoint(GetBeforePoint());//上一点位
+	Point before = ToMapPoint(xuhand_flag_ ? GetBeforePointXu() : GetBeforePoint());//上一点位
 	Point now = ToMapPoint(temp);//现在的点位
 	//计算两点之间的距离是否是正确的
 	int distance = static_cast<int>(
@@ -480,6 +515,36 @@ int Player::Skill(int index_)
 		else { main_window->Player_Window(L"使用失败", text_rect, window_time, flag); }
 	}
 	return false;
+}
+
+int Player::Xuhand()
+{
+	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
+	if (main_window->GetGameModel() == BaseModel)
+	{
+		return false;
+	}
+	int index = GetBeforePointXu_index();
+	if (index == -1) {
+		main_window->Player_Window(L"无虚路线", text_rect, window_time, flag);
+		return false;
+	}
+	switch (MoveIsRight(false, Point(-1, -1), true))
+	{
+	case NOPOINT:
+		return false;
+	case TOO_LONG:
+		main_window->Player_Window(L"距离过长", text_rect, window_time, flag);
+		return false;
+	case THOUGH:
+		main_window->Player_Window(L"禁止穿线", text_rect, window_time, flag);
+		return false;
+	default:
+		Move_point* point = new Move_point(yuxuan_point, index, XU_HAND);
+		move_point.emplace_back(point);
+		CanMove();
+		return true;
+	}
 }
 
 /*

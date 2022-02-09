@@ -79,9 +79,6 @@ int Main_Window::CreatWindow(Game* game_)
 		SDL_Log("%s", SDL_GetError());
 		return TTF_Open_error;
 	}
-	if (window) {
-		SDL_DestroyWindow(window);
-	}
 	return 0;
 }
 

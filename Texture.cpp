@@ -102,6 +102,7 @@ int Texture::LoadAllSkill()
 	tex_skill.emplace(L"控制", Loading("kongzhi.png"));
 	tex_skill.emplace(L"护盾", Loading("hudun.png"));
 	tex_skill.emplace(L"交换", Loading("jiaohuan.png"));
+	tex_skill.emplace(L"分支", Loading("fenzhi.png"));
 	return 0;
 }
 

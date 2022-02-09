@@ -14,8 +14,8 @@ struct Map_Point
 };
 
 //用于特殊标识定位
-const int QUYU = -2;
-const int JIDI = -1;
+static const int QUYU = -2;
+static const int JIDI = -1;
 
 //地图点位区域使用，可以行走
 const int QUYU_NONE = 3;

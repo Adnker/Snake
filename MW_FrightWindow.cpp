@@ -1,5 +1,8 @@
 #include "Main_Window.h"
 #include "Game.h"
+#define MAPXY * 100 + 50
+#define JIDIXY * 100 + 25
+#define QUYUXU * 100 + 20
 
 int Main_Window::Draw_FrightWindow()
 {
@@ -39,10 +42,10 @@ int Main_Window::Draw_FrightWindow()
 	red_point = red_player->GetMove_point();//获取玩家的移动数组
 	blue_point = blue_player->GetMove_point();//获取蓝方移动数组
 	if (!red_point->empty()) {
-		FillRect(red_point->at(0)->point->x * 100 + 25, red_point->at(0)->point->y * 100 + 25, jidi_h, jidi_h, &RED);//绘制玩家的基地
+		FillRect(red_point->at(0)->point->x JIDIXY, red_point->at(0)->point->y JIDIXY, jidi_h, jidi_h, &RED);//绘制玩家的基地
 	}
 	if (!blue_point->empty()) {
-		FillRect(blue_point->at(0)->point->x * 100 + 25, blue_point->at(0)->point->y * 100 + 25, jidi_h, jidi_h, &BLUE);//绘制蓝方基地
+		FillRect(blue_point->at(0)->point->x JIDIXY, blue_point->at(0)->point->y JIDIXY, jidi_h, jidi_h, &BLUE);//绘制蓝方基地
 	}
 	while (needToDrawMove) {
 		needToDrawMove = false;
@@ -52,23 +55,28 @@ int Main_Window::Draw_FrightWindow()
 			color = RED;
 			if (red_point->at(index_now)->flag == NULL) {
 				point_before = red_point->at(index_before)->point;
-				if (red_point->at(index_before)->flag == QUYU) {
+				if (red_point->at(index_before)->flag == QUYU  || red_point->at(index_before)->flag > 0) {
 					int i = index_before - 1;
-					while (red_point->at(i)->flag == QUYU) {
+					while (red_point->at(i)->flag == QUYU || red_point->at(i)->flag > 0) {
 						i--;
 					}
 					point_before = red_point->at(i)->point;
 				}
-				DrawLineColor(red_point->at(index_now)->point->x * 100 + 50, red_point->at(index_now)->point->y * 100 + 50,
-					point_before->x * 100 + 50, point_before->y * 100 + 50, color);
+				DrawLineColor(red_point->at(index_now)->point->x MAPXY, red_point->at(index_now)->point->y MAPXY,
+					point_before->x MAPXY, point_before->y MAPXY, color);
 			}
 			else if (red_point->at(index_now)->flag == JIDI) {
-				FillRect(red_point->at(index_now)->point->x * 100 + 25, red_point->at(index_now)->point->y * 100 + 25,
+				FillRect(red_point->at(index_now)->point->x JIDIXY, red_point->at(index_now)->point->y JIDIXY,
 					jidi_h, jidi_h, &color);
 			}
 			else if (red_point->at(index_now)->flag == QUYU) {
-				FillRect(red_point->at(index_now)->point->x * 100 + 20, red_point->at(index_now)->point->y * 100 + 20,
+				FillRect(red_point->at(index_now)->point->x QUYUXU, red_point->at(index_now)->point->y QUYUXU,
 					quyu_h, quyu_h, &color);
+			}
+			else {
+				point_before = red_point->at(red_point->at(index_now)->flag)->point;
+				DrawLineColor(red_point->at(index_now)->point->x MAPXY, red_point->at(index_now)->point->y MAPXY,
+					point_before->x MAPXY, point_before->y MAPXY, color);
 			}
 		}
 		//蓝方
@@ -77,23 +85,28 @@ int Main_Window::Draw_FrightWindow()
 			color = BLUE;
 			if (blue_point->at(index_now)->flag == NULL) {
 				point_before = blue_point->at(index_before)->point;
-				if (blue_point->at(index_before)->flag == QUYU) {
+				if (blue_point->at(index_before)->flag == QUYU || blue_point->at(index_before)->flag > 0) {
 					int i = index_before - 1;
-					while (blue_point->at(i)->flag == QUYU) {
+					while (blue_point->at(i)->flag == QUYU || blue_point->at(i)->flag > 0) {
 						i--;
 					}
 					point_before = blue_point->at(i)->point;
 				}
-				DrawLineColor(blue_point->at(index_now)->point->x * 100 + 50, blue_point->at(index_now)->point->y * 100 + 50,
-					point_before->x * 100 + 50, point_before->y * 100 + 50, color);
+				DrawLineColor(blue_point->at(index_now)->point->x MAPXY, blue_point->at(index_now)->point->y MAPXY,
+					point_before->x MAPXY, point_before->y MAPXY, color);
 			}
 			else if (blue_point->at(index_now)->flag == JIDI) {
-				FillRect(blue_point->at(index_now)->point->x * 100 + 25, blue_point->at(index_now)->point->y * 100 + 25,
+				FillRect(blue_point->at(index_now)->point->x JIDIXY, blue_point->at(index_now)->point->y JIDIXY,
 					jidi_h, jidi_h, &color);
 			}
 			else if (blue_point->at(index_now)->flag == QUYU) {
-				FillRect(blue_point->at(index_now)->point->x * 100 + 20, blue_point->at(index_now)->point->y * 100 + 20,
+				FillRect(blue_point->at(index_now)->point->x QUYUXU, blue_point->at(index_now)->point->y QUYUXU,
 					quyu_h, quyu_h, &color);
+			}
+			else {
+				point_before = blue_point->at(blue_point->at(index_now)->flag)->point;
+				DrawLineColor(blue_point->at(index_now)->point->x MAPXY, blue_point->at(index_now)->point->y MAPXY,
+					point_before->x MAPXY, point_before->y MAPXY, color);
 			}
 		}
 		index_now++;
@@ -139,6 +152,9 @@ int Main_Window::Draw_FrightWindow()
 				//判断提示窗口是否超出窗体，超出窗体则对窗口信息进行修正，避免提示框越出窗口
 				if (window_msg.at(i)->rect.x + window_msg.at(i)->rect.w > rect_Fright_Window.w) {
 					window_msg.at(i)->rect.x = rect_Fright_Window.w - window_msg.at(i)->rect.w;
+				}
+				if (window_msg.at(i)->rect.y + window_msg.at(i)->rect.h > rect_Fright_Window.h) {
+					window_msg.at(i)->rect.y = rect_Fright_Window.h - window_msg.at(i)->rect.h - 30;
 				}
 				DrawPicture("backgroundPlayer.png", NULL, { window_msg.at(i)->rect.x, window_msg.at(i)->rect.y,
 					window_msg.at(i)->rect.w, window_msg.at(i)->rect.h });//绘制提示窗口背景

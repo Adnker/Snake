@@ -24,12 +24,7 @@ const wchar_t* Skiller::GetSkillName(int index_)
 int Skiller::Use_Skill(int index_, int player_flag_)
 {
 	//将player设置为技能的使用者
-	if (player_flag_ == Red_Player) {
-		player = red_player;
-	}
-	else {
-		player = blue_player;
-	}
+	player = player_flag_ == Red_Player ? red_player : blue_player;
 
 	//选择技能函数
 	switch (index_)
@@ -52,10 +47,11 @@ int Skiller::Use_Skill(int index_, int player_flag_)
 		return Skill_hudun();
 	case SKILL_FLAG_JIAOHUAN:
 		return Skill_jiaohuan();
+	case SKILL_FLAG_FENZHI:
+		return Skill_fenzhi();
 	default:
 		return false;
 	}
-	return false;
 }
 
 bool Skiller::IsLiveSkill(int index_) {
@@ -159,7 +155,7 @@ int Skiller::Skill_kongzhi()
 		player->player->move_num = 1;
 		player->player->Movetion(true);
 		player->player->yuxuan_point = point;
-		map->Updata(&player->yuxuan_point, player->player->flag, ZHAN, false);//更新点位及回合
+		map->Updata(&player->yuxuan_point, player->player->flag, ZHAN, false);//更新点位,不更新回合
 		player->player->UpdataSum();//更新敌人
 		return true;
 	}
@@ -183,4 +179,16 @@ int Skiller::Skill_jiaohuan()
 	map->Updatahuihe();
 	player->player->UpdataSum();
 	return true;
+}
+
+int Skiller::Skill_fenzhi()
+{
+	if (player->MoveIsRight() == true) {
+		Move_point* point = new Move_point(player->yuxuan_point, player->GetBeforePoint_index(), XU_HAND);
+		player->move_point.emplace_back(point);
+		map->Updata(&player->yuxuan_point, player->player->flag, ZHAN, false);//更新点位, 不更新回合
+		player->player->UpdataSum();//更新敌人
+		return true;
+	}
+	return false;
 }

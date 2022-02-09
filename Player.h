@@ -6,7 +6,11 @@
 #include "Input.h"
 #include "Main_Window.h"
 #include "Skill.h"
+#include "Map.h"
 using namespace std;
+static const int ZHU_HAND = 0;
+static const int XU_HAND = 1;
+static const int NONE_HAND = 2;
 
 //用于标识玩家的行动点位
 //保存索引
@@ -18,12 +22,14 @@ struct Move_point {
 	* NULL 移动 无特殊标识
 	* >0 待定
 	*/
-	Move_point(Point point_, int flag_) {
+	Move_point(Point point_, int flag_,int hand_ = ZHU_HAND) {
 		point = new Point(point_);
 		flag = flag_;
+		hand = flag_ == QUYU ? NONE_HAND : hand_;
 	}
 	struct Point* point;
 	int flag;
+	int hand;
 };
 
 //蓝方玩家标识
@@ -60,10 +66,14 @@ public:
 	int AddSkill();//为玩家分发技能 只在竞技模式中使用
 private:
 	Point* GetBeforePoint();//获取玩家上一个可用点位
+	int GetBeforePoint_index();
+	Point* GetBeforePointXu();//获取玩家上一个虚路线头
+	int GetBeforePointXu_index();
 	int CanMove();//判断玩家是否能继续移动
-	int MoveIsRight(bool flag_ = false, Point point_ = { -1,-1 });//判断玩家选择的点位是否正确 flag_是否是外来点位
+	int MoveIsRight(bool flag_ = false, Point point_ = { -1,-1 },bool xuhang_flag = false);//判断玩家选择的点位是否正确 flag_是否是外来点位
 	int Movetion(int flag_ = false);//玩家选择移动
 	int Skill(int index_ = 0);//玩家选择使用技能
+	int Xuhand();//虚路线头行动
 	int IsLife();//玩家是否存活
 	int Change_skill_state(int flag);//修改skill_state的状态
 
