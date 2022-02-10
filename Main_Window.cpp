@@ -148,6 +148,7 @@ void Main_Window::DrawPicture(const std::string fileName, SDL_Rect* rect1, SDL_R
 * 调用Texture类的DrawSkill 见Texture类
 * 从图片名字为skill_name的图片中截取位置为rect1(NULL时截取全部)的小图片绘制在rect2的位置
 * 绘制非技能图片时使用一般函数通道Draw 见Draw
+* flag_ 是否需要边框
 */
 void Main_Window::DrawSkill(const wchar_t* skill_name, SDL_Rect* rect1, SDL_Rect rect2, int flag_)
 {
@@ -167,15 +168,6 @@ int Main_Window::GameIsEnd(int flag_Player_)
 	game->DestroyPlay();//销毁窗口
 	CreatNewWindow(&rect_Main_Window);//创建新的窗口
 	return 0;
-}
-
-
-/*
-* 获取游戏模式
-*/
-int Main_Window::GetGameModel()
-{
-	return model;
 }
 
 
@@ -228,6 +220,7 @@ int Main_Window::CreatNewWindow(SDL_Rect* rect)
 		return Renderer_error;
 	}
 	texture->ChangRenderer(renderer);
+	texture->LoadAllSkill();
 	return All_true;
 }
 
@@ -289,6 +282,9 @@ int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
 		break;
 	case ModelWindow://模式选择界面
 		Draw_ModelWindow();
+		break;
+	case JieshaoWindow://技能介绍界面
+		Draw_JieshaoWindow();
 		break;
 	default:
 		DrawTTF(L"错误", RED, { 0,0,100,50 });
@@ -366,13 +362,11 @@ int Main_Window::Draw_MainWindow()
 		case SkillModel:
 			b_flagWindow = flagWindow;
 			flagWindow = SkillWindow;
-			texture->LoadAllSkill();//让texture加载全部的技能图片
 			break;
 		case FrightModel:
 			b_flagWindow = flagWindow;
 			flagWindow = FrightWindow;
 			CreatNewWindow(&rect_Fright_Window);
-			texture->LoadAllSkill();//让texture加载全部的技能图片
 			break;
 		default:
 			game->Shutdown();
@@ -490,6 +484,86 @@ int Main_Window::Draw_ModelWindow()
 */
 int Main_Window::Draw_JieshaoWindow()
 {
+
+	SDL_Rect text1 = { 0,420,80,50 };//上一页按钮
+	SDL_Rect text2 = { 420,420,80,50 };//下一页按钮
+	SDL_Rect text3 = { 5,15,50,50 };//返回按钮
+	BUTTONER Button1 = 0;//按钮1标识
+	BUTTONER Button2 = 1;//按钮2标识
+	BUTTONER Button3 = 2;//按钮3标识
+	flagWindow = JieshaoWindow;
+	if (b_flagWindow != JieshaoWindow)
+	{
+		button->Clear();
+		button->AddButton(NULL, texture->GetTexture("buttonLeft.png"), NULL, text1, text1, font, &BLACK);
+		button->AddButton(NULL, texture->GetTexture("buttonRight.png"), NULL, text2, text2, font, &BLACK);
+		button->AddButton(NULL, texture->GetTexture("buttonLeft.png"), NULL, text3, text3, font, &BLACK);
+		button->GetButton(Button1)->drawFlag = false;//一开始的时候上一页不用绘制
+	}
+	b_flagWindow = flagWindow;
+	DrawPicture("backgroundskill.png", NULL, { 0,0,rect_Main_Window.w,rect_Main_Window.h });//绘制背景
+	button->DrawButton(renderer);//绘制按钮
+	DrawSkill(game->Getskill_name(index), NULL, { 10,80,100,100 });//绘制展示的技能
+	DrawTTF(game->Getskill_name(index), BLACK, { 220,25,fontSize * 2,30 });
+	button->Updata(input);
+	bool index_isTrue;
+	bool needToDraw;
+	needToDraw = index > 1;
+	if (needToDraw) {
+		button->GetButton(Button1)->drawFlag = true;
+		//上一页 第四个按钮
+		int& Button1_x = button->GetButton(Button1)->rectxy->x;//按钮4x坐标
+		int& Button1_flag = button->GetButton(Button1)->flag;//按钮4特殊标识
+		index_isTrue = index - 1 > 0;
+		switch (button->GetButtonLeftState(Button1))
+		{
+		case Key_Down:
+			if (index_isTrue) { index -= 1; }
+			break;
+		case Key_Move:
+			if (Button1_flag == 0) { Button1_x++; if (Button1_x > 30) { Button1_flag = 1; } }
+			else { Button1_x--; if (Button1_x < 1) { Button1_flag = 0; } }
+			break;
+		default:
+			Button1_x = text1.x;
+			Button1_flag = 0;
+			break;
+		}
+	}
+	else {
+		button->GetButton(Button1)->drawFlag = false;
+	}
+
+
+	needToDraw = index < game->Getskill_sum();
+	if (needToDraw) {
+		button->GetButton(Button2)->drawFlag = true;
+		//下一页 第五个按钮
+		int& Button2_x = button->GetButton(Button2)->rectxy->x;//按钮5x坐标
+		int& Button2_flag = button->GetButton(Button2)->flag;//按钮5特俗标识
+		index_isTrue = index + 1 <= game->Getskill_sum();
+		switch (button->GetButtonLeftState(Button2))
+		{
+		case Key_Down:
+			if (index_isTrue) { index += 1; }
+			break;
+		case Key_Move:
+			if (Button2_flag == 0) { Button2_x--; if (Button2_x < 500 - text2.w - 30) { Button2_flag = 1; } }
+			else { Button2_x++; if (Button2_x > 500 - text2.w) { Button2_flag = 0; } }
+			break;
+		default:
+			Button2_x = text2.x;
+			Button2_flag = 0;
+			break;
+		}
+	}
+	else {
+		button->GetButton(Button2)->drawFlag = false;
+	}
+
+	if (button->GetButtonLeftState(Button3) == Key_Down) {
+		flagWindow = MainWindow;
+	}
 	return 0;
 }
 
@@ -500,8 +574,6 @@ int Main_Window::Draw_JieshaoWindow()
 #define JIDIXY * 100 + 25
 //将点位转化为区域地图点位
 #define QUYUXU * 100 + 20
-
-
 /*
 * 绘制战斗界面窗口
 */

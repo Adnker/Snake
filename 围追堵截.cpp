@@ -19,7 +19,7 @@ int main(){
 	ShowWindow(hwnd, SW_HIDE);
 
 	HANDLE handle;
-	handle = CreateMutex(NULL, FALSE, L"Snake");//Release模式下加上一个使用：handle = CreateMutex(NULL, FALSE, L"Snake");
+	handle = CreateMutex(NULL, FALSE, "Snake");//Release模式下加上一个使用：handle = CreateMutex(NULL, FALSE, L"Snake");
 	if (GetLastError() != ERROR_ALREADY_EXISTS) {
 		class Game game = Game();
 		bool isRun = true;

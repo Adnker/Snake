@@ -60,7 +60,8 @@ const int picture_jianju_x = 40;
 const int picture_jianju_w = 80;
 
 
-/*用于保存窗口提示的信息
+/*
+*用于保存窗口提示的信息
 * const wchar_t* text 用于保存提示的文字
 * SDL_Rect rect 用于保存提示窗口显示的位置｛显示位置x，显示位置y，窗口宽w，窗口高h｝
 * int liveTime 用于保存窗口已经显示的时间
