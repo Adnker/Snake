@@ -31,9 +31,10 @@ public:
 	int GetSkillSum(int index_);//获取技能对应可使用次数
 	bool IsLiveSkill(int index_);//判断对应的技能是否是生存性技能
 	const wchar_t* GetSkillName(int index_);//获取技能名字
+	const wchar_t* Getskill_jieshao(int index);//获取技能介绍
 private:
-	const wchar_t* skill_name[SKILLSUM] = {L"疾跑", L"路障", L"传送", L"穿身",L"追击",L"箭行",L"控制",L"护盾",L"交换",L"分支"};
-	const int skill_num[SKILLSUM] = {      8,       3,       1,       2,      1,      1,      2 ,     1,      1 ,     1};
+	const wchar_t* skill_name[SKILLSUM] = { L"疾跑", L"路障", L"传送", L"穿身",L"追击",L"箭行",L"控制",L"护盾",L"交换",L"分支" };
+	const int skill_num[SKILLSUM] = { 8,       3,       1,       2,      1,      1,      2 ,     1,      1 ,     1 };
 	int nolifeskill[3] = { SKILL_FLAG_ZHUIJI ,SKILL_FLAG_JIPAO ,SKILL_FLAG_JIANXING };
 	int skill_sum = SKILLSUM;
 
@@ -41,6 +42,8 @@ private:
 	class Map* map;
 	class Player* red_player;
 	class Player* blue_player;
+
+	const wchar_t* skill_jieshao[1] = { L" 路障，可以阻碍敌人的行动，使敌人的路线受阻" };
 
 	int Skill_luzhang();
 	int Skill_chuansong();

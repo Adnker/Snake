@@ -18,6 +18,7 @@ public:
 	const wchar_t* Getskill_name(int index);//获取全技能名称
 	const wchar_t* Getskill_flag_sum(int sum);//转化为技能次数的const wchar_t* 格式
 	int Getskill_sum();//获取技能总数
+	const wchar_t* Getskill_jieshao(int index);//获取技能介绍
 private:
 	bool isRuning;//退出标志
 	Uint32 mTickCout;//游戏时间增加量

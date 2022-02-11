@@ -132,3 +132,8 @@ int Game::Getskill_sum()
 {
 	return skiller->Getskill_sum();
 }
+
+const wchar_t* Game::Getskill_jieshao(int index)
+{
+	return skiller->Getskill_jieshao(index);
+}

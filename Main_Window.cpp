@@ -250,6 +250,50 @@ int Main_Window::GetFlag()
 
 
 /*
+* 获取窗口模式
+*/
+int Main_Window::GetGameModel()
+{
+	return model;
+}
+
+
+/*
+* 绘制云朵
+* 在一些页面绘制随机飘过的云朵
+*/
+int Main_Window::DrawYun()
+{
+	//判断是否是第一次进入新的界面
+		//创建新的云朵
+	while (yun.size() < 3) {
+		if (rander->GetARand(1) == 0) {
+			Yun_Msg* yun1 = new Yun_Msg(-100, rander->GetARand(150), LEFT, rander->GetARand(2, 1));
+			yun.emplace_back(yun1);
+		}
+		else {
+			Yun_Msg* yun1 = new Yun_Msg(rect_Main_Window.w, rander->GetARand(150), RIGHT, rander->GetARand(2, 1));
+			yun.emplace_back(yun1);
+		}
+	}
+	//遍历每一个云朵，并进行移动
+	for (int i = 0; i < yun.size(); i++) {
+		DrawPicture("yun.png", NULL, { yun.at(i)->x,yun.at(i)->y,100,30 });
+		if (yun.at(i)->flag == LEFT) {
+			yun.at(i)->x += yun.at(i)->v;
+		}
+		else {
+			yun.at(i)->x -= yun.at(i)->v;
+		}
+		if (yun.at(i)->x > rect_Main_Window.w + 100 || yun.at(i)->x < -100) {
+			yun.erase(yun.begin() + i, yun.begin() + i + 1);
+		}
+	}
+	return true;
+}
+
+
+/*
 * 更新函数
 */
 int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
@@ -302,15 +346,6 @@ int Main_Window::Updata(class Player* red_player_, class Player* blue_player_)
 
 
 /*
-* 获取窗口模式
-*/
-int Main_Window::GetGameModel()
-{
-	return model;
-}
-
-
-/*
 * 绘制主界面窗口
 */
 int Main_Window::Draw_MainWindow()
@@ -336,9 +371,10 @@ int Main_Window::Draw_MainWindow()
 			{ button_x - picture_jianju_x,button_y * 3,button_w + picture_jianju_w,button_h },
 			{ button_x,button_y * 3,button_w,button_h }, font, &BLACK);
 	}
-	b_flagWindow = flagWindow;
 	DrawPicture("background.png", NULL, { 0,0,rect_Main_Window.w,rect_Main_Window.h });//绘制背景
+	DrawYun();//绘制云朵
 	button->DrawButton(renderer);//绘制全部按钮
+	b_flagWindow = flagWindow;
 
 
 	BUTTONER Button1 = 0;
@@ -409,6 +445,7 @@ int Main_Window::Draw_GameOverWindow()
 	SDL_Color color;//文本颜色
 	std::string name;//图片名字
 	DrawPicture("background.png", NULL, { 0,0,rect_Main_Window.w,rect_Main_Window.h });//绘制背景图片
+	DrawYun();//绘制云朵
 	//判断哪一方失败 哪一方失败就绘制对手胜利
 	if (flag_Player == Red_Player) {
 		text = L"蓝方获得胜利";
@@ -455,9 +492,12 @@ int Main_Window::Draw_ModelWindow()
 			{ x - picture_jianju_x,y * 3,w + picture_jianju_w,h },
 			{ x,y * 3,w,h }, font, &BLACK);
 	}
-	b_flagWindow = flagWindow;
 	DrawPicture("background.png", NULL, { 0,0,rect_Main_Window.w,rect_Main_Window.h });
+	DrawYun();//绘制云朵
 	button->DrawButton(renderer);
+	b_flagWindow = flagWindow;
+
+
 	button->Updata(input);
 	for (int flag_model = 1; flag_model <= 3; flag_model++) {
 		switch (button->GetButtonLeftState(flag_model - 1))
@@ -505,6 +545,8 @@ int Main_Window::Draw_JieshaoWindow()
 	button->DrawButton(renderer);//绘制按钮
 	DrawSkill(game->Getskill_name(index), NULL, { 10,80,100,100 });//绘制展示的技能
 	DrawTTF(game->Getskill_name(index), BLACK, { 220,25,fontSize * 2,30 });
+
+
 	button->Updata(input);
 	bool index_isTrue;
 	bool needToDraw;
@@ -563,6 +605,7 @@ int Main_Window::Draw_JieshaoWindow()
 
 	if (button->GetButtonLeftState(Button3) == Key_Down) {
 		flagWindow = MainWindow;
+		index = 1;
 	}
 	return 0;
 }
@@ -819,9 +862,9 @@ int Main_Window::Draw_SkillWindow()
 		button->AddButton(NULL, texture->GetTexture("buttonRight.png"), NULL, text2, text2, font, &BLACK);
 		button->GetButton(Button4)->drawFlag = false;//一开始的时候上一页不用绘制
 	}
-	b_flagWindow = flagWindow;
 	DrawPicture("background.png", NULL, { 0,0,rect_Main_Window.w,rect_Main_Window.h });//绘制背景
-
+	DrawYun();//绘制云朵
+	b_flagWindow = flagWindow;
 
 
 	//index + Button_ = 对应的技能索引

@@ -31,7 +31,8 @@ Rander::Rander()
 int Rander::GetARand(int max,int min)
 {
 	std::uniform_int_distribution<int> u(min, max); // ×ó±ÕÓÒ±ÕÇø¼ä
-	e.seed(time(0) + max + min + seek);
-	seek = u(e);
+	std::uniform_int_distribution<int> u1(0, 11000);
+	e.seed(seek);
+	seek = u1(e);
 	return u(e);
 }

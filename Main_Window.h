@@ -82,6 +82,29 @@ struct Window_Msg {
 //窗口显示的死亡时间 大于此时间的窗口要进行销毁
 const int DeadTime = 100;
 
+
+/*
+* 保存云朵信息
+* x,y表示位置
+* flag 表示方向
+* v表示速度
+*/
+struct Yun_Msg {
+	Yun_Msg(int x_, int y_, int flag_, int v_) { x = x_; y = y_; flag = flag_; v = v_; }
+	int x;
+	int y;
+	int flag;
+	int v;
+};
+#define LEFT 0
+#define RIGHT 1
+
+
+#define IsANewWindow b_flagWindow != flagWindow
+/*
+* 绘制窗口的类
+* 主要功能显示游戏界面
+*/
 class Main_Window {
 public:
 	class Rander* rander;
@@ -130,8 +153,11 @@ private:
 	int Draw_ModelWindow();
 	//绘制技能介绍窗口
 	int Draw_JieshaoWindow();
+	//绘制云朵
+	int DrawYun();
 	//窗口提示
 	std::vector<Window_Msg*> window_msg;
+	std::vector<Yun_Msg*> yun;
 	//核心类
 	class Game* game;
 	class Input* input;
