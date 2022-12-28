@@ -4,6 +4,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <vector>
+#include "Input.h"
 
 /*用于保存按钮信息
 * const wchar_t* text 保存按钮显示的文字
@@ -88,6 +89,8 @@ public:
 	BUTTONER AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect* rectxy_, SDL_Rect* recttext, TTF_Font* font, SDL_Color* color_);//添加按钮
 	BUTTONER AddButton(BUTTON* button_);//添加按钮
 	BUTTONER AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect rectxy_, SDL_Rect recttext, TTF_Font* font, SDL_Color* color_);//添加按钮
+protected:
+	bool InButtonRect(Point* now_point,int i);
 private:
 	std::vector<BUTTON*> button;
 };

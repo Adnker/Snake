@@ -15,6 +15,12 @@ static const int NONE_HAND = 2;
 //用于标识玩家的行动点位
 //保存索引
 struct Move_point {
+	Move_point(Point point_, int flag_,int hand_ = ZHU_HAND) {
+		point = new Point(point_);
+		flag = flag_;
+		hand = flag_ == QUYU ? NONE_HAND : hand_;
+	}
+	struct Point* point;
 	/*
 	* flag = 特殊标识
 	* JIDI 基地特俗标识
@@ -22,12 +28,6 @@ struct Move_point {
 	* NULL 移动 无特殊标识
 	* >0 待定
 	*/
-	Move_point(Point point_, int flag_,int hand_ = ZHU_HAND) {
-		point = new Point(point_);
-		flag = flag_;
-		hand = flag_ == QUYU ? NONE_HAND : hand_;
-	}
-	struct Point* point;
 	int flag;
 	int hand;
 };
@@ -52,12 +52,11 @@ public:
 	int Clear();//重置玩家
 	Point Getyuxuan_point();//获取玩家预选点位
 	Point JidiToMap(struct Move_point* point_);//将基地的索引坐标转化为地图坐标
-	Point ToMapPoint(Point* point_);//将索引转化为地图坐标
+	Point ToMapPoint(Point point_);//将索引转化为地图坐标
 	vector<int>* Getskill();//获取玩家技能
 	int Getskill_sum(int index = 0);//获取玩家对应技能的可使用次数
 	vector<Move_point*>* GetMove_point();//获取玩家移动数组
 	int Changeskill(int index);//修改玩家的技能选择
-	int Getskill_num(int index_);//获取玩家技能对应的可使用次数
 	string Getpicture_name();//获取玩家图片名字
 	bool SkillNeedShow();//获取玩家的技能是否需要绘制
 	int ShowSkill_index();//获取玩家需要展示的技能的索引
@@ -65,13 +64,13 @@ public:
 	int CreateAllSkill();//为玩家分发技能 只在竞技模式中使用
 	int AddSkill();//为玩家分发技能 只在竞技模式中使用
 private:
-	Point* GetBeforePoint();//获取玩家上一个可用点位
+	Point GetBeforePoint();//获取玩家上一个可用点位
 	int GetBeforePoint_index();
-	Point* GetBeforePointXu();//获取玩家上一个虚路线头
+	Point GetBeforePointXu();//获取玩家上一个虚路线头
 	int GetBeforePointXu_index();
 	int CanMove();//判断玩家是否能继续移动
 	int MoveIsRight(bool flag_ = false, Point point_ = { -1,-1 },bool xuhang_flag = false);//判断玩家选择的点位是否正确 flag_是否是外来点位
-	int Movetion(int flag_ = false);//玩家选择移动
+	int Movetion(bool flag_ = false);//玩家选择移动
 	int Skill(int index_ = 0);//玩家选择使用技能
 	int Xuhand();//虚路线头行动
 	int IsLife();//玩家是否存活

@@ -31,6 +31,8 @@ const int TTF_Open_error = 5;
 
 //窗口标志
 //用于确定现在窗口状态
+//初始创建
+const int IniWindow = -1;
 //主窗口
 const int MainWindow = 0;
 //战斗窗口

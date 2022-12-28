@@ -13,7 +13,7 @@ int Main_Window::CreatWindow(Game* game_)
 	rander = new Rander();
 	texture = new Texture(renderer);
 	button = new Button();
-	b_flagWindow = FrightWindow;
+	b_flagWindow = IniWindow;
 
 
 	//初始化TTF文字库
@@ -27,6 +27,7 @@ int Main_Window::CreatWindow(Game* game_)
 		SDL_Log("%s", SDL_GetError());
 		return TTF_Open_error;
 	}
+
 	return 0;
 }
 
@@ -219,8 +220,11 @@ int Main_Window::CreatNewWindow(SDL_Rect* rect)
 		SDL_Log("%s", SDL_GetError());
 		return Renderer_error;
 	}
+
+	//加载图片等信息
 	texture->ChangRenderer(renderer);
 	texture->LoadAllSkill();
+
 	return All_true;
 }
 
@@ -647,20 +651,25 @@ int Main_Window::Draw_FrightWindow()
 	//绘制玩家行动路线
 	int jidi_h = 50;//统一基地边长
 	int quyu_h = 30;
+
 	int index_now = 1;
 	int index_before = 0;
+
 	Point* point_before;
 	SDL_Color color;
 	bool needToDrawMove = true;
 	const vector<Move_point*>* red_point;//保存玩家移动数组
 	const vector<Move_point*>* blue_point;//保存玩家移动数组
 
-	red_point = red_player->GetMove_point();//获取玩家的移动数组
+	red_point = red_player->GetMove_point();//获取红方的移动数组
 	blue_point = blue_player->GetMove_point();//获取蓝方移动数组
+
 	if (!red_point->empty()) {
+		//绘制基地（一个对应颜色的矩形）
 		FillRect(red_point->at(0)->point->x JIDIXY, red_point->at(0)->point->y JIDIXY, jidi_h, jidi_h, &RED);//绘制玩家的基地
 	}
 	if (!blue_point->empty()) {
+		//绘制基地（一个对应颜色的矩形）
 		FillRect(blue_point->at(0)->point->x JIDIXY, blue_point->at(0)->point->y JIDIXY, jidi_h, jidi_h, &BLUE);//绘制蓝方基地
 	}
 	while (needToDrawMove) {
@@ -832,7 +841,9 @@ int Main_Window::Draw_FrightWindow()
 */
 int Main_Window::Draw_SkillWindow()
 {
+	//设置标识
 	flagWindow = SkillWindow;
+
 	//按钮属性
 	int button_x = 200;//按钮显示位置
 	int button_y = 100;//按钮显示位置
@@ -840,13 +851,19 @@ int Main_Window::Draw_SkillWindow()
 	int button_h = 40;//按钮高
 	SDL_Rect text1 = { 0,420,80,50 };//上一页按钮
 	SDL_Rect text2 = { 420,420,80,50 };//下一页按钮
-	BUTTONER Button1 = 0;//按钮1标识
-	BUTTONER Button2 = 1;//按钮2标识
-	BUTTONER Button3 = 2;//按钮3标识
-	BUTTONER Button4 = 3;//按钮4标识
-	BUTTONER Button5 = 4;//按钮5标识
+	BUTTONER Skill_Button1 = 0;//按钮1标识，第一个技能
+	BUTTONER Skill_Button2 = 1;//按钮2标识，第二个技能
+	BUTTONER Skill_Button3 = 2;//按钮3标识，第三个技能
+	BUTTONER Pre_Page = 3;//按钮4标识，上一页按钮
+	BUTTONER Nex_Page = 4;//按钮5标识，下一页按钮
 
 
+	//第一次进入技能选择界面进行加载
+	/*
+	* 加载界面
+	* 显示三个按钮，用于存放技能
+	* 显示两个按钮，用于存放上一页和下一页（不一定是两个按钮，第一页不显示上一页，最后一页不显示下一页）
+	*/
 	if (b_flagWindow != flagWindow) {
 		button->Clear();
 		button->AddButton(L"无技能", texture->GetTexture("k3.png"), NULL,
@@ -860,21 +877,26 @@ int Main_Window::Draw_SkillWindow()
 			{ button_x,button_y * 3,button_w,button_h }, font, &LITTLE_BLACK);
 		button->AddButton(NULL, texture->GetTexture("buttonLeft.png"), NULL, text1, text1, font, &BLACK);
 		button->AddButton(NULL, texture->GetTexture("buttonRight.png"), NULL, text2, text2, font, &BLACK);
-		button->GetButton(Button4)->drawFlag = false;//一开始的时候上一页不用绘制
+		button->GetButton(Pre_Page)->drawFlag = false;//一开始的时候上一页不用绘制
+
+		//加载完毕后设置窗体标识
+		b_flagWindow = flagWindow;
 	}
+
+
+
+
+	//绘制界面
 	DrawPicture("background.png", NULL, { 0,0,rect_Main_Window.w,rect_Main_Window.h });//绘制背景
 	DrawYun();//绘制云朵
-	b_flagWindow = flagWindow;
-
-
 	//index + Button_ = 对应的技能索引
-	int Skill1 = index + Button1;//技能1索引
-	int Skill2 = index + Button2;//技能2索引
-	int Skill3 = index + Button3;//技能3索引
+	int Skill1 = index + Skill_Button1;//技能1索引
+	int Skill2 = index + Skill_Button2;//技能2索引
+	int Skill3 = index + Skill_Button3;//技能3索引
 	//修改按钮显示的技能文字
-	button->GetButton(Button1)->text = game->Getskill_name(Skill1);
-	button->GetButton(Button2)->text = game->Getskill_name(Skill2);
-	button->GetButton(Button3)->text = game->Getskill_name(Skill3);
+	button->GetButton(Skill_Button1)->text = game->Getskill_name(Skill1);
+	button->GetButton(Skill_Button2)->text = game->Getskill_name(Skill2);
+	button->GetButton(Skill_Button3)->text = game->Getskill_name(Skill3);
 	button->DrawButton(renderer);//绘制全部按钮
 
 
@@ -885,14 +907,14 @@ int Main_Window::Draw_SkillWindow()
 	//第一个按钮
 	bool Skill1_index_isTrue = Skill1 <= game->Getskill_sum();
 	if (Skill1_index_isTrue) {
-		switch (button->GetButtonLeftState(Button1))
+		switch (button->GetButtonLeftState(Skill_Button1))
 		{
 		case Key_Down:
 			ChangeSkill(Skill1);//修改玩家技能标识
 			index = 1;
 			break;
 		case Key_Move:
-			picture_index = Button1;
+			picture_index = Skill_Button1;
 			skill_index = Skill1;
 			break;
 		}
@@ -902,14 +924,14 @@ int Main_Window::Draw_SkillWindow()
 	//第二个按钮
 	bool Skill2_index_isTrue = Skill2 <= game->Getskill_sum();
 	if (Skill2_index_isTrue) {
-		switch (button->GetButtonLeftState(Button2))
+		switch (button->GetButtonLeftState(Skill_Button2))
 		{
 		case Key_Down:
 			ChangeSkill(Skill2);;//修改玩家技能标识
 			index = 1;
 			break;
 		case Key_Move:
-			picture_index = Button2;
+			picture_index = Skill_Button2;
 			skill_index = Skill2;
 			break;
 		}
@@ -919,14 +941,14 @@ int Main_Window::Draw_SkillWindow()
 	//第三个按钮
 	bool Skill3_index_isTrue = Skill3 <= game->Getskill_sum();
 	if (Skill3_index_isTrue) {
-		switch (button->GetButtonLeftState(Button3))
+		switch (button->GetButtonLeftState(Skill_Button3))
 		{
 		case Key_Down:
 			ChangeSkill(Skill3);;//修改玩家技能标识
 			index = 1;
 			break;
 		case Key_Move:
-			picture_index = Button3;
+			picture_index = Skill_Button3;
 			skill_index = Skill3;
 			break;
 		}
@@ -949,12 +971,12 @@ int Main_Window::Draw_SkillWindow()
 	bool needToDraw;
 	needToDraw = index > 3;
 	if (needToDraw) {
-		button->GetButton(Button4)->drawFlag = true;
+		button->GetButton(Pre_Page)->drawFlag = true;
 		//上一页 第四个按钮
-		int& Button4_x = button->GetButton(Button4)->rectxy->x;//按钮4x坐标
-		int& Button4_flag = button->GetButton(Button4)->flag;//按钮4特殊标识
+		int& Button4_x = button->GetButton(Pre_Page)->rectxy->x;//按钮4x坐标
+		int& Button4_flag = button->GetButton(Pre_Page)->flag;//按钮4特殊标识
 		index_isTrue = index - 3 > 0;
-		switch (button->GetButtonLeftState(Button4))
+		switch (button->GetButtonLeftState(Pre_Page))
 		{
 		case Key_Down:
 			if (index_isTrue) { index -= 3; }
@@ -970,18 +992,18 @@ int Main_Window::Draw_SkillWindow()
 		}
 	}
 	else {
-		button->GetButton(Button4)->drawFlag = false;
+		button->GetButton(Pre_Page)->drawFlag = false;
 	}
 
 
 	needToDraw = Skill3 < game->Getskill_sum();
 	if (needToDraw) {
-		button->GetButton(Button5)->drawFlag = true;
+		button->GetButton(Nex_Page)->drawFlag = true;
 		//下一页 第五个按钮
-		int& Button5_x = button->GetButton(Button5)->rectxy->x;//按钮5x坐标
-		int& Button5_flag = button->GetButton(Button5)->flag;//按钮5特俗标识
+		int& Button5_x = button->GetButton(Nex_Page)->rectxy->x;//按钮5x坐标
+		int& Button5_flag = button->GetButton(Nex_Page)->flag;//按钮5特俗标识
 		index_isTrue = index + 3 <= game->Getskill_sum();
-		switch (button->GetButtonLeftState(Button5))
+		switch (button->GetButtonLeftState(Nex_Page))
 		{
 		case Key_Down:
 			if (index_isTrue) { index += 3; }
@@ -997,7 +1019,7 @@ int Main_Window::Draw_SkillWindow()
 		}
 	}
 	else {
-		button->GetButton(Button5)->drawFlag = false;
+		button->GetButton(Nex_Page)->drawFlag = false;
 	}
 
 

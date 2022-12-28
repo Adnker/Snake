@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "myFun.h"
 
+const int TRUEMOVE = 1;
 const int TOO_LONG = 2;
 const int THOUGH = 3;
 const int NOPOINT = 4;
@@ -69,13 +70,38 @@ int Player::Updata()
 		}
 	}
 
+
+	/*
+	* 操作设置：
+	*			红色	蓝色
+	* 向上移动   W		 Up
+	* 向下移动   S		 Down
+	* 向右移动   D		 Right
+	* 向左移动   A	     Left
+	* 移动		 G       1
+	* 技能		 H		 2
+	* 虚路线头   J       3
+	*/
+
+	/*
+	* 玩家在显示技能界面的时候
+		向上移动	改为	上一个技能
+		向下移动	改为	下一个技能
+		向左移动	改为	上一个技能
+		向右移动	改为	下一个技能
+	*/
+
 	//红色玩家
 	if (flag == Red_Player)
 	{
 		//预选位置向上移动
 		if (input->GetKeyState(SDL_SCANCODE_W) == Key_Down)
 		{
-			if (!SkillNeedShow()) {
+			if (SkillNeedShow()) {
+				Change_skill_state(-1);
+			}
+			else
+			{
 				yuxuan_point.y--;
 				picture_name = "redup.png";
 			}
@@ -83,7 +109,10 @@ int Player::Updata()
 		//预选位置向下移动
 		else if (input->GetKeyState(SDL_SCANCODE_S) == Key_Down)
 		{
-			if (!SkillNeedShow()) {
+			if (SkillNeedShow()) {
+				Change_skill_state(1);
+			}
+			else {
 				yuxuan_point.y++;
 				picture_name = "reddown.png";
 			}
@@ -141,7 +170,11 @@ int Player::Updata()
 		//预选位置向上移动
 		if (input->GetKeyState(SDL_SCANCODE_UP) == Key_Down)
 		{
-			if (!SkillNeedShow()) {
+			if (SkillNeedShow()) {
+				Change_skill_state(-1);
+			}
+			else
+			{
 				yuxuan_point.y--;
 				picture_name = "blueup.png";
 			}
@@ -149,7 +182,11 @@ int Player::Updata()
 		//预选位置向下移动
 		else if (input->GetKeyState(SDL_SCANCODE_DOWN) == Key_Down)
 		{
-			if (!SkillNeedShow()) {
+			if (SkillNeedShow()) {
+				Change_skill_state(1);
+			}
+			else
+			{
 				yuxuan_point.y++;
 				picture_name = "bluedown.png";
 			}
@@ -199,6 +236,7 @@ int Player::Updata()
 			Xuhand();
 		}
 	}
+
 	//检验预选位置是否超出范围
 	if (yuxuan_point.x < 0) { yuxuan_point.x = 0; }
 	else if (yuxuan_point.x > 6) { yuxuan_point.x = 6; }
@@ -228,10 +266,12 @@ Point Player::Getyuxuan_point()
 	//将预选位置的左边转化为窗口坐标
 	if (flag == Red_Player)
 	{
+		//红方玩家显示位置在左下角
 		return { yuxuan_point.x * 100 + 10,yuxuan_point.y * 100 + 70 };
 	}
 	else
 	{
+		//蓝方玩家显示位置在右下角
 		return { yuxuan_point.x * 100 + 70,yuxuan_point.y * 100 + 70 };
 	}
 }
@@ -254,9 +294,9 @@ Point Player::JidiToMap(Move_point* point_)
 /*
 * 点位转化为地图点位
 */
-Point Player::ToMapPoint(Point* point_)
+Point Player::ToMapPoint(Point point_)
 {
-	return { point_->x * 100 + 50,point_->y * 100 + 50 };
+	return { point_.x * 100 + 50,point_.y * 100 + 50 };
 }
 
 
@@ -388,11 +428,10 @@ int Player::AddSkill()
 * 获取上一个基地点位或者普通点位，一般作为绘制路线的依据
 * 虚路线点位请调用 GetBeforePointXu
 */
-Point* Player::GetBeforePoint()
+Point Player::GetBeforePoint()
 {
 	int index = GetBeforePoint_index();
-	auto point = index == -1 ? Point(-1, -1) : *move_point.at(index)->point;
-	return &point;
+	return index == -1 ? Point(-1, -1) : *move_point.at(index)->point;
 }
 
 
@@ -400,11 +439,10 @@ Point* Player::GetBeforePoint()
 * 获取上一个虚路线点位
 * 实路线点位请调用 GetBeforePoint
 */
-Point* Player::GetBeforePointXu()
+Point Player::GetBeforePointXu()
 {
 	int index = GetBeforePointXu_index();
-	auto point = index == -1 ? Point(-1, -1) : *move_point.at(index)->point;
-	return &point;
+	return index == -1 ? Point(-1, -1) : *move_point.at(index)->point;
 }
 
 
@@ -488,7 +526,7 @@ int Player::MoveIsRight(bool flag_, Point point_, bool xuhand_flag_)
 	//最后一个点位 赋值
 	int index = move_point.size() - 1;
 	Point before = ToMapPoint(xuhand_flag_ ? GetBeforePointXu() : GetBeforePoint());//上一点位
-	Point now = ToMapPoint(temp);//现在的点位
+	Point now = ToMapPoint(*temp);//现在的点位
 	//计算两点之间的距离是否是正确的
 	int distance = static_cast<int>(
 		sqrt((
@@ -513,7 +551,7 @@ int Player::MoveIsRight(bool flag_, Point point_, bool xuhand_flag_)
 * 移动函数
 * flag_ 是否是强制移动
 */
-int Player::Movetion(int flag_)
+int Player::Movetion(bool flag_)
 {
 	//提示窗口大小
 	SDL_Rect text_rect = { Getyuxuan_point().x,Getyuxuan_point().y + 20,100,30 };
@@ -666,11 +704,11 @@ int Player::Xuhand()
 int Player::IsLife()
 {
 	bool isLife = DEAD;
-	Point* before_point = GetBeforePoint();
+	Point before_point = GetBeforePoint();
 	for (int i = -1; i < 2; i++) {
 		for (int j = -1; j < 2; j++) {
-			if (map->GetMapStatexy(before_point->x + i, before_point->y + j).zhan_Point == NONE) {
-				if (MoveIsRight(true, { before_point->x + i,before_point->y + j }) == true) {
+			if (map->GetMapStatexy(before_point.x + i, before_point.y + j).zhan_Point == NONE) {
+				if (MoveIsRight(true, { before_point.x + i,before_point.y + j }) == true) {
 					isLife = LIFE;
 				}
 			}

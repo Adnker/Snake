@@ -3,6 +3,7 @@
 Texture::Texture(SDL_Renderer* renderer_)
 {
 	renderer = renderer_;
+
 }
 
 SDL_Texture* Texture::Loading(const std::string fileName)

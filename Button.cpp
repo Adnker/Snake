@@ -1,13 +1,15 @@
 #include "Button.h"
 #include "Input.h"
 
+#define BUTTON_LEFT_X(i) button.at(i)->rectxy->x
+#define BUTTON_LEFT_Y(i) button.at(i)->rectxy->y
+
 int Button::Updata(Input* input)
 {
 	Point* now_point = input->GetNowPoint();//获取鼠标状态
 	//遍历每一个按钮 更新按钮状态
 	for (int i = 0; i < button.size(); i++) {
-		if (now_point->x > button.at(i)->rectxy->x && now_point->x < button.at(i)->rectxy->x + button.at(i)->rectxy->w &&
-			now_point->y > button.at(i)->rectxy->y && now_point->y < button.at(i)->rectxy->y + button.at(i)->rectxy->h) {
+		if (InButtonRect(now_point,i) == true) {
 			//左键
 			if (input->GetMouseState(SDL_BUTTON_LEFT) == Key_Down) {
 				button.at(i)->Left_state = Key_Down;
@@ -113,4 +115,15 @@ int Button::AddButton(BUTTON* button_)
 int Button::AddButton(const wchar_t* text_, SDL_Texture* tex_, SDL_Rect* rect1_, SDL_Rect rectxy_, SDL_Rect recttext, TTF_Font* font, SDL_Color* color_)
 {
 	return AddButton(text_, tex_, rect1_, &rectxy_, &recttext, font, color_);
+}
+
+bool Button::InButtonRect(Point* now_point, int i)
+{
+	if (now_point->x > BUTTON_LEFT_X(i) && now_point->x < button.at(i)->rectxy->x + button.at(i)->rectxy->w &&
+		now_point->y > BUTTON_LEFT_Y(i) && now_point->y < button.at(i)->rectxy->y + button.at(i)->rectxy->h) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }

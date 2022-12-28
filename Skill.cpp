@@ -52,8 +52,6 @@ int Skiller::Use_Skill(int index_, int player_flag_)
 		return Skill_hudun();
 	case SKILL_FLAG_JIAOHUAN:
 		return Skill_jiaohuan();
-	case SKILL_FLAG_FENZHI:
-		return Skill_fenzhi();
 	default:
 		return false;
 	}
@@ -121,11 +119,11 @@ int Skiller::Skill_chuanshen()
 
 int Skiller::Skill_zhuiji()
 {
-	if (distance(player->GetBeforePoint()->x,player->GetBeforePoint()->y,
-		player->player->GetBeforePoint()->x, player->player->GetBeforePoint()->y) > 199) {
+	if (distance(player->GetBeforePoint().x,player->GetBeforePoint().y,
+		player->player->GetBeforePoint().x, player->player->GetBeforePoint().y) > 199) {
 		return false;
 	}//判断敌方玩家是否在距离内
-	if (distance(player->player->GetBeforePoint()->x,player->player->GetBeforePoint()->y,
+	if (distance(player->player->GetBeforePoint().x,player->player->GetBeforePoint().y,
 		player->yuxuan_point.x, player->yuxuan_point.y) > 199) {
 		return false;
 	}//判断玩家预选点位是否在距离内
@@ -177,23 +175,11 @@ int Skiller::Skill_hudun()
 
 int Skiller::Skill_jiaohuan()
 {
-	Move_point* temp_point1 = new Move_point(*player->player->GetBeforePoint(),JIDI);
-	Move_point* temp_point2 = new Move_point(*player->GetBeforePoint(), JIDI);
+	Move_point* temp_point1 = new Move_point(player->player->GetBeforePoint(),JIDI);
+	Move_point* temp_point2 = new Move_point(player->GetBeforePoint(), JIDI);
 	player->move_point.emplace_back(temp_point1);
 	player->player->move_point.emplace_back(temp_point2);
 	map->Updatahuihe();
 	player->player->UpdataSum();
 	return true;
-}
-
-int Skiller::Skill_fenzhi()
-{
-	if (player->MoveIsRight() == true) {
-		Move_point* point = new Move_point(player->yuxuan_point, player->GetBeforePoint_index(), XU_HAND);
-		player->move_point.emplace_back(point);
-		map->Updata(&player->yuxuan_point, player->player->flag, ZHAN, false);//更新点位, 不更新回合
-		player->player->UpdataSum();//更新敌人
-		return true;
-	}
-	return false;
 }
